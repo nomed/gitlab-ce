@@ -201,6 +201,7 @@ GEM
     encryptor (3.0.0)
     equalizer (0.0.11)
     erubi (1.8.0)
+    erubis (2.7.0)
     escape_utils (1.2.1)
     et-orbi (1.2.1)
       tzinfo
@@ -231,6 +232,11 @@ GEM
     flipper-active_support_cache_store (0.13.0)
       activesupport (>= 3.2, < 6)
       flipper (~> 0.13.0)
+    flipper-ui (0.13.0)
+      erubis (~> 2.7.0)
+      flipper (~> 0.13.0)
+      rack (>= 1.4, < 3)
+      rack-protection (>= 1.5.3, < 2.1.0)
     flowdock (0.7.1)
       httparty (~> 0.7)
       multi_json
@@ -1067,6 +1073,7 @@ DEPENDENCIES
   flipper (~> 0.13.0)
   flipper-active_record (~> 0.13.0)
   flipper-active_support_cache_store (~> 0.13.0)
+  flipper-ui (~> 0.13.0)
   flowdock (~> 0.7)
   fog-aliyun (~> 0.3)
   fog-aws (~> 3.3)

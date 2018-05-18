@@ -113,6 +113,7 @@ Rails.application.routes.draw do
 
   draw :api
   draw :sidekiq
+  draw :flipper
   draw :help
   draw :snippets
 
