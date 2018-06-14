@@ -237,10 +237,16 @@ msgstr[1] ""
 msgid "1st contribution!"
 msgstr ""
 
+msgid "2. Paste the <strong>Token</strong> into the field below"
+msgstr ""
+
 msgid "2FA"
 msgstr ""
 
 msgid "2FA enabled"
+msgstr ""
+
+msgid "3. Select the <strong>Active</strong> checkbox, press <strong>Save changes</strong> and start using GitLab inside Slack!"
 msgstr ""
 
 msgid "403|Please contact your GitLab administrator to get permission."
@@ -385,6 +391,9 @@ msgid "Add new directory"
 msgstr ""
 
 msgid "Add reaction"
+msgstr ""
+
+msgid "Add to Mattermost"
 msgstr ""
 
 msgid "Add to project"
@@ -913,6 +922,18 @@ msgid "AutoDevOps|add a Kubernetes cluster"
 msgstr ""
 
 msgid "AutoDevOps|enable Auto DevOps"
+msgstr ""
+
+msgid "Autocomplete"
+msgstr ""
+
+msgid "Autocomplete description"
+msgstr ""
+
+msgid "Autocomplete hint"
+msgstr ""
+
+msgid "Autocomplete usage hint"
 msgstr ""
 
 msgid "Automatically marked as default internal user"
@@ -2019,7 +2040,13 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
+msgid "Command"
+msgstr ""
+
 msgid "Command line instructions"
+msgstr ""
+
+msgid "Command trigger word"
 msgstr ""
 
 msgid "Comment"
@@ -2453,7 +2480,13 @@ msgstr ""
 msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
+msgid "Customize icon"
+msgstr ""
+
 msgid "Customize language and region related settings."
+msgstr ""
+
+msgid "Customize name"
 msgstr ""
 
 msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
@@ -2725,6 +2758,9 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
+msgid "Descriptive label"
+msgstr ""
+
 msgid "Destroy"
 msgstr ""
 
@@ -2803,6 +2839,9 @@ msgstr ""
 msgid "Dismiss Cycle Analytics introduction box"
 msgstr ""
 
+msgid "Display name"
+msgstr ""
+
 msgid "Do you want to customize how Google Code email addresses and usernames are imported into GitLab?"
 msgstr ""
 
@@ -2822,6 +2861,9 @@ msgid "Download artifacts"
 msgstr ""
 
 msgid "Download asset"
+msgstr ""
+
+msgid "Download image"
 msgstr ""
 
 msgid "Download tar"
@@ -3352,6 +3394,9 @@ msgid "File upload error."
 msgstr ""
 
 msgid "Files"
+msgstr ""
+
+msgid "Fill in the word that works best for your team."
 msgstr ""
 
 msgid "Filter"
@@ -4258,6 +4303,9 @@ msgstr ""
 msgid "Last contact"
 msgstr ""
 
+msgid "Last edit"
+msgstr ""
+
 msgid "Last edited %{date}"
 msgstr ""
 
@@ -4597,6 +4645,9 @@ msgid "Merged"
 msgstr ""
 
 msgid "Messages"
+msgstr ""
+
+msgid "Method"
 msgstr ""
 
 msgid "Metrics"
@@ -5233,6 +5284,12 @@ msgstr ""
 msgid "Perform advanced options such as changing path, transferring, or removing the group."
 msgstr ""
 
+msgid "Perform common operations on GitLab project"
+msgstr ""
+
+msgid "Perform common operations on GitLab project: %{project_name}"
+msgstr ""
+
 msgid "Performance optimization"
 msgstr ""
 
@@ -5818,6 +5875,12 @@ msgstr ""
 msgid "Project name"
 msgstr ""
 
+msgid "Project services"
+msgstr ""
+
+msgid "Project services allow you to integrate GitLab with other applications"
+msgstr ""
+
 msgid "Project slug"
 msgstr ""
 
@@ -6186,6 +6249,12 @@ msgstr ""
 msgid "Request Access"
 msgstr ""
 
+msgid "Request URL"
+msgstr ""
+
+msgid "Request method"
+msgstr ""
+
 msgid "Requested %{time_ago}"
 msgstr ""
 
@@ -6219,6 +6288,9 @@ msgstr ""
 msgid "Resolved"
 msgstr ""
 
+msgid "Response icon"
+msgstr ""
+
 msgid "Response metrics (AWS ELB)"
 msgstr ""
 
@@ -6235,6 +6307,9 @@ msgid "Response metrics (NGINX Ingress)"
 msgstr ""
 
 msgid "Response metrics (NGINX)"
+msgstr ""
+
+msgid "Response username"
 msgstr ""
 
 msgid "Resume"
@@ -6443,6 +6518,12 @@ msgstr ""
 msgid "Secret"
 msgstr ""
 
+msgid "See list of available commands in Mattermost after setting up this service, by entering"
+msgstr ""
+
+msgid "See list of available commands in Slack after setting up this service, by entering"
+msgstr ""
+
 msgid "See metrics"
 msgstr ""
 
@@ -6563,7 +6644,13 @@ msgstr ""
 msgid "Serverless|There is currently no function data available from Knative. This could be for a variety of reasons including:"
 msgstr ""
 
+msgid "Service"
+msgstr ""
+
 msgid "Service Templates"
+msgstr ""
+
+msgid "Services"
 msgstr ""
 
 msgid "Session expiration, projects limit and attachment size."
@@ -6657,6 +6744,9 @@ msgid "Show parent pages"
 msgstr ""
 
 msgid "Show parent subgroups"
+msgstr ""
+
+msgid "Show this command in the autocomplete list"
 msgstr ""
 
 msgid "Show whitespace changes"
@@ -7034,6 +7124,9 @@ msgid "Subscribed"
 msgstr ""
 
 msgid "Suggested change"
+msgstr ""
+
+msgid "Suggestions:"
 msgstr ""
 
 msgid "Sunday"
@@ -7483,6 +7576,12 @@ msgstr ""
 msgid "This runner will only run on pipelines triggered on protected branches"
 msgstr ""
 
+msgid "This service allows users to perform common operations on this project by entering slash commands in Mattermost."
+msgstr ""
+
+msgid "This service allows users to perform common operations on this project by entering slash commands in Slack."
+msgstr ""
+
 msgid "This setting can be overridden in each project."
 msgstr ""
 
@@ -7740,6 +7839,9 @@ msgid "To move or copy an entire GitLab project from another GitLab installation
 msgstr ""
 
 msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
+msgstr ""
+
+msgid "To set up this service:"
 msgstr ""
 
 msgid "To start serving your jobs you can add Runners to your group"
@@ -8115,6 +8217,9 @@ msgid "View deployment"
 msgstr ""
 
 msgid "View details: %{details_url}"
+msgstr ""
+
+msgid "View documentation"
 msgstr ""
 
 msgid "View file @ "
@@ -8942,6 +9047,12 @@ msgstr ""
 msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
+msgid "off"
+msgstr ""
+
+msgid "on"
+msgstr ""
+
 msgid "or"
 msgstr ""
 
@@ -9009,6 +9120,9 @@ msgid "spendCommand|%{slash_command} will update the sum of the time spent."
 msgstr ""
 
 msgid "started"
+msgstr ""
+
+msgid "status"
 msgstr ""
 
 msgid "stuck"
