@@ -33,8 +33,6 @@
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
 - gcp_cluster:cluster_wait_for_ingress_ip_address
-- gcp_cluster:cluster_configure
-- gcp_cluster:cluster_project_configure
 - gcp_cluster:clusters_applications_wait_for_uninstall_app
 - gcp_cluster:clusters_applications_uninstall
 
