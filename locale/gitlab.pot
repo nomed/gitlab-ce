@@ -4992,6 +4992,9 @@ msgstr ""
 msgid "Hide archived projects"
 msgstr ""
 
+msgid "Hide avatar, license and features settings"
+msgstr ""
+
 msgid "Hide file browser"
 msgstr ""
 
@@ -5821,7 +5824,11 @@ msgstr ""
 msgid "Let's Encrypt does not accept emails on example.com"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}."
+=======
+msgid "License"
+>>>>>>> Updated translations for new text
 msgstr ""
 
 msgid "Limited to showing %d event at most"
@@ -9117,6 +9124,9 @@ msgid "Show archived projects"
 msgstr ""
 
 msgid "Show archived projects only"
+msgstr ""
+
+msgid "Show avatar, license and features settings"
 msgstr ""
 
 msgid "Show command"
