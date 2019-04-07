@@ -39,6 +39,7 @@ module QA
             @user = Runtime::User
             Page::Main::Login.act { sign_in_using_credentials(@user) }
           end
+
           Resource::PersonalAccessToken.fabricate!.access_token
         end
       end
