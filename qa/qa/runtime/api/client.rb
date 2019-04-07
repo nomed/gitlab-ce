@@ -20,7 +20,7 @@ module QA
           @personal_access_token ||= begin
             # you can set the environment variable GITLAB_QA_ACCESS_TOKEN
             # to use a specific access token rather than create one from the UI
-            create_personal_access_token if Runtime::Env.personal_access_token.nil?
+            Runtime::Env.personal_access_token || create_personal_access_token
           end
         end
 
