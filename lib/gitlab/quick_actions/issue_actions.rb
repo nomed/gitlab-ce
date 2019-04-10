@@ -12,6 +12,9 @@ module Gitlab
         explanation do |due_date|
           _("Sets the due date to %{due_date}.") % { due_date: due_date.strftime('%b %-d, %Y') } if due_date
         end
+        execution_message do |due_date|
+          _("Set the due date to %{due_date}.") % { due_date: due_date.strftime('%b %-d, %Y') } if due_date
+        end
         params '<in 2 days | this Friday | December 31st>'
         types Issue
         condition do
@@ -27,6 +30,7 @@ module Gitlab
 
         desc _('Remove due date')
         explanation _('Removes the due date.')
+        execution_message _('Removed the due date.')
         types Issue
         condition do
           quick_action_target.persisted? &&
@@ -49,22 +53,25 @@ module Gitlab
           current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target) &&
             quick_action_target.project.boards.count == 1
         end
-        # rubocop: disable CodeReuse/ActiveRecord
         command :board_move do |target_list_name|
-          label_ids = find_label_ids(target_list_name)
+          labels = find_labels(target_list_name)
+          label_ids = labels.map(&:id)
 
           if label_ids.size == 1
             label_id = label_ids.first
 
             # Ensure this label corresponds to a list on the board
-            next unless Label.on_project_boards(quick_action_target.project_id).where(id: label_id).exists?
+            next unless Label.on_project_boards(quick_action_target.project_id).where(id: label_id).exists? # rubocop: disable CodeReuse/ActiveRecord
 
             @updates[:remove_label_ids] =
-              quick_action_target.labels.on_project_boards(quick_action_target.project_id).where.not(id: label_id).pluck(:id)
+              quick_action_target.labels.on_project_boards(quick_action_target.project_id).where.not(id: label_id).pluck(:id) # rubocop: disable CodeReuse/ActiveRecord
             @updates[:add_label_ids] = [label_id]
+
+            @execution_message[:board_move] = _("Moved issue to %{label} column in the board.") % { label: labels_to_reference(labels).first }
+          else
+            @execution_message[:board_move] = _('Move this issue failed because you need to specify only one label.')
           end
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         desc _('Mark this issue as a duplicate of another issue')
         explanation do |duplicate_reference|
@@ -81,6 +88,10 @@ module Gitlab
 
           if canonical_issue.present?
             @updates[:canonical_issue_id] = canonical_issue.id
+
+            @execution_message[:duplicate] = _("Marked this issue as a duplicate of %{duplicate_param}.") % { duplicate_param: duplicate_param }
+          else
+            @execution_message[:duplicate] = _('Mark as duplicate failed because referenced issue was not found')
           end
         end
 
@@ -99,12 +110,19 @@ module Gitlab
 
           if target_project.present?
             @updates[:target_project] = target_project
+
+            @execution_message[:move] = _("Moved this issue to %{path_to_project}.") % { path_to_project: target_project_path }
+          else
+            @execution_message[:move] = _("Move this issue failed because target project doesn't exists")
           end
         end
 
         desc _('Make issue confidential.')
         explanation do
           _('Makes this issue confidential')
+        end
+        execution_message do
+          _('Made this issue confidential')
         end
         types Issue
         condition do
@@ -119,7 +137,14 @@ module Gitlab
           if branch_name
             _("Creates branch '%{branch_name}' and a merge request to resolve this issue") % { branch_name: branch_name }
           else
-            "Creates a branch and a merge request to resolve this issue"
+            _('Creates a branch and a merge request to resolve this issue')
+          end
+        end
+        execution_message do |branch_name = nil|
+          if branch_name
+            _("Created branch '%{branch_name}' and a merge request to resolve this issue") % { branch_name: branch_name }
+          else
+            _('Created a branch and a merge request to resolve this issue')
           end
         end
         params "<branch name>"

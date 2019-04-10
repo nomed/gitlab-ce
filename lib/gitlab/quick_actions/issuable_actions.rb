@@ -12,10 +12,16 @@ module Gitlab
       included do
         # Issue, MergeRequest, Epic: quick actions definitions
         desc do
-          "Close this #{quick_action_target.to_ability_name.humanize(capitalize: false)}"
+          _('Close this %{quick_action_target}') %
+            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
         end
         explanation do
-          "Closes this #{quick_action_target.to_ability_name.humanize(capitalize: false)}."
+          _('Closes this %{quick_action_target}.') %
+            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+        end
+        execution_message do
+          _('Closed this %{quick_action_target}.') %
+            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
         end
         types Issuable
         condition do
@@ -28,10 +34,16 @@ module Gitlab
         end
 
         desc do
-          "Reopen this #{quick_action_target.to_ability_name.humanize(capitalize: false)}"
+          _('Reopen this %{quick_action_target}') %
+            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
         end
         explanation do
-          "Reopens this #{quick_action_target.to_ability_name.humanize(capitalize: false)}."
+          _('Reopens this %{quick_action_target}.') %
+            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+        end
+        execution_message do
+          _('Reopened this %{quick_action_target}.') %
+            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
         end
         types Issuable
         condition do
@@ -45,7 +57,10 @@ module Gitlab
 
         desc _('Change title')
         explanation do |title_param|
-          _("Changes the title to \"%{title_param}\".") % { title_param: title_param }
+          _('Changes the title to "%{title_param}".') % { title_param: title_param }
+        end
+        execution_message do |title_param|
+          _('Changed the title to "%{title_param}".') % { title_param: title_param }
         end
         params '<New title>'
         types Issuable
@@ -61,7 +76,10 @@ module Gitlab
         explanation do |labels_param|
           labels = find_label_references(labels_param)
 
-          "Adds #{labels.join(' ')} #{'label'.pluralize(labels.count)}." if labels.any?
+          if labels.any?
+            _("Adds %{labels} %{label_text}.") %
+              { labels: labels.join(' '), label_text: 'label'.pluralize(labels.count) }
+          end
         end
         params '~label1 ~"label 2"'
         types Issuable
@@ -71,24 +89,13 @@ module Gitlab
             find_labels.any?
         end
         command :label do |labels_param|
-          label_ids = find_label_ids(labels_param)
-
-          if label_ids.any?
-            @updates[:add_label_ids] ||= []
-            @updates[:add_label_ids] += label_ids
-
-            @updates[:add_label_ids].uniq!
-          end
+          run_label_command(:label, :add_label_ids, labels_param)
         end
 
         desc _('Remove all or specific label(s)')
         explanation do |labels_param = nil|
-          if labels_param.present?
-            labels = find_label_references(labels_param)
-            "Removes #{labels.join(' ')} #{'label'.pluralize(labels.count)}." if labels.any?
-          else
-            _('Removes all labels.')
-          end
+          label_references = labels_param.present? ? find_label_references(labels_param) : []
+          remove_label_message(label_references, false)
         end
         params '~label1 ~"label 2"'
         types Issuable
@@ -99,7 +106,9 @@ module Gitlab
         end
         command :unlabel do |labels_param = nil|
           if labels_param.present?
-            label_ids = find_label_ids(labels_param)
+            labels = find_labels(labels_param)
+            label_ids = labels.map(&:id)
+            label_references = labels_to_reference(labels, :name)
 
             if label_ids.any?
               @updates[:remove_label_ids] ||= []
@@ -109,7 +118,10 @@ module Gitlab
             end
           else
             @updates[:label_ids] = []
+            label_references = []
           end
+
+          @execution_message[:unlabel] = remove_label_message(label_references, true)
         end
 
         desc _('Replace all label(s)')
@@ -125,18 +137,12 @@ module Gitlab
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", parent)
         end
         command :relabel do |labels_param|
-          label_ids = find_label_ids(labels_param)
-
-          if label_ids.any?
-            @updates[:label_ids] ||= []
-            @updates[:label_ids] += label_ids
-
-            @updates[:label_ids].uniq!
-          end
+          run_label_command(:relabel, :label_ids, labels_param)
         end
 
         desc _('Add a todo')
         explanation _('Adds a todo.')
+        execution_message _('Added a todo.')
         types Issuable
         condition do
           quick_action_target.persisted? &&
@@ -148,6 +154,7 @@ module Gitlab
 
         desc _('Mark todo as done')
         explanation _('Marks todo as done.')
+        execution_message _('Marked todo as done.')
         types Issuable
         condition do
           quick_action_target.persisted? &&
@@ -159,7 +166,12 @@ module Gitlab
 
         desc _('Subscribe')
         explanation do
-          "Subscribes to this #{quick_action_target.to_ability_name.humanize(capitalize: false)}."
+          _('Subscribes to this %{quick_action_target}.') %
+            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+        end
+        execution_message do
+          _('Subscribed to this %{quick_action_target}.') %
+            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
         end
         types Issuable
         condition do
@@ -172,7 +184,12 @@ module Gitlab
 
         desc _('Unsubscribe')
         explanation do
-          "Unsubscribes from this #{quick_action_target.to_ability_name.humanize(capitalize: false)}."
+          _('Unsubscribes from this %{quick_action_target}.') %
+            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+        end
+        execution_message do
+          _('Unsubscribed from this %{quick_action_target}.') %
+            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
         end
         types Issuable
         condition do
@@ -186,6 +203,9 @@ module Gitlab
         desc _('Toggle emoji award')
         explanation do |name|
           _("Toggles :%{name}: emoji award.") % { name: name } if name
+        end
+        execution_message do |name|
+          _("Toggled :%{name}: emoji award.") % { name: name } if name
         end
         params ':emoji:'
         types Issuable
@@ -214,6 +234,48 @@ module Gitlab
         types Issuable
         substitution :tableflip do |comment|
           "#{comment} #{TABLEFLIP}"
+        end
+
+        private
+
+        def run_label_command(command, updates_key, labels_param)
+          labels = find_labels(labels_param)
+          label_ids = labels.map(&:id)
+          label_references = labels_to_reference(labels, :name)
+
+          if label_ids.any?
+            @updates[updates_key] ||= []
+            @updates[updates_key] += label_ids
+
+            @updates[updates_key].uniq!
+
+            @execution_message[command] = case command
+                                          when :relabel
+                                            _('Replaced all labels with %{label_references} %{label_text}.') %
+                                             {
+                                               label_references: label_references.join(' '),
+                                               label_text: 'label'.pluralize(label_references.count)
+                                             }
+                                          when :label
+                                            _('Added %{label_references} %{label_text}.') %
+                                             {
+                                               label_references: label_references.join(' '),
+                                               label_text: 'label'.pluralize(labels.count)
+                                             }
+                                          end
+
+          end
+        end
+
+        def remove_label_message(label_references, paste_tense)
+          suffix = paste_tense ? 'd' : 's'
+
+          if label_references.any?
+            _("Remove%{suffix} %{label_references} %{label_text}.") %
+              { suffix: suffix, label_references: label_references.join(' '), label_text: 'label'.pluralize(label_references.count) }
+          else
+            _("Remove%{suffix} all labels.") % { suffix: suffix }
+          end
         end
       end
     end
