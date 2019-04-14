@@ -8,12 +8,11 @@ module QA
       class Client
         attr_reader :address, :user
 
-        def initialize(address = :gitlab, personal_access_token: nil, is_new_session: true, is_new_user: false)
+        def initialize(address = :gitlab, personal_access_token: nil, is_new_session: true, user: nil)
           @address = address
           @personal_access_token = personal_access_token
           @is_new_session = is_new_session
-          @is_new_user = is_new_user
-          @user = nil
+          @user = user
         end
 
         def personal_access_token
@@ -35,13 +34,11 @@ module QA
         end
 
         def do_create_personal_access_token
-          if @is_new_user
-            @user = Resource::User.fabricate_via_browser_ui!
-          else
-            @user = Runtime::User
-            Page::Main::Login.act { sign_in_using_credentials(@user) }
+          if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
+            Page::Main::Menu.perform { |main| main.sign_out }
           end
 
+          Page::Main::Login.perform { |login| login.sign_in_using_credentials(@user) }
           Resource::PersonalAccessToken.fabricate!.access_token
         end
       end

@@ -8,7 +8,9 @@ module QA
       include Events::Project
 
       attribute :name
+      attribute :add_name_uuid
       attribute :description
+      attribute :standalone
 
       attribute :group do
         Group.fabricate!
@@ -31,17 +33,16 @@ module QA
       end
 
       def initialize
+        @name = "#{@name}-#{SecureRandom.hex(8)}" if @add_name_uuid
         @description = 'My awesome project'
-      end
-
-      def name=(raw_name)
-        @name = "#{raw_name}-#{SecureRandom.hex(8)}"
+        @standalone = false
       end
 
       def fabricate!
-        group.visit!
-
-        Page::Group::Show.perform(&:go_to_new_project)
+        unless @standalone
+          group.visit!
+          Page::Group::Show.perform(&:go_to_new_project)
+        end
 
         Page::Project::New.perform do |page|
           page.choose_test_namespace
@@ -67,13 +68,21 @@ module QA
       end
 
       def api_post_body
-        {
-          namespace_id: group.id,
-          path: name,
-          name: name,
-          description: description,
-          visibility: 'public'
-        }
+        if @standalone
+          {
+            name: name,
+            description: description,
+            visibility: 'public'
+          }
+        else
+          {
+            namespace_id: group.id,
+            path: name,
+            name: name,
+            description: description,
+            visibility: 'public'
+          }
+        end
       end
 
       private
