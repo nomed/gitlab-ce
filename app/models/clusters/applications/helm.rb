@@ -37,6 +37,14 @@ module Clusters
         )
       end
 
+      def uninstall_command
+        Gitlab::Kubernetes::Helm::ResetCommand.new(
+          name: name,
+          files: files,
+          rbac: cluster.platform_kubernetes_rbac?
+        )
+      end
+
       def has_ssl?
         ca_key.present? && ca_cert.present?
       end
