@@ -22,6 +22,29 @@ describe DashboardHelper do
     end
   end
 
+  describe '#feature_entry' do
+    it 'returns a link if feature is enabled' do
+      entry = feature_entry('Demo', 'demo.link', true)
+      expect(entry).to include('<a href="demo.link">Demo</a>')
+    end
+
+    it 'considers feature enabled by default' do
+      entry = feature_entry('Demo', 'demo.link')
+      expect(entry).to include('<a href="demo.link">Demo</a>')
+    end
+
+    it 'returns text if feature is disabled' do
+      entry = feature_entry('Demo', 'demo.link', false)
+      expect(entry).not_to include('<a href="demo.link">Demo</a>')
+      expect(entry).to include('Demo')
+    end
+
+    it 'returns text if href is not provided' do
+      entry = feature_entry('Demo', nil, true)
+      expect(entry).not_to match(/<a[^>]+>/)
+    end
+  end
+
   describe '.has_start_trial?' do
     subject { helper.has_start_trial? }
 
