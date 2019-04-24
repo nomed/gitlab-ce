@@ -19,7 +19,8 @@ module QA
           @personal_access_token ||= begin
             # you can set the environment variable GITLAB_QA_ACCESS_TOKEN
             # to use a specific access token rather than create one from the UI
-            Runtime::Env.personal_access_token || create_personal_access_token
+            # unless a specific user has been passed
+            @user.nil? && Runtime::Env.personal_access_token ? Runtime::Env.personal_access_token : create_personal_access_token
           end
         end
 
@@ -35,7 +36,7 @@ module QA
 
         def do_create_personal_access_token
           if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
-            Page::Main::Menu.perform { |main| main.sign_out }
+            Page::Main::Menu.perform(&:sign_out)
           end
 
           Page::Main::Login.perform { |login| login.sign_in_using_credentials(@user) }

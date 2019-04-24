@@ -6,14 +6,19 @@ require 'digest'
 module QA
   context 'Create' do
     describe 'Compare archives of different user projects with the same name and check they\'re different' do
+      include Support::Api
+
       before(:all) do
         @project_name = "project-archive-download-#{SecureRandom.hex(8)}"
         @archive_types = %w(tar.gz tar.bz2 tar zip)
-        @users = { user1: {}, user2: {} }
+        @users = {
+          user1: { username: Runtime::Env.gitlab_qa_username_1, password: Runtime::Env.gitlab_qa_password_1 },
+          user2: { username: Runtime::Env.gitlab_qa_username_2, password: Runtime::Env.gitlab_qa_password_2 }
+        }
 
         @users.each do |_, user_info|
           Runtime::Browser.visit(:gitlab, Page::Main::Login)
-          user_info[:user] = Resource::User.fabricate_or_use
+          user_info[:user] = Resource::User.fabricate_or_use(user_info[:username], user_info[:password])
           user_info[:api_client] = Runtime::API::Client.new(:gitlab, user: user_info[:user])
           user_info[:api_client].personal_access_token
           user_info[:project] = create_project(user_info[:user], user_info[:api_client], @project_name)
@@ -27,7 +32,7 @@ module QA
           archive_checksums[user_key] = {}
 
           @archive_types.each do |type|
-            archive_path = download_project_archive(user_info[:api_client], user_info[:project], type).path
+            archive_path = download_project_archive_via_api(user_info[:api_client], user_info[:project], type).path
             archive_checksums[user_key][type] = Digest::MD5.hexdigest(File.read(archive_path))
           end
         end
@@ -39,12 +44,12 @@ module QA
 
       def create_project(user, api_client, project_name)
         project = Resource::Project.fabricate! do |project|
+          project.standalone = true
+          project.add_name_uuid = false
           project.name = project_name
           project.path_with_namespace = "#{user.name}/#{project_name}"
           project.user = user
           project.api_client = api_client
-          project.standalone = true
-          project.add_name_uuid = false
         end
 
         Resource::Repository::ProjectPush.fabricate! do |push|
@@ -58,24 +63,12 @@ module QA
         project
       end
 
-      def download_project_archive(api_client, project, type = 'tar.gz')
-        sanitized_project_path = CGI.escape(project.path_with_namespace)
-
-        get_project_archive_zip = Runtime::API::Request.new(api_client, "/projects/#{sanitized_project_path}/repository/archive.#{type}")
-        project_archive_download = download_raw_file(get_project_archive_zip.url)
+      def download_project_archive_via_api(api_client, project, type = 'tar.gz')
+        get_project_archive_zip = Runtime::API::Request.new(api_client, project.api_get_archive_path(type))
+        project_archive_download = get(get_project_archive_zip.url, true)
         expect(project_archive_download.code).to eq(200)
 
         project_archive_download.file
-      end
-
-      def download_raw_file(url)
-        RestClient::Request.execute(
-          method: :get,
-          url: url,
-          verify_ssl: false,
-          raw_response: true)
-      rescue RestClient::ExceptionWithResponse => e
-        e.response
       end
     end
   end
