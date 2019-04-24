@@ -33,9 +33,13 @@ module QA
       end
 
       def initialize
-        @name = "#{@name}-#{SecureRandom.hex(8)}" if @add_name_uuid
-        @description = 'My awesome project'
+        @add_name_uuid = true
         @standalone = false
+        @description = 'My awesome project'
+      end
+
+      def name=(raw_name)
+        @name = @add_name_uuid ? "#{raw_name}-#{SecureRandom.hex(8)}" : raw_name
       end
 
       def fabricate!
@@ -63,26 +67,27 @@ module QA
         "/projects/#{CGI.escape(path_with_namespace)}"
       end
 
+      def api_get_archive_path(type = 'tar.gz')
+        "#{api_get_path}/repository/archive.#{type}"
+      end
+
       def api_post_path
         '/projects'
       end
 
       def api_post_body
-        if @standalone
-          {
-            name: name,
-            description: description,
-            visibility: 'public'
-          }
-        else
-          {
-            namespace_id: group.id,
-            path: name,
-            name: name,
-            description: description,
-            visibility: 'public'
-          }
+        post_body = {
+          name: name,
+          description: description,
+          visibility: 'public'
+        }
+
+        unless @standalone
+          post_body[:namespace_id] = group.id
+          post_body[:path] = name
         end
+
+        post_body
       end
 
       private
