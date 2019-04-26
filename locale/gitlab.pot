@@ -1920,6 +1920,9 @@ msgstr ""
 msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
 
+msgid "Choose file..."
+msgstr ""
+
 msgid "Choose file…"
 msgstr ""
 
@@ -5839,11 +5842,10 @@ msgstr ""
 msgid "Let's Encrypt does not accept emails on example.com"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}."
-=======
+msgstr ""
+
 msgid "License"
->>>>>>> Updated translations for new text
 msgstr ""
 
 msgid "Limited to showing %d event at most"
@@ -7809,9 +7811,6 @@ msgid "Project cannot be shared with the group it is in or one of its ancestors.
 msgstr ""
 
 msgid "Project configuration, including services"
-msgstr ""
-
-msgid "Project description (optional)"
 msgstr ""
 
 msgid "Project description (optional)"
