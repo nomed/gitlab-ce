@@ -1725,9 +1725,6 @@ msgstr ""
 msgid "Choose visibility level, enable/disable project features (issues, repository, wiki, snippets) and set permissions."
 msgstr ""
 
-msgid "Choose your merge method, options, checks, and set up a default merge request description template."
-msgstr ""
-
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
@@ -7130,6 +7127,9 @@ msgid "ProjectSettings|Automatically resolve merge request diff discussions when
 msgstr ""
 
 msgid "ProjectSettings|Badges"
+msgstr ""
+
+msgid "ProjectSettings|Choose your %{bold_start}Merge method%{bold_end}, %{bold_start}Merge options%{bold_end}, and %{bold_start}Merge checks%{bold_end}."
 msgstr ""
 
 msgid "ProjectSettings|Customize your project badges."
