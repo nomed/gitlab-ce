@@ -103,6 +103,30 @@ describe Projects::UpdateService do
           expect(project.reload).to be_internal
         end
       end
+
+      context 'when project fork visibility level allows public fork' do
+        let(:forked_project) { fork_project(project) }
+
+        subject do
+          update_project(forked_project,
+                         admin,
+                         visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        end
+
+        before do
+          create(:project_setting, project: project, fork_visibility_level: Gitlab::ForkVisibilityLevel::PUBLIC)
+        end
+
+        it 'updates fork visibility to public' do
+          expect(project).to be_private
+          expect(forked_project).to be_private
+
+          expect(subject).to eq({ status: :success })
+
+          expect(project).to be_private
+          expect(forked_project.reload).to be_public
+        end
+      end
     end
 
     context 'when updating forking access level' do
