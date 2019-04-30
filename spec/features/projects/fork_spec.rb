@@ -26,7 +26,11 @@ describe 'Project fork' do
   end
 
   context 'forking_access_level' do
+    let(:project) { create(:project, :private, :repository) }
+
     before do
+      project.add_developer(user)
+
       create(:project_setting,
              { project: project,
                forking_access_level: forking_access_level })
