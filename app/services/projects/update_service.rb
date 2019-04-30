@@ -86,6 +86,10 @@ module Projects
       end
 
       update_pages_config if changing_pages_related_config?
+
+      if fork_visibility_level_became_more_restrictive?
+        project.do_update_forks_visibility_level
+      end
     end
 
     def after_rename_service(project)
@@ -128,6 +132,15 @@ module Projects
 
     def changing_pages_access_level?
       params.dig(:project_feature_attributes, :pages_access_level)
+    end
+
+    def fork_visibility_level_became_more_restrictive?
+      fork_visibility_level_changes = project.project_setting.previous_changes[:fork_visibility_level]
+
+      return false unless fork_visibility_level_changes
+
+      fork_visibility_level_changes == [Gitlab::ForkVisibilityLevel::PUBLIC,
+                                        Gitlab::ForkVisibilityLevel::PARENT_VISIBILITY]
     end
 
     def ensure_wiki_exists

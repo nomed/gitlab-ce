@@ -225,6 +225,52 @@ describe Projects::UpdateService do
 
         it_behaves_like 'valid fork_visibility_level change'
       end
+
+      context 'forks visibility level' do
+        let(:forked_project) { fork_project(project) }
+
+        subject do
+          update_project(project, user,
+                         project_setting_attributes: {
+                           fork_visibility_level: target_fork_visibility_level
+                         })
+        end
+
+        before do
+          create(:project_setting,
+                 { project: project,
+                   fork_visibility_level: original_fork_visibility_level })
+        end
+
+        context 'becomes more restrictive' do
+          let(:original_fork_visibility_level) { Gitlab::ForkVisibilityLevel::PUBLIC }
+          let(:target_fork_visibility_level) { Gitlab::ForkVisibilityLevel::PARENT_VISIBILITY }
+
+          before do
+            forked_project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          end
+
+          it 'updated visibility of the fork' do
+            expect(project).to be_private
+            expect(forked_project).to be_public
+
+            expect { subject }.to(
+              change { forked_project.reload.visibility_level }.to(Gitlab::VisibilityLevel::PRIVATE))
+          end
+        end
+
+        context 'becomes less restrictive' do
+          let(:original_fork_visibility_level) { Gitlab::ForkVisibilityLevel::PARENT_VISIBILITY }
+          let(:target_fork_visibility_level) { Gitlab::ForkVisibilityLevel::PUBLIC }
+
+          it 'does not update visibility of the fork' do
+            expect(project).to be_private
+            expect(forked_project).to be_private
+
+            expect { subject }.not_to change { forked_project.reload.visibility_level }
+          end
+        end
+      end
     end
 
     describe 'when updating project that has forks' do

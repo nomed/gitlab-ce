@@ -1459,6 +1459,10 @@ class Project < ApplicationRecord
   def update_forks_visibility_level
     return unless visibility_level < visibility_level_before_last_save
 
+    do_update_forks_visibility_level
+  end
+
+  def do_update_forks_visibility_level
     forks.each do |forked_project|
       if forked_project.visibility_level > visibility_level
         forked_project.visibility_level = visibility_level
