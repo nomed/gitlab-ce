@@ -244,7 +244,7 @@ describe Projects::UpdateService do
 
         context 'becomes more restrictive' do
           let(:original_fork_visibility_level) { Gitlab::ForkVisibilityLevel::PUBLIC }
-          let(:target_fork_visibility_level) { Gitlab::ForkVisibilityLevel::PARENT_VISIBILITY }
+          let(:target_fork_visibility_level) { Gitlab::ForkVisibilityLevel::PARENT }
 
           before do
             forked_project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
@@ -260,7 +260,7 @@ describe Projects::UpdateService do
         end
 
         context 'becomes less restrictive' do
-          let(:original_fork_visibility_level) { Gitlab::ForkVisibilityLevel::PARENT_VISIBILITY }
+          let(:original_fork_visibility_level) { Gitlab::ForkVisibilityLevel::PARENT }
           let(:target_fork_visibility_level) { Gitlab::ForkVisibilityLevel::PUBLIC }
 
           it 'does not update visibility of the fork' do

@@ -1265,7 +1265,7 @@ class Project < ApplicationRecord
   def public_forks_allowed?
     return true if public?
 
-    fork_source.fork_visibility_level > Gitlab::ForkVisibilityLevel::PARENT_VISIBILITY
+    fork_source.fork_visibility_level > Gitlab::ForkVisibilityLevel::PARENT
   end
 
   def forking_access_level_change_allowed?

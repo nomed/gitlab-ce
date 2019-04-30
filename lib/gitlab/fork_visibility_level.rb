@@ -2,7 +2,7 @@
 
 module Gitlab
   module ForkVisibilityLevel
-    PARENT_VISIBILITY = 0
+    PARENT = 0
     PUBLIC = 10
   end
 end

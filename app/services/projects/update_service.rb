@@ -140,7 +140,7 @@ module Projects
       return false unless fork_visibility_level_changes
 
       fork_visibility_level_changes == [Gitlab::ForkVisibilityLevel::PUBLIC,
-                                        Gitlab::ForkVisibilityLevel::PARENT_VISIBILITY]
+                                        Gitlab::ForkVisibilityLevel::PARENT]
     end
 
     def ensure_wiki_exists

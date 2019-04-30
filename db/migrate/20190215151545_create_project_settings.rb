@@ -15,7 +15,7 @@ class CreateProjectSettings < ActiveRecord::Migration[5.0]
                 null: false, limit: 2
 
       t.integer :fork_visibility_level,
-                default: Gitlab::ForkVisibilityLevel::PARENT_VISIBILITY,
+                default: Gitlab::ForkVisibilityLevel::PARENT,
                 null: false, limit: 2
 
       t.timestamps_with_timezone null: false
