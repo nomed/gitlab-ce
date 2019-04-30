@@ -1,6 +1,6 @@
 # Git tricks
 
-Here are some commands that you may not need to use every day, but which can come in
+Here are some commands that you may not need to use often, but which can come in
 handy when needed.
 
 ## bash
@@ -53,32 +53,34 @@ add `--no-edit` to NOT edit the commit message
 or
 `git stash`
 
-### unstash your changes
+### Unstash your changes
 
 `git stash apply`
 
-### discard your stashed changes
+### Discard your stashed changes
 
 `git stash drop`
 
-### apply and drop your stashed changes
+### Apply and drop your stashed changes
 
 `git stash pop`
 
-### check the git history of a file
+### Check the git history of a file
 
-```git log -- <file>
-git log <file>```
+```
+git log -- <file>
+git log <file>
+```
 
-### find the tags that contain a particular SHA
+### Find the tags that contain a particular SHA
 
 `git tag --contains <sha>`
 
-### check the content of each change to a file
+### Check the content of each change to a file
 
 `gitk <file>`
 
-### check the content of each change to a file, follows it past file renames
+### Check the content of each change to a file, follows it past file renames
 
 `gitk --follow <file>`
 
@@ -90,7 +92,7 @@ git log <file>```
 
 ### Debug cloning
 
-`GIT_SSH_COMMAND="ssh -vvv" git clone <git@url>` with SSH
+`GIT_SSH_COMMAND="ssh -vvv" git clone <git@url>` with SSH  
 `GIT_TRACE_PACKET=1 GIT_TRACE=2 GIT_CURL_VERBOSE=1 git clone <url>` with HTTPS
 
 ## Rebasing
@@ -105,12 +107,12 @@ The -i flag stands for 'interactive'
 
 `git rebase --continue`
 
-### Additional rebasing tips
+### Use git rerere
 
-Rerere _reuses_ recorded solutions to the same problems when repeated
+`git rerere` _reuses_ recorded solutions to the same problems when repeated
 
 `git config --global rerere.enabled true`
 
-Use the reference log (reflog) to show the log of reference changes to HEAD
+### Use reflog to show the log of reference changes to HEAD
 
 `git reflog`
