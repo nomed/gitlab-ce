@@ -942,6 +942,9 @@ msgstr ""
 msgid "Application settings saved successfully"
 msgstr ""
 
+msgid "Application uninstalled but failed to destroy: %{error_message}"
+msgstr ""
+
 msgid "Application was successfully destroyed."
 msgstr ""
 
@@ -3958,6 +3961,9 @@ msgstr ""
 msgid "Failed to check related branches."
 msgstr ""
 
+msgid "Failed to connect to the prometheus server"
+msgstr ""
+
 msgid "Failed to create repository via gitlab-shell"
 msgstr ""
 
@@ -6041,6 +6047,9 @@ msgstr ""
 msgid "No other labels with such name or description"
 msgstr ""
 
+msgid "No parent group"
+msgstr ""
+
 msgid "No preview for this file type"
 msgstr ""
 
@@ -6269,6 +6278,12 @@ msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
 msgid "Opens in a new window"
+msgstr ""
+
+msgid "Operation failed. Check pod logs for %{pod_name} for more details."
+msgstr ""
+
+msgid "Operation timed out. Check pod logs for %{pod_name} for more details."
 msgstr ""
 
 msgid "Operations"
@@ -6686,6 +6701,9 @@ msgid "Press Enter or click to search"
 msgstr ""
 
 msgid "Preview"
+msgstr ""
+
+msgid "Preview Markdown"
 msgstr ""
 
 msgid "Preview changes"
@@ -9156,6 +9174,9 @@ msgstr ""
 msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
+msgid "There was an error while fetching cycle analytics data."
+msgstr ""
+
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
 msgstr ""
 
@@ -9797,6 +9818,9 @@ msgid "Unable to connect to server: %{error}"
 msgstr ""
 
 msgid "Unable to load the diff. %{button_try_again}"
+msgstr ""
+
+msgid "Unable to regenerate public ssh key."
 msgstr ""
 
 msgid "Unable to schedule a pipeline to run immediately"
