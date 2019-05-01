@@ -10783,6 +10783,12 @@ msgstr ""
 msgid "Toggle Sidebar"
 msgstr ""
 
+msgid "Toggle Status: OFF"
+msgstr ""
+
+msgid "Toggle Status: ON"
+msgstr ""
+
 msgid "Toggle backtrace"
 msgstr ""
 
