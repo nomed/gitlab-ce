@@ -14,7 +14,7 @@ module QA
         e.response
       end
 
-      def get(url, raw_response = false)
+      def get(url, raw_response: false)
         RestClient::Request.execute(
           method: :get,
           url: url,
