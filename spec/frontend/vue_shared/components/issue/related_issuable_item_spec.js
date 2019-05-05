@@ -155,7 +155,9 @@ describe('RelatedIssuableItem', () => {
 
   describe('token assignees', () => {
     it('renders assignees avatars', () => {
-      expect(wrapper.findAll('.item-assignees .user-avatar-link').length).toBe(2);
+      // Expect 2 times 2 because assignees are rendered twice, due to layout issues
+      expect(wrapper.findAll('.item-assignees .user-avatar-link').length).toBe(2 * 2);
+
       expect(wrapper.find('.item-assignees .avatar-counter').text()).toContain('+2');
     });
   });
