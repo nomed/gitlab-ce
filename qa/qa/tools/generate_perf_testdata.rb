@@ -84,7 +84,7 @@ module QA
       def create_labels
         30.times do |i|
           post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/labels").url,
-          "name=label#{i}&color=#{Faker::Color.hex_color}"
+          "name=label#{i}&color=#{FFaker::Color.hex_color}"
         end
         @urls[:labels_page] = @urls[:project_page] + "/labels"
         STDOUT.puts "Created labels"
@@ -121,7 +121,7 @@ module QA
 
         labels_list = (0..15).map {|i| "label#{i}"}.join(',')
         # Add description and labels
-        put Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/issues/#{issue_id}").url, "description=#{Faker::Lorem.sentences(500).join(" ")}&labels=#{labels_list}"
+        put Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/issues/#{issue_id}").url, "description=#{FFaker::Lorem.sentences(500).join(" ")}&labels=#{labels_list}"
         @urls[:large_issue] = @urls[:project_page] + "/issues/#{issue_id}"
         STDOUT.puts "Created Issue with 500 Discussions"
       end
@@ -129,7 +129,7 @@ module QA
       def create_mr_with_large_files
         content_arr = []
         16.times do |i|
-          faker_line_arr = Faker::Lorem.sentences(1500)
+          faker_line_arr = FFaker::Lorem.sentences(1500)
           content = faker_line_arr.join("\n\r")
           post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/repository/files/hello#{i}.txt").url,
             "branch=master&commit_message=\"Add hello#{i}.txt\"&content=#{content}"
