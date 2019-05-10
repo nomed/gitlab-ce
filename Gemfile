@@ -433,6 +433,7 @@ gem 'flipper', '~> 0.13.0'
 gem 'flipper-active_record', '~> 0.13.0'
 gem 'flipper-active_support_cache_store', '~> 0.13.0'
 
-# Structured logging
+## Structured logging
 gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
+
