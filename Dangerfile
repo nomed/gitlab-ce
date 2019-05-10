@@ -1,21 +1,33 @@
 # frozen_string_literal: true
+
 danger.import_plugin('danger/plugins/helper.rb')
 
-unless helper.release_automation?
-  danger.import_dangerfile(path: 'danger/metadata')
-  danger.import_dangerfile(path: 'danger/changes_size')
-  danger.import_dangerfile(path: 'danger/changelog')
-  danger.import_dangerfile(path: 'danger/specs')
-  danger.import_dangerfile(path: 'danger/gemfile')
-  danger.import_dangerfile(path: 'danger/database')
-  danger.import_dangerfile(path: 'danger/documentation')
-  danger.import_dangerfile(path: 'danger/frozen_string')
-  danger.import_dangerfile(path: 'danger/commit_messages')
-  danger.import_dangerfile(path: 'danger/duplicate_yarn_dependencies')
-  danger.import_dangerfile(path: 'danger/prettier')
-  danger.import_dangerfile(path: 'danger/eslint')
-  danger.import_dangerfile(path: 'danger/roulette')
-  danger.import_dangerfile(path: 'danger/single_codebase')
-  danger.import_dangerfile(path: 'danger/gitlab_ui_wg')
-  danger.import_dangerfile(path: 'danger/ce_ee_vue_templates')
+LOCAL_DANGER_FILES = %w{
+  danger/changes_size
+  danger/gemfile
+  danger/documentation
+  danger/frozen_string
+  danger/duplicate_yarn_dependencies
+  danger/prettier
+  danger/eslint
+}.freeze
+
+REMOTE_DANGER_FILES = %w{
+  danger/metadata
+  danger/changelog
+  danger/specs
+  danger/database
+  danger/commit_messages
+  danger/roulette
+  danger/single_codebase
+  danger/gitlab_ui_wg
+  danger/ce_ee_vue_templates
+}.freeze
+
+all_danger_files = LOCAL_DANGER_FILES
+
+if ENV['CI'] && !helper.release_automation?
+  all_danger_files += REMOTE_DANGER_FILES
 end
+
+all_danger_files.each { |file| danger.import_dangerfile(path: file) }
