@@ -24,8 +24,10 @@ gitlab_git_test:
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
   except:
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
+    refs:
+      - /(^qa[\/-].*|.*-qa$)/
+    changes:
+      - "doc/**/*.md"
 
 no_ee_check:
   extends: .dedicated-runner
@@ -39,5 +41,7 @@ no_ee_check:
   only:
     - /.+/@gitlab-org/gitlab-ce
   except:
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
+    refs:
+      - /(^qa[\/-].*|.*-qa$)/
+    changes:
+      - "doc/**/*.md"

@@ -31,13 +31,16 @@
 .dedicated-no-docs-pull-cache-job:
   extends: .dedicated-pull-cache-job
   except:
-    - /(^docs[\/-].*|.*-docs$)/
+    changes:
+      - "doc/**/*.md"
 
 .dedicated-no-docs-and-no-qa-pull-cache-job:
   extends: .dedicated-pull-cache-job
   except:
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
+    refs:
+      - /(^qa[\/-].*|.*-qa$)/
+    changes:
+      - "doc/**/*.md"
 
 # Jobs that do not need a DB
 .dedicated-no-docs-no-db-pull-cache-job:

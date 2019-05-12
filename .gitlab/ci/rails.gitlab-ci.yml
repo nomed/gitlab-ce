@@ -77,8 +77,10 @@
     reports:
       junit: junit_rspec.xml
   except:
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
+    refs:
+      - /(^qa[\/-].*|.*-qa$)/
+    changes:
+      - "doc/**/*.md"
 
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
@@ -135,7 +137,8 @@ setup-test-env:
       - config/secrets.yml
       - vendor/gitaly-ruby
   except:
-    - /(^docs[\/-].*|.*-docs$)/
+    changes:
+      - "doc/**/*.md"
 
 rspec unit pg:
   <<: *rspec-metadata-pg
@@ -200,11 +203,13 @@ static-analysis:
 downtime_check:
   <<: *rake-exec
   except:
-    - master
-    - tags
-    - /^[\d-]+-stable(-ee)?$/
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
+    refs:
+      - master
+      - tags
+      - /^[\d-]+-stable(-ee)?$/
+      - /(^qa[\/-].*|.*-qa$)/
+    changes:
+      - "doc/**/*.md"
   dependencies:
     - setup-test-env
 
@@ -277,5 +282,7 @@ coverage:
       - coverage/index.html
       - coverage/assets/
   except:
-    - /(^docs[\/-].*|.*-docs$)/
-    - /(^qa[\/-].*|.*-qa$)/
+    refs:
+      - /(^qa[\/-].*|.*-qa$)/
+    changes:
+      - "doc/**/*.md"
