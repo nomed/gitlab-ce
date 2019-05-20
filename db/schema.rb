@@ -2283,6 +2283,7 @@ ActiveRecord::Schema.define(version: 20190530154715) do
     t.string "timezone"
     t.boolean "time_display_relative"
     t.boolean "time_format_in_24h"
+    t.string "timezone_name"
     t.index ["user_id"], name: "index_user_preferences_on_user_id", unique: true, using: :btree
   end
 
