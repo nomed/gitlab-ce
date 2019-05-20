@@ -59,7 +59,7 @@ shared_examples 'cluster application status specs' do |application_name|
 
         subject.reload
 
-        expect(subject.version).to eq(subject.class.const_get(:VERSION))
+        expect(subject.version).to eq(subject.class.const_get(:VERSION, false))
       end
 
       context 'application is updating' do
@@ -88,7 +88,7 @@ shared_examples 'cluster application status specs' do |application_name|
 
           subject.reload
 
-          expect(subject.version).to eq(subject.class.const_get(:VERSION))
+          expect(subject.version).to eq(subject.class.const_get(:VERSION, false))
         end
       end
     end

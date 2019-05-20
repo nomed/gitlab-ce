@@ -6,7 +6,7 @@ describe CleanStageIdReferenceMigration, :migration, :sidekiq, :redis do
   let(:migration) { spy('migration') }
 
   before do
-    allow(Gitlab::BackgroundMigration.const_get(migration_class))
+    allow(Gitlab::BackgroundMigration::MigrateBuildStageIdReference)
       .to receive(:new).and_return(migration)
   end
 
