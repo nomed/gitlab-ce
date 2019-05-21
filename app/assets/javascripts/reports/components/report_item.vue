@@ -27,7 +27,7 @@ export default {
     statusIconSize: {
       type: Number,
       required: false,
-      default: 32,
+      default: 24,
     },
     isNew: {
       type: Boolean,
@@ -48,7 +48,7 @@ export default {
       v-if="showReportSectionStatusIcon"
       :status="status"
       :status-icon-size="statusIconSize"
-      class="append-right-5"
+      class="append-right-default"
     />
 
     <component :is="component" v-if="component" :issue="issue" :status="status" :is-new="isNew" />
