@@ -2,10 +2,14 @@
 
 class Environment < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
+  include ReactiveCaching
+
   # Used to generate random suffixes for the slug
   LETTERS = ('a'..'z').freeze
   NUMBERS = ('0'..'9').freeze
   SUFFIX_CHARS = LETTERS.to_a + NUMBERS.to_a
+
+  self.reactive_cache_key = ->(environment) { [environment.class.model_name.singular, environment.id] }
 
   belongs_to :project, required: true
 
@@ -17,6 +21,7 @@ class Environment < ApplicationRecord
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
 
   before_save :set_environment_type
+  after_save :clear_reactive_cache!
 
   validates :name,
             presence: true,
@@ -159,7 +164,21 @@ class Environment < ApplicationRecord
   end
 
   def terminals
-    deployment_platform.terminals(self) if has_terminals?
+    with_reactive_cache do |data|
+      deployment_platform.terminals(self, data)
+    end
+  end
+
+  def calculate_reactive_cache
+    return unless has_terminals? && !project.pending_delete?
+
+    deployment_platform.calculate_reactive_cache_for(self)
+  end
+
+  def deployment_namespace
+    strong_memoize(:kubernetes_namespace) do
+      deployment_platform&.kubernetes_namespace_for(project)
+    end
   end
 
   def has_metrics?
