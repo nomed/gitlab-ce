@@ -18,16 +18,21 @@ REMOTE_DANGER_FILES = %w{
   danger/specs
   danger/database
   danger/commit_messages
-  danger/roulette
   danger/single_codebase
   danger/gitlab_ui_wg
   danger/ce_ee_vue_templates
 }.freeze
 
-all_danger_files = LOCAL_DANGER_FILES
+CI_ONLY_DANGER_FILES = %w{
+  danger/roulette
+}.freeze
 
-if ENV['CI'] && !helper.release_automation?
-  all_danger_files += REMOTE_DANGER_FILES
+all_danger_files = LOCAL_DANGER_FILES
+all_danger_files += REMOTE_DANGER_FILES
+
+if ENV['GITLAB_CI'] && !helper.release_automation?
+  # all_danger_files += REMOTE_DANGER_FILES
+  # all_danger_files += CI_ONLY_DANGER_FILES
 end
 
 all_danger_files.each { |file| danger.import_dangerfile(path: file) }

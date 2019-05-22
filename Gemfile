@@ -437,3 +437,4 @@ gem 'flipper-active_support_cache_store', '~> 0.13.0'
 gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
 
+gem 'danger-gitlab'

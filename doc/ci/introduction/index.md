@@ -202,7 +202,7 @@ With GitLab CI/CD you can also:
 - [Schedule pipelines](../../user/project/pipelines/schedules.md).
 - Check for app vulnerabilities with [Security Test reports](https://docs.gitlab.com/ee/user/project/merge_requests/#security-reports-ultimate). **[ULTIMATE]**
 
-To see all CI/CD features, navigate back to the [CI/CD index](../README.md).
+To see all CI/CD features, navigate back to the [CI/CD index](README.md).
 
 ### Setting up GitLab CI/CD for the first time
 
