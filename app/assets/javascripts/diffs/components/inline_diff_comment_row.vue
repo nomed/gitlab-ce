@@ -65,7 +65,11 @@ export default {
           :help-page-path="helpPagePath"
         />
         <div v-if="line.discussions.length && !line.hasForm" class="discussion-reply-holder">
-          <reply-placeholder class="qa-discussion-reply" @onClick="showNewDiscussionForm" />
+          <reply-placeholder
+            class="qa-discussion-reply"
+            buttonText="Start a new discussion..."
+            @onClick="showNewDiscussionForm"
+          />
         </div>
       </div>
     </td>

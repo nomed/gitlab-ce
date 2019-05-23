@@ -40,7 +40,11 @@ export default {
 
 <template>
   <div class="discussion-with-resolve-btn">
-    <reply-placeholder class="qa-discussion-reply" @onClick="$emit('showReplyForm')" />
+    <reply-placeholder
+      buttonText="MergeRequests|Reply..."
+      class="qa-discussion-reply"
+      @onClick="$emit('showReplyForm')"
+    />
     <resolve-discussion-button
       v-if="discussion.resolvable"
       :is-resolving="isResolving"
