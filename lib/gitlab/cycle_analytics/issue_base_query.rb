@@ -3,7 +3,6 @@
 module Gitlab
   module CycleAnalytics
     module IssueBaseQuery
-      # include BaseQuery
       def stage_query(project_ids)
         query = issue_table.join(issue_metrics_table).on(issue_table[:id].eq(issue_metrics_table[:issue_id]))
           .project(issue_table[:project_id].as("project_id"))
