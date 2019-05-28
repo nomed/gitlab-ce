@@ -3,6 +3,8 @@
 module Gitlab
   module CycleAnalytics
     class IssueStage < BaseStage
+      include IssueBaseQuery
+
       def start_time_attrs
         @start_time_attrs ||= issue_table[:created_at]
       end
