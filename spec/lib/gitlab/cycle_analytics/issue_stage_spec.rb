@@ -6,12 +6,12 @@ describe Gitlab::CycleAnalytics::IssueStage do
   let(:project) { create(:project) }
   let!(:issue_1) { create(:issue, project: project, created_at: 90.minutes.ago) }
   let!(:issue_2) { create(:issue, project: project, created_at: 60.minutes.ago) }
-  let!(:issue_3) { create(:issue, project: project, created_at: 30.minute.ago) }
+  let!(:issue_3) { create(:issue, project: project, created_at: 30.minutes.ago) }
   let!(:issue_without_milestone) { create(:issue, project: project, created_at: 1.minute.ago) }
   let(:stage) { described_class.new(project: project, options: { from: 2.days.ago, current_user: project.creator }) }
 
   before do
-    issue_1.metrics.update!(first_associated_with_milestone_at: 60.minutes.ago, )
+    issue_1.metrics.update!(first_associated_with_milestone_at: 60.minutes.ago )
     issue_2.metrics.update!(first_added_to_board_at: 30.minutes.ago)
     issue_3.metrics.update!(first_added_to_board_at: 15.minutes.ago)
   end
@@ -33,7 +33,7 @@ describe Gitlab::CycleAnalytics::IssueStage do
       result = stage.events
 
       expect(result.count).to eq(3)
-      expect(result.map{ |event| event[:title] }).to include(issue_1.title, issue_2.title, issue_3.title)
+      expect(result.map { |event| event[:title] }).to include(issue_1.title, issue_2.title, issue_3.title)
     end
   end
 end
