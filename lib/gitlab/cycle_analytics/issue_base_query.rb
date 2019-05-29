@@ -8,9 +8,9 @@ module Gitlab
           .project(issue_table[:project_id].as("project_id"))
           .where(issue_table[:project_id].in(project_ids))
           .where(issue_table[:created_at].gteq(@options[:from])) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-          .where((issue_metrics_table[:first_added_to_board_at]).not_eq(nil).or(issue_metrics_table[:first_associated_with_milestone_at].not_eq(nil)))
+          .where(issue_metrics_table[:first_added_to_board_at].not_eq(nil).or(issue_metrics_table[:first_associated_with_milestone_at].not_eq(nil)))
 
-          query
+        query
       end
     end
   end

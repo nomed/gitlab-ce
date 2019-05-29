@@ -32,8 +32,8 @@ describe Gitlab::CycleAnalytics::IssueStage do
     it 'exposes issues with metrics' do
       result = stage.events
 
-      expect(result.count).to eq(2)
-      expect(result.map{ |event| event[:title] }).to include(issue_1.title, issue_2.title)
+      expect(result.count).to eq(3)
+      expect(result.map{ |event| event[:title] }).to include(issue_1.title, issue_2.title, issue_3.title)
     end
   end
 end
