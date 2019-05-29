@@ -3,6 +3,8 @@
 module Gitlab
   module CycleAnalytics
     class PlanEventFetcher < BaseEventFetcher
+      include PlanBaseQuery
+
       def initialize(*args)
         @projections = [mr_diff_table[:id],
                         issue_metrics_table[:first_mentioned_in_commit_at]]
