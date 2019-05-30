@@ -68,6 +68,10 @@ errors, the notification email set will get those.
 
 You can then test the connection clicking on `Test Connection`.
 
+#### Troubleshooting
+
+When testing the connection, you may encounter an error: **You appear to have entered invalid credentials. Please confirm you are using the correct information for an administrative account**. If `Tenant URL` and `secret token` are correct, check whether your group path contains characters that may be considered invalid JSON primitives (such as `.`). Removing such characters from the group path typically resolves the error.
+
 ### Synchronize Azure Active Directory users
 
 1. Click on `Synchronize Azure Active Directory Users to AppName`, to configure
