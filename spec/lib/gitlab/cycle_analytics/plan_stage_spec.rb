@@ -33,7 +33,7 @@ describe Gitlab::CycleAnalytics::PlanStage do
       result = stage.events
 
       expect(result.count).to eq(2)
-      expect(result.map { |event| event[:title] }).to include(issue_1.title, issue_2.title)
+      expect(result.map { |event| event[:title] }).to contain_exactly(issue_1.title, issue_2.title)
     end
   end
 end
