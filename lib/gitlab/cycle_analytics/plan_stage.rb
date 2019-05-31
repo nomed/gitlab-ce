@@ -23,7 +23,7 @@ module Gitlab
       end
 
       def legend
-        _("Related Commits")
+        _("Related Issues")
       end
 
       def description

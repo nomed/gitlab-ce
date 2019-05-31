@@ -23,13 +23,13 @@ describe Gitlab::CycleAnalytics::PlanStage do
       Timecop.freeze { example.run }
     end
 
-    xit 'counts median from issues with metrics' do
+    it 'counts median from issues with metrics' do
       expect(stage.median).to eq(HALF_AN_HOUR_IN_SECONDS)
     end
   end
 
   describe '#events' do
-    xit 'exposes issues with metrics' do
+    it 'exposes issues with metrics' do
       result = stage.events
 
       expect(result.count).to eq(2)
