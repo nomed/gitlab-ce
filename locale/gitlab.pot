@@ -9130,6 +9130,57 @@ msgstr ""
 msgid "Size and domain settings for static websites"
 msgstr ""
 
+msgid "SlackNotifications|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{branch_link} by %{user_combined_name} %{humanized_status} in %{duration}"
+msgstr ""
+
+msgid "SlackNotifications|Branch"
+msgstr ""
+
+msgid "SlackNotifications|Commit"
+msgstr ""
+
+msgid "SlackNotifications|Failed job"
+msgstr ""
+
+msgid "SlackNotifications|Failed stage"
+msgstr ""
+
+msgid "SlackNotifications|Invalid CI config YAML file"
+msgstr ""
+
+msgid "SlackNotifications|Pipeline #%{pipeline_id} %{humanized_status} in %{duration}"
+msgstr ""
+
+msgid "SlackNotifications|Pipeline %{pipeline_link} of %{ref_type} %{branch_link} by %{user_combined_name} %{humanized_status}"
+msgstr ""
+
+msgid "SlackNotifications|Tag"
+msgstr ""
+
+msgid "SlackNotifications|and [%{more_count} more](%{pipeline_jobs_url})"
+msgstr ""
+
+msgid "SlackNotifications|failed"
+msgstr ""
+
+msgid "SlackNotifications|has failed"
+msgstr ""
+
+msgid "SlackNotifications|has passed"
+msgstr ""
+
+msgid "SlackNotifications|has passed with warnings"
+msgstr ""
+
+msgid "SlackNotifications|in %{duration}"
+msgstr ""
+
+msgid "SlackNotifications|in %{project_link}"
+msgstr ""
+
+msgid "SlackNotifications|passed"
+msgstr ""
+
 msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
 msgstr ""
 
