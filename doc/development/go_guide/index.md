@@ -140,6 +140,46 @@ case we decide to use a specific library or framework:
 Use [subtests](https://blog.golang.org/subtests) whenever possible to improve
 code readability and test output.
 
+### Table Driven Tests
+
+[Table Driven Tests](https://github.com/golang/go/wiki/TableDrivenTests)
+are generally good practice when you have to test multiple scenarios for
+the same function. There are different ways to set up a test and all of
+them are correct, but we try to stick as close as possible to the Go
+stdlib as much as possible. Keep in mind these are just guidelines where
+it makes sense it's OK to not follow these guidelines.
+
+#### Defining test cases
+
+A test case is what we call a specific scenario (set of arguments) for a
+table driven test. There are multiple ways to define a test case, and
+it's always depends on the type of test. Here are some examples that are
+found in the Go stdlib which we always follow:
+
+- [Define a slice of anonymous
+  struct](https://github.com/golang/go/blob/50bd1c4d4eb4fac8ddeb5f063c099daccfb71b26/src/encoding/csv/reader_test.go)
+  inside of the test.
+- [Define a slice of anonymous
+  struct](https://github.com/golang/go/blob/55d31e16c12c38d36811bdee65ac1f7772148250/src/cmd/go/internal/module/module_test.go#L9-L66)
+  outside of the test
+- [Looping directly on a slice of anonymous
+  struct](https://github.com/golang/go/blob/50bd1c4d4eb4fac8ddeb5f063c099daccfb71b26/src/encoding/json/tags_test.go#L11-L28)
+- [Using
+  `map[string]struct{}`](https://github.com/golang/go/blob/6d5caf38e37bf9aeba3291f1f0b0081f934b1187/src/cmd/trace/annotations_test.go#L180-L235)
+
+#### Contents of the test case
+
+- Ideally each test case should have a `name`, unless you can create a
+  unique identifier with another field.
+- Use `want`/`expect`/`actual` when you are specifcing something in the
+  test case that will be used for assertion.
+
+#### Variable names
+
+- Each table driven test map/slice of struct needs to be named `tests`
+- When looping through `tests` the anonymous struct needs to be referred
+  to as `tt` or `tc`
+
 ### Benchmarks
 
 Programs handling a lot of IO or complex operations should always include
