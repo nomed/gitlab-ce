@@ -135,11 +135,11 @@ describe 'cycle analytics events' do
 
     let!(:pipeline) do
       create(:ci_pipeline,
-        ref: merge_request.source_branch,
-        sha: merge_request.diff_head_sha,
-        project: project,
-        head_pipeline_of: merge_request)
-      end
+             ref: merge_request.source_branch,
+             sha: merge_request.diff_head_sha,
+             project: project,
+             head_pipeline_of: merge_request)
+    end
 
     before do
       create(:ci_build, :success, pipeline: pipeline, author: user)
