@@ -3,6 +3,8 @@
 module Gitlab
   module CycleAnalytics
     class StagingEventFetcher < BaseEventFetcher
+      include StagingBaseQuery
+
       def initialize(*args)
         @projections = [build_table[:id]]
         @order = build_table[:created_at]
