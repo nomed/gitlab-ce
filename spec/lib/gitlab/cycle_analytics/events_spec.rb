@@ -131,14 +131,15 @@ describe 'cycle analytics events' do
     let(:stage) { :test }
 
     let(:merge_request) { MergeRequest.first }
+    let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
 
     let!(:pipeline) do
       create(:ci_pipeline,
-             ref: merge_request.source_branch,
-             sha: merge_request.diff_head_sha,
-             project: project,
-             head_pipeline_of: merge_request)
-    end
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha,
+        project: project,
+        head_pipeline_of: merge_request)
+      end
 
     before do
       create(:ci_build, :success, pipeline: pipeline, author: user)
@@ -146,6 +147,7 @@ describe 'cycle analytics events' do
 
       pipeline.run!
       pipeline.succeed!
+      merge_merge_requests_closing_issue(user, project, context)
     end
 
     it 'has the name' do
