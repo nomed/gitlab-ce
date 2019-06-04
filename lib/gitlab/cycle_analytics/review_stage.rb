@@ -3,7 +3,7 @@
 module Gitlab
   module CycleAnalytics
     class ReviewStage < BaseStage
-      include ReviewBaseQuery
+      include ReviewHelper
 
       def start_time_attrs
         @start_time_attrs ||= mr_table[:created_at]

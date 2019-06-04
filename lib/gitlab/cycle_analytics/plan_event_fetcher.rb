@@ -3,7 +3,7 @@
 module Gitlab
   module CycleAnalytics
     class PlanEventFetcher < BaseEventFetcher
-      include PlanBaseQuery
+      include PlanHelper
 
       def initialize(*args)
         @projections = [issue_table[:title],

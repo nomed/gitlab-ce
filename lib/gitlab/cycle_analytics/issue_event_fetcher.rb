@@ -3,7 +3,7 @@
 module Gitlab
   module CycleAnalytics
     class IssueEventFetcher < BaseEventFetcher
-      include IssueBaseQuery
+      include IssueHelper
 
       def initialize(*args)
         @projections = [issue_table[:title],

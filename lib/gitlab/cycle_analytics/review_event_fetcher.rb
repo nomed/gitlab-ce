@@ -3,7 +3,8 @@
 module Gitlab
   module CycleAnalytics
     class ReviewEventFetcher < BaseEventFetcher
-      include ReviewBaseQuery
+      include ReviewHelper
+
 
       def initialize(*args)
         @projections = [mr_table[:title],

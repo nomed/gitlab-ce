@@ -3,7 +3,7 @@
 module Gitlab
   module CycleAnalytics
     class StagingEventFetcher < BaseEventFetcher
-      include StagingBaseQuery
+      include ProductionHelperexit
 
       def initialize(*args)
         @projections = [build_table[:id]]

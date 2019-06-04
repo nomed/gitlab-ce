@@ -3,7 +3,7 @@
 module Gitlab
   module CycleAnalytics
     class CodeStage < BaseStage
-      include CodeBaseQuery
+      include CodeHelper
 
       def start_time_attrs
         @start_time_attrs ||= issue_metrics_table[:first_mentioned_in_commit_at]

@@ -19,9 +19,8 @@ describe Gitlab::CycleAnalytics::StagingStage do
   before do
     mr_1.metrics.update!(merged_at: 80.minutes.ago, first_deployed_to_production_at: 50.minutes.ago, pipeline_id: build_1.commit_id)
     mr_2.metrics.update!(merged_at: 60.minutes.ago, first_deployed_to_production_at: 30.minutes.ago, pipeline_id: build_2.commit_id)
-    mr_3.metrics.update!(merged_at: 10.minutes.ago)
+    mr_3.metrics.update!(merged_at: 10.minutes.ago, first_deployed_to_production_at: 3.days.ago, pipeline_id: create(:ci_build, project: project).commit_id)
 
-    create(:ci_build, project: project)
     create(:merge_requests_closing_issues, merge_request: mr_1, issue: issue_1)
     create(:merge_requests_closing_issues, merge_request: mr_2, issue: issue_2)
     create(:merge_requests_closing_issues, merge_request: mr_3, issue: issue_3)

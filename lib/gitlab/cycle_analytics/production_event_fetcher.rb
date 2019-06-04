@@ -3,6 +3,8 @@
 module Gitlab
   module CycleAnalytics
     class ProductionEventFetcher < BaseEventFetcher
+      include ProductionHelper
+
       def initialize(*args)
         @projections = [issue_table[:title],
                         issue_table[:iid],
