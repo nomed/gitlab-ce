@@ -206,10 +206,6 @@ export const deleteEntry = ({ commit, dispatch, state }, path) => {
   }
 
   commit(types.DELETE_ENTRY, path);
-
-  if (entry.parentPath && state.entries[entry.parentPath].tree.length === 0) {
-    dispatch('deleteEntry', entry.parentPath);
-  }
 };
 
 export const resetOpenFiles = ({ commit }) => commit(types.RESET_OPEN_FILES);
