@@ -116,6 +116,7 @@ describe('Monitoring mutations', () => {
       expect(stateCopy.environmentsEndpoint).toEqual('environments.json');
       expect(stateCopy.deploymentsEndpoint).toEqual('deployments.json');
       expect(stateCopy.dashboardEndpoint).toEqual('dashboard.json');
+<<<<<<< HEAD
     });
   });
 
@@ -154,6 +155,8 @@ describe('Monitoring mutations', () => {
       });
 
       expect(stateCopy.metricsWithData).toEqual([]);
+=======
+>>>>>>> Add feature flag and dashboard endpoint
     });
   });
 });

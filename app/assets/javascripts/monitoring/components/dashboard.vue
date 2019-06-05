@@ -106,11 +106,18 @@ export default {
     },
     customMetricsPath: {
       type: String,
-      required: true,
+      required: false,
+      default: invalidUrl,
     },
     validateQueryPath: {
       type: String,
-      required: true,
+      required: false,
+      default: invalidUrl,
+    },
+    dashboardEndpoint: {
+      type: String,
+      required: false,
+      default: invalidUrl,
     },
     dashboardEndpoint: {
       type: String,
