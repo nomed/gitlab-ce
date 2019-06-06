@@ -3,15 +3,19 @@
 module Gitlab
   module CycleAnalytics
     module TestHelper
-      # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def stage_query(project_ids)
-        if @options[:branch]
-          super(project_ids).where(build_table[:ref].eq(@options[:branch]))
+        if branch
+          super(project_ids).where(build_table[:ref].eq(branch))
         else
           super(project_ids)
         end
       end
-      # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+      private
+
+      def branch
+        @branch ||= @options[:branch]
+      end
     end
   end
 end
