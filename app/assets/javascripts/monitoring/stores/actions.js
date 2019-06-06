@@ -99,7 +99,7 @@ export const fetchDashboard = ({ state, dispatch }, params) => {
     .get(state.dashboardEndpoint, { params })
     .then(resp => resp.data)
     .then(response => {
-      dispatch('receiveMetricsDashboardSuccess', { response });
+      dispatch('receiveMetricsDashboardSuccess', { response, params });
     })
     .catch(error => {
       dispatch('receiveMetricsDashboardFailure', error);
