@@ -30,12 +30,12 @@ describe Gitlab::CycleAnalytics::ReviewStage do
     end
 
     it 'counts median from issues with metrics' do
-      expect(stage.median).to eq(HALF_AN_HOUR_IN_SECONDS)
+      expect(stage.median).to eq(ISSUES_MEDIAN)
     end
   end
 
   describe '#events' do
-    it 'exposes merge requests that closes issues' do
+    it 'exposes merge requests that close issues' do
       result = stage.events
 
       expect(result.count).to eq(2)

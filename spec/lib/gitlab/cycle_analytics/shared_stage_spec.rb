@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 shared_examples 'base stage' do
-  HALF_AN_HOUR_IN_SECONDS = 60 * 30
+  ISSUES_MEDIAN = 30.minutes.to_i
 
   let(:stage) { described_class.new(project: double, options: {}) }
 

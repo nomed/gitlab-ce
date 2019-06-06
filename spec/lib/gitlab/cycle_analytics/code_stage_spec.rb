@@ -29,7 +29,7 @@ describe Gitlab::CycleAnalytics::CodeStage do
     end
 
     it 'counts median from issues with metrics' do
-      expect(stage.median).to eq(HALF_AN_HOUR_IN_SECONDS)
+      expect(stage.median).to eq(ISSUES_MEDIAN)
     end
   end
 
