@@ -32,8 +32,12 @@ module Gitlab
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
     SERVER_FEATURE_CATFILE_CACHE = 'catfile-cache'.freeze
+    SERVER_FEATURE_GET_COMMIT_SIGNATURES = 'get-commit-signatures'.freeze
     # Server feature flags should use '_' to separate words.
-    SERVER_FEATURE_FLAGS = [SERVER_FEATURE_CATFILE_CACHE].freeze
+    SERVER_FEATURE_FLAGS = [
+      SERVER_FEATURE_CATFILE_CACHE,
+      SERVER_FEATURE_GET_COMMIT_SIGNATURES
+    ].freeze
 
     MUTEX = Mutex.new
 
