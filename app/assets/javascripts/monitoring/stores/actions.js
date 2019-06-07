@@ -44,6 +44,8 @@ export const requestMetricsDashboard = ({ commit }) => {
   commit(types.REQUEST_METRICS_DATA);
 };
 export const receiveMetricsDashboardSuccess = ({ commit, dispatch }, { response, params }) => {
+  // todo: check feature flag?
+  commit(types.SET_ALL_DASHBOARDS, response.all_dashboards);
   commit(types.RECEIVE_METRICS_DATA_SUCCESS, response.dashboard.panel_groups);
   dispatch('fetchPrometheusMetrics', params);
 };
@@ -95,6 +97,11 @@ export const fetchMetricsData = ({ state, dispatch }, params) => {
 
 export const fetchDashboard = ({ state, dispatch }, params) => {
   dispatch('requestMetricsDashboard');
+
+  // todo: clone params instead of mutating
+  if (state.currentDashboard) {
+    params.dashboard = state.currentDashboard;
+  }
 
   return axios
     .get(state.dashboardEndpoint, { params })

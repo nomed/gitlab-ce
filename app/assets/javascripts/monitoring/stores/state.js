@@ -16,4 +16,5 @@ export default () => ({
   environments: [],
   metricsWithData: [],
   allDashboards: [],
+  currentDashboard: null,
 });

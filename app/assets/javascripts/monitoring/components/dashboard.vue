@@ -119,10 +119,10 @@ export default {
       required: false,
       default: invalidUrl,
     },
-    dashboardEndpoint: {
+    currentDashboard: {
       type: String,
       required: false,
-      default: invalidUrl,
+      default: '',
     },
   },
   data() {
@@ -146,6 +146,7 @@ export default {
       'deploymentData',
       'metricsWithData',
       'useDashboardEndpoint',
+      'allDashboards',
     ]),
     groupsWithData() {
       return this.groups.filter(group => this.chartsWithData(group.metrics).length > 0);
@@ -157,6 +158,7 @@ export default {
       environmentsEndpoint: this.environmentsEndpoint,
       deploymentsEndpoint: this.deploymentsEndpoint,
       dashboardEndpoint: this.dashboardEndpoint,
+      currentDashboard: this.currentDashboard,
     });
 
     this.timeWindows = timeWindows;
@@ -247,6 +249,27 @@ export default {
         v-if="environmentsEndpoint"
         class="dropdowns d-flex align-items-center justify-content-between"
       >
+        <div class="d-flex align-items-center">
+          <label class="mb-0">{{ __('Dashboard') }}</label>
+          <gl-dropdown
+            class="ml-2 mr-3 js-dashboards-dropdown"
+            toggle-class="dropdown-menu-toggle"
+            :text="
+              currentDashboard ||
+                (allDashboards[0] && allDashboards[0].path) /* todo this is gross */
+            "
+          >
+            <gl-dropdown-item
+              v-for="dashboard in allDashboards"
+              :key="dashboard.path"
+              :active="dashboard.path === currentDashboard"
+              active-class="is-active"
+              :href="`?dashboard=${dashboard.path}`"
+            >
+              {{ dashboard.name || dashboard.path }}
+            </gl-dropdown-item>
+          </gl-dropdown>
+        </div>
         <div class="d-flex align-items-center">
           <strong>{{ s__('Metrics|Environment') }}</strong>
           <gl-dropdown
