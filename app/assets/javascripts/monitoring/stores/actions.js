@@ -35,8 +35,9 @@ export const setEndpoints = ({ commit }, endpoints) => {
   commit(types.SET_ENDPOINTS, endpoints);
 };
 
-export const setDashboardEnabled = ({ commit }, enabled) => {
-  commit(types.SET_DASHBOARD_ENABLED, enabled);
+export const setFeatureFlags = ({ commit }, { prometheusEndpoint, multipleDashboards }) => {
+  commit(types.SET_DASHBOARD_ENABLED, prometheusEndpoint);
+  commit(types.SET_MULTIPLE_DASHBOARDS_ENABLED, multipleDashboards);
 };
 
 export const requestMetricsDashboard = ({ commit }) => {

@@ -8,8 +8,10 @@ export default (props = {}) => {
 
   if (el && el.dataset) {
     store.dispatch(
-      'monitoringDashboard/setDashboardEnabled',
-      gon.features.environmentMetricsUsePrometheusEndpoint,
+      'monitoringDashboard/setFeatureFlags', {
+        prometheusEndpoint: gon.features.environmentMetricsUsePrometheusEndpoint,
+        multipleDashboards: gon.features.environmentMetricsShowMultipleDashboards,
+      },
     );
 
     // eslint-disable-next-line no-new
