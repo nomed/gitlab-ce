@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190613030606) do
+ActiveRecord::Schema.define(version: 20190618170808) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2247,6 +2247,7 @@ ActiveRecord::Schema.define(version: 20190613030606) do
     t.datetime_with_timezone "updated_at", null: false
     t.boolean "active", null: false
     t.string "environment_scope", default: "*", null: false
+    t.jsonb "strategies"
     t.index ["feature_flag_id", "environment_scope"], name: "index_feature_flag_scopes_on_flag_id_and_environment_scope", unique: true, using: :btree
   end
 
