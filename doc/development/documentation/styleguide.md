@@ -480,13 +480,28 @@ directly to an HTML `img` tag:
 
 ## Alert boxes
 
-Whenever you want to call the attention to a particular sentence,
+Whenever you need to call special attention to particular sentences,
 use the following markup for highlighting.
 
 _Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
 lists, headers, etc will not render correctly. For multiple lines, use blockquotes instead._
 
 ### Note
+
+Notes catch the eye of most readers, and therefore should be used very sparingly.
+In most cases, content considered for a note can better be included:
+
+- As just another sentence in the previous paragraph or the most-relevant paragraph.
+- As its own standalone paragraph.
+- As content under a new subheading that introduces the topic, making it more visible/findable.
+
+When to use notes:
+
+- Use a note when there is a reason that most or all readers who browse the section
+  should see the content; i.e. if missed, it’s likely to cause major trouble for
+  a minority of users or significant trouble for a majority of users. Weigh the
+  costs of distracting users with the content to whom it is not relevant against
+  the cost of users missing the content if it were not expressed as a note.
 
 ```md
 NOTE: **Note:**
