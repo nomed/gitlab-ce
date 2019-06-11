@@ -107,8 +107,10 @@ export class AwardsHandler {
         .find('.js-awards-block')
         .addClass('current');
     } else {
-      const selectedAwardsBlock = $addBtn.parentsUntil('li').find('.js-awards-block');
-      selectedAwardsBlock.addClass('current');
+      $addBtn
+        .parentsUntil('li')
+        .find('.js-awards-block')
+        .addClass('current');
     }
 
     const $menu = $(`.${this.menuClass}`);
