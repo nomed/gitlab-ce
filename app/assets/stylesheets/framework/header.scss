@@ -324,6 +324,19 @@
   color: $gl-text-color;
 }
 
+.breadcrumbs-caret {
+  width: 15px;
+  text-align: center;
+  padding-right: 4px;
+}
+
+.breadcrumb-caret svg {
+  fill: $gray600; 
+  height: 8px;
+  width: 8px;
+  margin-top: 8px;
+}
+
 .breadcrumbs-container {
   display: flex;
   width: 100%;
@@ -340,6 +353,12 @@
   align-self: center;
   color: $gl-text-color-secondary;
 
+  .breadcrumb-avatar-tile {
+    margin: 2px 4px auto auto;
+    border: 1px solid $border-color;
+    border-radius: 50%;
+    vertical-align: sub;
+  }
   .avatar-tile {
     margin-right: 4px;
     border: 1px solid $border-color;
