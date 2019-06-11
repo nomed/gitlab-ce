@@ -446,18 +446,6 @@ describe Projects::EnvironmentsController do
   end
 
   describe 'metrics_dashboard' do
-    context 'when prometheus endpoint is disabled' do
-      before do
-        stub_feature_flags(environment_metrics_use_prometheus_endpoint: false)
-      end
-
-      it 'responds with status code 403' do
-        get :metrics_dashboard, params: environment_params(format: :json)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
     shared_examples_for '200 response' do |contains_all_dashboards: false|
       let(:expected_keys) { %w(dashboard status) }
 
