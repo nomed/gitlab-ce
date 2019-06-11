@@ -336,6 +336,11 @@ input[type=color].form-control {
   height: $input-height;
 }
 
+.breadcrumb-item:last-child {
+  color: $gray900;
+  font-weight: 600;
+}
+
 .toggle-sidebar-button {
   .collapse-text,
   .icon-angle-double-left,
