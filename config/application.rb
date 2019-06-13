@@ -120,13 +120,14 @@ module Gitlab
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
 
-    # Configure webpack
-    config.webpack.config_file = "config/webpack.config.js"
-    config.webpack.output_dir  = "public/assets/webpack"
-    config.webpack.public_path = "assets/webpack"
+    # Configure webpack TODO REMOVE
+    #config.webpack.config_file = "config/webpack.config.js"
+    #config.webpack.output_dir  = "public/assets/webpack"
+    #config.webpack.public_path = "assets/webpack"
 
+    # TODO REMOVE
     # Webpack dev server configuration is handled in initializers/static_files.rb
-    config.webpack.dev_server.enabled = false
+    #config.webpack.dev_server.enabled = false
 
     # Enable the asset pipeline
     config.assets.enabled = true
