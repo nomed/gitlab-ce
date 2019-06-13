@@ -129,7 +129,7 @@ class Label < ApplicationRecord
   # Override Gitlab::SQL::Pattern.min_chars_for_partial_matching as
   # label queries are never global, and so will not use a trigram
   # index. That means we can have just one character in the LIKE.
-  def self.min_chars_for_partial_matching
+  def self.min_chars_for_partial_matching(_query)
     1
   end
 

@@ -7,6 +7,7 @@ module Gitlab
 
       MIN_CHARS_FOR_PARTIAL_MATCHING = 3
       REGEX_QUOTED_WORD = /(?<=\A| )"[^"]+"(?= |\z)/.freeze
+      REGEX_CJK = /\A[\p{Katakana}|\p{Hiragana}|\p{Han}|\p{Hangul}]{1,2}\z/.freeze
 
       class_methods do
         def fuzzy_search(query, columns)
@@ -23,12 +24,12 @@ module Gitlab
           end
         end
 
-        def min_chars_for_partial_matching
-          MIN_CHARS_FOR_PARTIAL_MATCHING
+        def min_chars_for_partial_matching(query = '')
+          query.match?(REGEX_CJK) ? 1 : MIN_CHARS_FOR_PARTIAL_MATCHING
         end
 
         def partial_matching?(query)
-          query.length >= min_chars_for_partial_matching
+          query.length >= min_chars_for_partial_matching(query)
         end
 
         # column - The column name to search in.
