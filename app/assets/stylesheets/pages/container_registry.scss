@@ -2,6 +2,23 @@
  * Container Registry
  */
 
+div.container-message {
+  display: flex;
+  flex-direction: column;
+  max-width: 460px;
+  padding: 16px;
+  margin: 5% auto;
+
+  img {
+    max-width: 425px;
+    width: 100%;
+  }
+
+  h4 {
+    margin-top: 42px;
+  }
+}
+
 .container-image {
   border-bottom: 1px solid $white-normal;
 }
