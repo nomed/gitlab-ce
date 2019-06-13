@@ -8,6 +8,8 @@ describe DeployToken do
   it { is_expected.to have_many :project_deploy_tokens }
   it { is_expected.to have_many(:projects).through(:project_deploy_tokens) }
 
+  it { is_expected.to validate_length_of(:username).is_at_most(255) }
+
   describe '#ensure_token' do
     it 'ensures a token' do
       deploy_token.token = nil
@@ -87,8 +89,38 @@ describe DeployToken do
   end
 
   describe '#username' do
-    it 'returns a harcoded username' do
-      expect(deploy_token.username).to eq("gitlab+deploy-token-#{deploy_token.id}")
+    context 'persisted records' do
+      it 'returns a default username if none is set' do
+        expect(deploy_token.username).to eq("gitlab+deploy-token-#{deploy_token.id}")
+      end
+
+      it 'returns the username provided if one is set' do
+        deploy_token = create(:deploy_token, username: 'deployer')
+
+        expect(deploy_token.username).to eq('deployer')
+      end
+    end
+
+    context 'new records' do
+      it 'returns nil if no username is set' do
+        deploy_token = described_class.new
+
+        expect(deploy_token.username).to be_nil
+      end
+
+      it 'returns the username provided if one is set' do
+        deploy_token = described_class.new(username: 'deployer')
+
+        expect(deploy_token.username).to eq('deployer')
+      end
+    end
+  end
+
+  describe 'before validation' do
+    it 'converts empty username to nil' do
+      deploy_token = described_class.new(username: '')
+
+      expect { deploy_token.valid? }.to change { deploy_token.read_attribute(:username) }.from('').to(nil)
     end
   end
 

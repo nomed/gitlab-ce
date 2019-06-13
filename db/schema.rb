@@ -1050,6 +1050,7 @@ ActiveRecord::Schema.define(version: 20190619175843) do
     t.datetime_with_timezone "created_at", null: false
     t.string "name", null: false
     t.string "token", null: false
+    t.string "username"
     t.index ["token", "expires_at", "id"], name: "index_deploy_tokens_on_token_and_expires_at_and_id", where: "(revoked IS FALSE)", using: :btree
     t.index ["token"], name: "index_deploy_tokens_on_token", unique: true, using: :btree
   end
