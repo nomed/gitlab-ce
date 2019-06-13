@@ -292,7 +292,7 @@ class Namespace < ApplicationRecord
   end
 
   def aggregation_scheduled?
-    !aggregation_schedule.nil?
+    aggregation_schedule.present?
   end
 
   private
