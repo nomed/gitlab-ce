@@ -409,11 +409,18 @@ To indicate the steps of navigation through the UI:
 ## Images
 
 - Place images in a separate directory named `img/` in the same directory where
-  the `.md` document that you're working on is located. Always prepend their
-  names with the name of the document that they will be included in. For
-  example, if there is a document called `twitter.md`, then a valid image name
-  could be `twitter_login_screen.png`.
-- Images should have a specific, non-generic name that will differentiate and describe them properly.
+  the `.md` document that you're working on is located.
+- Images should have a specific, non-generic name that will
+  differentiate and describe them properly.
+- Always add to the end of the file name the GitLab release version
+  number corresponding to the release milestone the image was added to,
+  or corresponding to the release the screenshot was taken from, using the
+  format `image_name_vX_Y.png`.
+- For example, for a screenshot taken from the pipelines page of
+  GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're
+  adding an illustration that does not include parts of the UI,
+  add the release number corresponding to the release the image
+  was added to. Example: `devops_diagram_v11_1.png`.
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
 - Compress all images with <https://tinypng.com/> or similar tool.
@@ -426,7 +433,7 @@ To indicate the steps of navigation through the UI:
 Inside the document:
 
 - The Markdown way of using an image inside a document is:
-  `![Proper description what the image is about](img/document_image_title.png)`
+  `![Proper description what the image is about](img/document_image_title_vX_Y.png)`
 - Always use a proper description for what the image is about. That way, when a
   browser fails to show the image, this text will be used as an alternative
   description.
