@@ -45,12 +45,10 @@ const resetComment = () => {
   resetCommentText();
 };
 
-const confirmAndClear = (mergeRequestId, commentId) => {
+const confirmAndClear = (feedbackInfo) => {
   const commentButton = selectCommentButton();
   const currentNote = selectNote();
   const noteContainer = selectNoteContainer();
-  /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
-  const feedbackInfo = `Feedback sent. View at <a href="">#${mergeRequestId}#note_${commentId}</a>`;
 
   /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
   commentButton.innerText = 'Feedback sent';
@@ -81,6 +79,7 @@ const postComment = ({
   innerWidth,
   innerHeight,
   projectId,
+  projectPath,
   mergeRequestId,
   mrUrl,
   token,
@@ -132,7 +131,10 @@ const postComment = ({
     })
     .then(data => {
       const commentId = data.notes[0].id;
-      confirmAndClear(mergeRequestId, commentId);
+      const feedbackLink = `${mrUrl}/${projectPath}/merge_requests/${mergeRequestId}#note_${commentId}`;
+      /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
+      const feedbackInfo = `Feedback sent. View at <a href="${feedbackLink}">${projectPath} #${mergeRequestId} (comment ${commentId})</a>`;
+      confirmAndClear(feedbackInfo);
     })
     .catch(err => {
       postError(
