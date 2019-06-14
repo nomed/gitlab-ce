@@ -43,9 +43,11 @@ export const setFeatureFlags = ({ commit }, { prometheusEndpoint, multipleDashbo
 export const requestMetricsDashboard = ({ commit }) => {
   commit(types.REQUEST_METRICS_DATA);
 };
-export const receiveMetricsDashboardSuccess = ({ commit, dispatch }, { response, params }) => {
-  // todo: check feature flag?
-  commit(types.SET_ALL_DASHBOARDS, response.all_dashboards);
+export const receiveMetricsDashboardSuccess = (
+  { state, commit, dispatch },
+  { response, params },
+) => {
+  if (state.multipleDashboards) commit(types.SET_ALL_DASHBOARDS, response.all_dashboards);
   commit(types.RECEIVE_METRICS_DATA_SUCCESS, response.dashboard.panel_groups);
   dispatch('fetchPrometheusMetrics', params);
 };
@@ -97,14 +99,14 @@ export const fetchMetricsData = ({ state, dispatch }, params) => {
 
 export const fetchDashboard = ({ state, dispatch }, params) => {
   dispatch('requestMetricsDashboard');
+  const newParams = params;
 
-  // todo: clone params instead of mutating
   if (state.currentDashboard) {
-    params.dashboard = state.currentDashboard;
+    newParams.dashboard = state.currentDashboard;
   }
 
   return axios
-    .get(state.dashboardEndpoint, { params })
+    .get(state.dashboardEndpoint, { params: newParams })
     .then(resp => resp.data)
     .then(response => {
       dispatch('receiveMetricsDashboardSuccess', { response, params });

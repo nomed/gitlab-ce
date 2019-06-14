@@ -147,6 +147,7 @@ export default {
       'metricsWithData',
       'useDashboardEndpoint',
       'allDashboards',
+      'multipleDashboards',
     ]),
     groupsWithData() {
       return this.groups.filter(group => this.chartsWithData(group.metrics).length > 0);
@@ -249,7 +250,7 @@ export default {
         v-if="environmentsEndpoint"
         class="dropdowns d-flex align-items-center justify-content-between"
       >
-        <div class="d-flex align-items-center">
+        <div v-if="multipleDashboards" class="d-flex align-items-center">
           <label class="mb-0">{{ __('Dashboard') }}</label>
           <gl-dropdown
             class="ml-2 mr-3 js-dashboards-dropdown"

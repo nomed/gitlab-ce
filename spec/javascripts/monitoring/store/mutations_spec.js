@@ -156,42 +156,4 @@ describe('Monitoring mutations', () => {
       expect(stateCopy.metricsWithData).toEqual([]);
     });
   });
-
-  describe('SET_QUERY_RESULT', () => {
-    const metricId = 12;
-    const result = [{ values: [[0, 1], [1, 1], [1, 3]] }];
-
-    beforeEach(() => {
-      stateCopy.useDashboardEndpoint = true;
-      const dashboardGroups = metricsDashboardResponse.dashboard.panel_groups;
-      mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, dashboardGroups);
-    });
-
-    it('clears empty state', () => {
-      mutations[types.SET_QUERY_RESULT](stateCopy, {
-        metricId,
-        result,
-      });
-
-      expect(stateCopy.showEmptyState).toBe(false);
-    });
-
-    it('sets metricsWithData value', () => {
-      mutations[types.SET_QUERY_RESULT](stateCopy, {
-        metricId,
-        result,
-      });
-
-      expect(stateCopy.metricsWithData).toEqual([12]);
-    });
-
-    it('does not store empty results', () => {
-      mutations[types.SET_QUERY_RESULT](stateCopy, {
-        metricId,
-        result: [],
-      });
-
-      expect(stateCopy.metricsWithData).toEqual([]);
-    });
-  });
 });
