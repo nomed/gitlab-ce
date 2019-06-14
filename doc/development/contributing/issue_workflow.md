@@ -52,7 +52,9 @@ issue is labeled with a subject label corresponding to your expertise.
 
 Subject labels are always all-lowercase.
 
-## Team labels
+## Team labels 
+
+**Important**: Team labels will be soon deprecated in favor of [Group labels](#group-labels). 
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
@@ -126,10 +128,43 @@ The Stage labels are used to generate the [direction pages][direction-pages] aut
 
 Group labels specify which [groups][structure-groups] the issue belongs to.
 
-Examples include:
+The current group labels are:
 
-- ~"group::control"
-- ~"group::editor"
+* ~"group::access"
+* ~"group::measure"
+* ~"group::source code" 
+* ~"group::knowledge" 
+* ~"group::editor" 
+* ~"group::gitaly"  
+* ~"group::gitter"  
+* ~"group::team planning" 
+* ~"group::enterprise planning" 
+* ~"group::certify" 
+* ~"group::ci and runner" 
+* ~"group::testing" 
+* ~"group::package" 
+* ~"group::core release" 
+* ~"group::supporting capabilities" 
+* ~"group::autodevops and kubernetes" 
+* ~"group::serverless and paas"
+* ~"group::apm" 
+* ~"group::health"
+* ~"group::static analysis"
+* ~"group::dynamic analysis"
+* ~"group::software composition analysis" 
+* ~"group::runtime application security" 
+* ~"group::threat management" 
+* ~"group::application infrastructure security" 
+* ~"group::activation" 
+* ~"group::adoption" 
+* ~"group::upsell" 
+* ~"group::retention" 
+* ~"group::fulfillment" 
+* ~"group::distribution" 
+* ~"group::geo" 
+* ~"group::memory" 
+* ~"group::ecosystem" 
+  
 
 These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
 and thus are mutually exclusive.
