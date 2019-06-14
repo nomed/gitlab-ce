@@ -7,11 +7,12 @@ scheduling into milestones. Labelling is a task for everyone.
 Most issues will have labels for at least one of the following:
 
 - Type: ~feature, ~bug, ~customer, etc.
-- Subject: ~wiki, ~"Container Registry", ~ldap, ~api, ~frontend, etc.
+- Subject: ~wiki, ~"Container Registry", ~ldap, ~api, etc.
 - Team: ~Documentation, Delivery, etc.
-- Stage: ~"devops:plan", ~"devops:create", etc.
+- Stage: ~"devops::plan", ~"devops::create", etc.
 - Group: ~"group::source code" ~"group::knowledge" ~"group::editor", etc.
-- Department: ~UX ~Quality
+- Department: ~UX, ~Quality
+- Specialization: ~frontend, ~backend
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
@@ -29,7 +30,7 @@ labels, you can _always_ add the team and type, and often also the subject.
 Type labels are very important. They define what kind of issue this is. Every
 issue should have one or more.
 
-Examples of type labels are ~feature, ~bug, ~customer, ~security,
+Examples of type labels are ~feature, ~bug, ~backstage, ~customer, ~security,
 and ~direction.
 
 A number of type labels have a priority assigned to them, which automatically
@@ -78,8 +79,7 @@ The team labels planned for deprecation are:
 - ~Secure
 - ~Verify
 
-
-The following team labels are **true** teams which will remain post deprecation.
+The following team labels are **true** teams per our [organization structure](https://about.gitlab.com/company/team/structure/#organizational-structure) which will remain post deprecation.
 
 - ~Delivery
 - ~Documentation
@@ -92,6 +92,7 @@ indicate if an issue needs backend work, frontend work, or both.
 
 Team labels are always capitalized so that they show up as the first label for
 any issue.
+
 
 ## Stage labels
 
@@ -187,6 +188,13 @@ The current department labels:
 
 * ~UX
 * ~Quality
+
+## Specialization labels
+
+These labels narrow the [specialization](https://about.gitlab.com/company/team/structure/#specialist) on a unit of work.
+
+* ~frontend
+* ~backend
 
 ## Release Scoping labels
 
