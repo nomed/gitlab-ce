@@ -100,6 +100,13 @@ use regular Markdown markup, following the rules in the linked style guide.
 
 Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
 
+Hard-coded HTML is valid, although it's discoraged to be used while we have `/help`. HTML is permitted as long as:
+
+- There's no equivalent markup in markdown.
+- Advanced tables are necessary.
+- Special styling is required.
+- Reviewed and approved by a technical writer.
+
 ## Structure
 
 ### Organize by topic, not by type
@@ -143,7 +150,7 @@ The table below shows what kind of documentation goes where.
    a proper naming would be `import_projects_from_github.md`. The same rule
    applies to images.
 1. For image files, do not exceed 100KB.
-1. We do not yet support embedded videos. Please link out.
+1. We do not yet support embedded videos. But it's encouraged to [link them out](#videos).
 1. There are four main directories, `user`, `administration`, `api` and `development`.
 1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
    `profile/`, `dashboard/` and `admin_area/`.
@@ -207,6 +214,7 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
 
 ## Text
 
+- [Write in markdown](#markdown).
 - Splitting long lines (preferably up to 100 characters) can make it easier to provide feedback on small chunks of text.
 - Insert an empty line for new paragraphs.
 - Use sentence case for titles, headings, labels, menu items, and buttons.
@@ -421,7 +429,7 @@ To indicate the steps of navigation through the UI:
 - Images should be used (only when necessary) to _illustrate_ the description
   of a process, not to _replace_ it.
 - Max image size: 100KB (gifs included).
-- The GitLab docs do not support videos yet.
+- The GitLab docs do not support embedded videos yet. [Link them out](#videos) instead.
 
 Inside the document:
 
@@ -445,6 +453,24 @@ directly to an HTML `img` tag:
 ```html
 <img src="path/to/image.jpg" alt="Alt text (required)" class="image-noshadow">
 ```
+
+## Videos
+
+Adding existing GitLab's YouTube video tutorials to the documentation is
+highly encouraged, unless the video is outdated. Videos should not
+replace documentation, but complement or illustrate it.
+
+To link them out, use a YouTube icon indicating a video, so that anyone
+can quickly and easily scan the page for videos before reading:
+
+```md
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video tutorial, see [Video Title](link-to-video).
+```
+
+Note that the docs site does not support embedded videos because
+GitLab's markdown do not support iframes yet, therefore, it wouldn't
+work in GitLab's `/help`.
 
 ## Code blocks
 
