@@ -1,7 +1,8 @@
 import { comment } from './comment';
 import { CLEAR, FORM, WHITE } from './constants';
 import { login } from './login';
-import { selectCollapseButton, selectContainer, selectForm } from './utils';
+import { clearNote } from './note';
+import { selectCollapseButton, selectContainer, selectForm, selectNoteContainer } from './utils';
 import { commentIcon, compressIcon } from './wrapper_icons';
 
 const form = content => `
@@ -31,6 +32,7 @@ function logoutUser() {
     return;
   }
 
+  clearNote();
   addLoginForm();
 }
 
@@ -38,6 +40,7 @@ function toggleForm() {
   const container = selectContainer();
   const collapseButton = selectCollapseButton();
   const currentForm = selectForm();
+  const noteContainer = selectNoteContainer();
   const OPEN = 'open';
   const CLOSED = 'closed';
 
@@ -77,6 +80,10 @@ function toggleForm() {
   currentForm.style.display = currentVals.display;
   collapseButton.classList.replace(...currentVals.buttonClasses);
   collapseButton.innerHTML = currentVals.icon;
+
+  if (noteContainer && noteContainer.innerText.length > 0) {
+    noteContainer.style.display = currentVals.display;
+  }
 }
 
 export { addCommentForm, addLoginForm, form, logoutUser, toggleForm };

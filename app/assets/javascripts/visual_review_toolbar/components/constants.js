@@ -18,7 +18,7 @@ const BLACK = 'rgba(46, 46, 46, 1)';
 const CLEAR = 'rgba(255, 255, 255, 0)';
 const MUTED = 'rgba(223, 223, 223, 0.5)';
 const RED = 'rgba(219, 59, 33, 1)';
-const WHITE = 'rgba(255, 255, 255, 1)';
+const WHITE = 'rgba(250, 250, 250, 1)';
 
 export {
   COLLAPSE_BUTTON,

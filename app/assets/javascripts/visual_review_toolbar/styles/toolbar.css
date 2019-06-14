@@ -16,18 +16,22 @@
 #gitlab-note-wrapper {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  padding: 1rem;
-  background-color: #fff;
+  background-color: #fafafa;
+  border-radius: 4px;
   margin-bottom: .5rem;
+  padding: 1rem;
 }
 
 #gitlab-form-wrapper {
   overflow: scroll;
   display: flex;
   flex-direction: row-reverse;
+  border-radius: 4px;
+}
+
+.gitlab-form-open {
   padding: 1rem;
-  background-color: #fff;
+  background-color: #fafafa;
 }
 
 #gitlab-review-container {
