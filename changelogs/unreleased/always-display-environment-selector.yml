@@ -1,0 +1,5 @@
+---
+title: Always display environment selector on monitoring dashboard
+merge_request: 29705
+author:
+type: fixed
