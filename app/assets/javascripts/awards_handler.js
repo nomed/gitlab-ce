@@ -107,9 +107,7 @@ export class AwardsHandler {
         .find('.js-awards-block')
         .addClass('current');
     } else if ($addBtn.hasClass('award-control')) {
-      $addBtn
-        .closest('.js-awards-block')
-        .addClass('current');
+      $addBtn.closest('.js-awards-block').addClass('current');
     } else {
       $addBtn
         .parentsUntil('li')
