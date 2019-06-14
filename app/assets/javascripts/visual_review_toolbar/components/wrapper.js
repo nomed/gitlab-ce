@@ -2,7 +2,13 @@ import { comment } from './comment';
 import { CLEAR, FORM, WHITE } from './constants';
 import { login } from './login';
 import { clearNote } from './note';
-import { selectCollapseButton, selectContainer, selectForm, selectNoteContainer } from './utils';
+import {
+  selectCollapseButton,
+  selectContainer,
+  selectForm,
+  selectFormContainer,
+  selectNoteContainer
+} from './utils';
 import { commentIcon, compressIcon } from './wrapper_icons';
 
 const form = content => `
@@ -40,6 +46,7 @@ function toggleForm() {
   const container = selectContainer();
   const collapseButton = selectCollapseButton();
   const currentForm = selectForm();
+  const formContainer = selectFormContainer();
   const noteContainer = selectNoteContainer();
   const OPEN = 'open';
   const CLOSED = 'closed';
@@ -75,8 +82,9 @@ function toggleForm() {
   const nextState = collapseButton.classList.contains('gitlab-collapse-open') ? CLOSED : OPEN;
   const currentVals = stateVals[nextState];
 
-  container.classList.replace(...currentVals.containerClasses);
-  container.style.backgroundColor = currentVals.backgroundColor;
+  formContainer.classList.replace(...currentVals.containerClasses);
+  formContainer.style.backgroundColor = currentVals.backgroundColor;
+  formContainer.classList.toggle('gitlab-form-open');
   currentForm.style.display = currentVals.display;
   collapseButton.classList.replace(...currentVals.buttonClasses);
   collapseButton.innerHTML = currentVals.icon;

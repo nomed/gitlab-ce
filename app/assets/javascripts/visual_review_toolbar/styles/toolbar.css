@@ -6,6 +6,10 @@
   pointer-events: none;
 }
 
+#gitlab-comment {
+  background-color: #fafafa;
+}
+
 #gitlab-form {
   display: flex;
   flex-direction: column;
@@ -66,7 +70,7 @@
 }
 
 .gitlab-button-secondary {
-  background: none #fff;
+  background: none #fafafa;
   margin: 0 .5rem;
   border: 1px solid #e3e3e3;
 }
