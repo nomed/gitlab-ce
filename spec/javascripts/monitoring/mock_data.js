@@ -922,3 +922,14 @@ export const metricsDashboardResponse = {
   },
   status: 'success',
 };
+
+export const dashboardGitResponse = [
+  {
+    path: 'config/prometheus/common_metrics.yml',
+    default: true,
+  },
+  {
+    path: '.gitlab/dashboards/super.yml',
+    default: false,
+  },
+];
