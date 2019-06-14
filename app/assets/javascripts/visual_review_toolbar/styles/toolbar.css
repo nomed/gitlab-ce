@@ -6,23 +6,38 @@
   pointer-events: none;
 }
 
-#gitlab-form-wrapper {
+#gitlab-form {
   display: flex;
   flex-direction: column;
-  width: 100%
+  width: 100%;
+  margin-bottom: 0;
+}
+
+#gitlab-note-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1rem;
+  background-color: #fff;
+  margin-bottom: .5rem;
+}
+
+#gitlab-form-wrapper {
+  overflow: scroll;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 1rem;
+  background-color: #fff;
 }
 
 #gitlab-review-container {
   max-width: 22rem;
   max-height: 22rem;
-  overflow: scroll;
+  display: flex;
+  flex-direction: column;
   position: fixed;
   bottom: 1rem;
   right: 1rem;
-  display: flex;
-  flex-direction: row-reverse;
-  padding: 1rem;
-  background-color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
   'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
   'Noto Color Emoji';

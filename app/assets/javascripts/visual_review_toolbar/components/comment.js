@@ -1,11 +1,10 @@
 import { BLACK, COMMENT_BOX, MUTED, LOGOUT } from './constants';
-import { clearNote, note, postError } from './note';
+import { clearNote, postError } from './note';
 import { buttonClearStyles, selectCommentBox, selectCommentButton, selectNote } from './utils';
 
 const comment = `
   <div>
     <textarea id="${COMMENT_BOX}" name="${COMMENT_BOX}" rows="3" placeholder="Enter your feedback or idea" class="gitlab-input" aria-required="true"></textarea>
-    ${note}
     <p class="gitlab-metadata-note">Additional metadata will be included: browser, OS, current page, user agent, and viewport dimensions.</p>
   </div>
   <div class="gitlab-button-wrapper">

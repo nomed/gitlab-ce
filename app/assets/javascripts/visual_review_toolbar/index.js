@@ -1,6 +1,6 @@
 import './styles/toolbar.css';
 
-import { form, selectContainer, REVIEW_CONTAINER } from './components';
+import { form, FORM_CONTAINER, note, selectContainer, REVIEW_CONTAINER } from './components';
 import { debounce, eventLookup, getInitialView, initializeState, updateWindowSize } from './store';
 
 /*
@@ -22,10 +22,14 @@ window.addEventListener('load', () => {
 
   const { content, toggleButton } = getInitialView(window);
   const container = document.createElement('div');
+  const buttonAndForm = document.createElement('div');
 
+  buttonAndForm.setAttribute('id', FORM_CONTAINER);
+  buttonAndForm.insertAdjacentHTML('beforeend', toggleButton);
+  buttonAndForm.insertAdjacentHTML('beforeend', form(content));
   container.setAttribute('id', REVIEW_CONTAINER);
-  container.insertAdjacentHTML('beforeend', toggleButton);
-  container.insertAdjacentHTML('beforeend', form(content));
+  container.insertAdjacentHTML('beforeend', note);
+  container.appendChild(buttonAndForm);
 
   document.body.insertBefore(container, document.body.firstChild);
 

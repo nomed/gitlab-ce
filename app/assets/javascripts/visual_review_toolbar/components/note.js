@@ -1,8 +1,10 @@
-import { NOTE, RED } from './constants';
+import { NOTE, NOTE_CONTAINER, RED } from './constants';
 import { selectById, selectNote } from './utils';
 
 const note = `
-  <p id=${NOTE} class='gitlab-message'></p>
+  <div id="${NOTE_CONTAINER}">
+    <p id="${NOTE}" class="gitlab-message">Hello from the note, friend.</p>
+  </div>
 `;
 
 const clearNote = inputId => {
