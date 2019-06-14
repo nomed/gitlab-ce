@@ -29,6 +29,7 @@ const postError = (message, inputId) => {
   currentNote.style.color = RED;
   currentNote.innerText = message;
   noteContainer.style.visibility = 'visible';
+  setTimeout(clearNote.bind(null, inputId), 6000);
 };
 
 export { clearNote, note, postError };

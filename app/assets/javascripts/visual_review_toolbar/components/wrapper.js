@@ -1,10 +1,9 @@
 import { comment } from './comment';
-import { CLEAR, FORM, WHITE } from './constants';
+import { CLEAR, FORM, FORM_CONTAINER, WHITE } from './constants';
 import { login } from './login';
 import { clearNote } from './note';
 import {
   selectCollapseButton,
-  selectContainer,
   selectForm,
   selectFormContainer,
   selectNoteContainer
@@ -15,6 +14,13 @@ const form = content => `
   <form id="${FORM}">
     ${content}
   </form>
+`;
+
+const buttonAndForm = ({ content, toggleButton }) => `
+  <div id="${FORM_CONTAINER}" class="gitlab-form-open">
+    ${toggleButton}
+    ${form(content)}
+  </div>
 `;
 
 const addCommentForm = () => {
@@ -43,7 +49,6 @@ function logoutUser() {
 }
 
 function toggleForm() {
-  const container = selectContainer();
   const collapseButton = selectCollapseButton();
   const currentForm = selectForm();
   const formContainer = selectFormContainer();
@@ -59,7 +64,7 @@ function toggleForm() {
 
   const openButtonClasses = ['gitlab-collapse-closed', 'gitlab-collapse-open'];
   const closedButtonClasses = [...openButtonClasses].reverse();
-  const openContainerClasses = ['gitlab-closed-wrapper', 'gitlab-open-wrapper'];
+  const openContainerClasses = ['gitlab-wrapper-closed', 'gitlab-wrapper-open'];
   const closedContainerClasses = [...openContainerClasses].reverse();
 
   const stateVals = {
@@ -94,4 +99,4 @@ function toggleForm() {
   }
 }
 
-export { addCommentForm, addLoginForm, form, logoutUser, toggleForm };
+export { addCommentForm, addLoginForm, buttonAndForm, logoutUser, toggleForm };

@@ -132,7 +132,6 @@ const postComment = ({
     .then(data => {
       const commentId = data.notes[0].id;
       const feedbackLink = `${mrUrl}/${projectPath}/merge_requests/${mergeRequestId}#note_${commentId}`;
-      /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
       const feedbackInfo = `Feedback sent. View at <a href="${feedbackLink}">${projectPath} #${mergeRequestId} (comment ${commentId})</a>`;
       confirmAndClear(feedbackInfo);
     })

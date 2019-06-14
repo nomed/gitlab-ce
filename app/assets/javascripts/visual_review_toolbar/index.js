@@ -1,6 +1,6 @@
 import './styles/toolbar.css';
 
-import { form, FORM_CONTAINER, note, selectContainer, REVIEW_CONTAINER } from './components';
+import { buttonAndForm, note, selectContainer, REVIEW_CONTAINER } from './components';
 import { debounce, eventLookup, getInitialView, initializeState, updateWindowSize } from './store';
 
 /*
@@ -20,17 +20,15 @@ import { debounce, eventLookup, getInitialView, initializeState, updateWindowSiz
 window.addEventListener('load', () => {
   initializeState(window, document);
 
-  const { content, toggleButton } = getInitialView(window);
+  const mainContent = buttonAndForm(getInitialView(window));
   const container = document.createElement('div');
-  const buttonAndForm = document.createElement('div');
-
-  buttonAndForm.setAttribute('id', FORM_CONTAINER);
-  buttonAndForm.className = 'gitlab-form-open';
-  buttonAndForm.insertAdjacentHTML('beforeend', toggleButton);
-  buttonAndForm.insertAdjacentHTML('beforeend', form(content));
+  // buttonAndForm.setAttribute('id', FORM_CONTAINER);
+  // buttonAndForm.className = 'gitlab-form-open';
+  // buttonAndForm.insertAdjacentHTML('beforeend', toggleButton);
+  // buttonAndForm.insertAdjacentHTML('beforeend', form(content));
   container.setAttribute('id', REVIEW_CONTAINER);
   container.insertAdjacentHTML('beforeend', note);
-  container.appendChild(buttonAndForm);
+  container.insertAdjacentHTML('beforeend', mainContent);
 
   document.body.insertBefore(container, document.body.firstChild);
 

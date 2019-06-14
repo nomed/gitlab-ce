@@ -33,11 +33,6 @@
   border-radius: 4px;
 }
 
-.gitlab-form-open {
-  padding: 1rem;
-  background-color: #fafafa;
-}
-
 #gitlab-review-container {
   max-width: 22rem;
   max-height: 22rem;
@@ -54,12 +49,12 @@
   color: #2e2e2e;
 }
 
-.gitlab-open-wrapper {
+.gitlab-wrapper-open {
   max-width: 22rem;
   max-height: 22rem;
 }
 
-.gitlab-closed-wrapper {
+.gitlab-wrapper-closed {
   max-width: 3.4rem;
   max-height: 3.4rem;
 }
@@ -134,6 +129,11 @@
 .gitlab-checkbox-wrapper {
   display: flex;
   align-items: baseline;
+}
+
+.gitlab-form-open {
+  padding: 1rem;
+  background-color: #fafafa;
 }
 
 .gitlab-label {
