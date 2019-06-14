@@ -110,7 +110,7 @@ export class AwardsHandler {
       $addBtn.closest('.js-awards-block').addClass('current');
     } else {
       $addBtn
-        .parentsUntil('li')
+        .parents('li')
         .find('.js-awards-block')
         .addClass('current');
     }
