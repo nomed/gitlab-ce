@@ -8,8 +8,10 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~feature, ~bug, ~customer, etc.
 - Subject: ~wiki, ~"Container Registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~Plan, ~Manage, ~Quality, etc.
+- Team: ~Documentation, Delivery, etc.
 - Stage: ~"devops:plan", ~"devops:create", etc.
+- Group: ~"group::source code" ~"group::knowledge" ~"group::editor", etc.
+- Department: ~UX ~Quality
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
@@ -60,24 +62,27 @@ Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The current team labels are:
+The team labels planned for deprecation are:
 
 - ~Configure
 - ~Create
 - ~Defend
 - ~Distribution
-- ~Documentation
 - ~Geo
 - ~Gitaly
 - ~Growth
 - ~Manage
 - ~Monitor
 - ~Plan
-- ~Quality
 - ~Release
 - ~Secure
-- ~UX
 - ~Verify
+
+
+The following team labels are **true** teams which will remain post deprecation.
+
+- ~Delivery
+- ~Documentation
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
@@ -175,6 +180,13 @@ can be applied to a single issue. You can find the groups listed in the
 
 [structure-groups]: https://about.gitlab.com/company/team/structure/#groups
 [product-categories]: https://about.gitlab.com/handbook/product/categories/
+
+## Department labels
+
+The current department labels:
+
+* ~UX
+* ~Quality
 
 ## Release Scoping labels
 
