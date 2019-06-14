@@ -80,3 +80,5 @@ package-lock.json
 /coverage-frontend/
 jsdoc/
 **/tmp/rubocop_cache/**
+qa/.rakeTasks
+qa/qa/fixtures/auto_devops_rack/.rakeTasks
