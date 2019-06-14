@@ -30,11 +30,13 @@ Now, when you visit the merge request page, you will be able to accept it
 
 ![Fast forward merge request](img/ff_merge_mr.png)
 
-
+If a fast-forward merge is not possible but a conflict free rebase is possible,
+a rebase button will be offered.
 
 ![Fast forward merge request](img/ff_merge_rebase.png)
 
-If the target branch is ahead of the source branch, you need to rebase the
+If the target branch is ahead of the source branch and a conflict free rebase is
+not possible, you need to rebase the
 source branch locally before you will be able to do a fast-forward merge.
 
 ![Fast forward merge rebase locally](img/ff_merge_rebase_locally.png)
