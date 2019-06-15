@@ -110,31 +110,6 @@ describe('AwardsHandler', function() {
         expect($('.js-awards-block.current').length).toBe(1);
       });
     });
-
-    it('should apply current class name to vote block if add emoji button is clicked from the note body', function(done) {
-      const $addEmojiButton = $('.js-add-award.award-control');
-
-      $addEmojiButton.eq(0).click();
-      lazyAssert(done, function() {
-        expect($addEmojiButton.closest('.note-body').length).toBe(1);
-        expect($addEmojiButton.closest('.js-awards-block').hasClass('current')).toBe(true);
-      });
-    });
-
-    it('should apply current class name to vote block if add emoji button is clicked from the note header', function(done) {
-      const $addEmojiButton = $('.js-add-award.js-note-emoji');
-
-      $addEmojiButton.eq(0).click();
-      lazyAssert(done, function() {
-        expect($addEmojiButton.closest('.note-header').length).toBe(1);
-        expect(
-          $addEmojiButton
-            .closest('li')
-            .find('.js-awards-block')
-            .hasClass('current'),
-        ).toBe(true);
-      });
-    });
   });
 
   describe('::addAwardToEmojiBar', function() {
