@@ -407,6 +407,10 @@ describe Gitlab::Git::Commit, :seed_helper do
       it_should_behave_like '.batch_by_oid'
 
       context 'when oids is empty' do
+        before do
+          allow(Gitlab::Git::RuggedImpl::UseRugged).to receive(:use_rugged?).and_return(false)
+        end
+
         it 'makes no Gitaly request' do
           expect(Gitlab::GitalyClient).not_to receive(:call)
 

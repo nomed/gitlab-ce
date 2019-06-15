@@ -133,6 +133,8 @@ RSpec.configure do |config|
       allow(Feature).to receive(:enabled?).with(flag).and_return(enabled)
     end
 
+    allow(Gitlab::Git::RuggedImpl::UseRugged).to receive(:use_rugged?).and_return(false)
+
     # The following can be removed when we remove the staged rollout strategy
     # and we can just enable it using instance wide settings
     # (ie. ApplicationSetting#auto_devops_enabled)

@@ -31,6 +31,10 @@ module Gitlab
     MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
+    SERVER_FEATURE_CATFILE_CACHE = 'catfile-cache'.freeze
+    # Server feature flags should use '_' to separate words.
+    SERVER_FEATURE_FLAGS = [SERVER_FEATURE_CATFILE_CACHE].freeze
+
     MUTEX = Mutex.new
 
     define_histogram :gitaly_controller_action_duration_seconds do
@@ -385,6 +389,12 @@ module Gitlab
 
     def self.no_timeout
       0
+    end
+
+    def self.filesystem_id(storage)
+      response = Gitlab::GitalyClient::ServerService.new(storage).info
+      storage_status = response.storage_statuses.find { |status| status.storage_name == storage }
+      storage_status.filesystem_id
     end
 
     def self.timeout(timeout_name)

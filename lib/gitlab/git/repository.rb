@@ -77,6 +77,12 @@ module Gitlab
         )
       end
 
+      def path_to_gitaly_metadata_file
+        File.join(
+          Gitlab.config.repositories.storages[@storage].legacy_disk_path, '.gitaly-metadata'
+        )
+      end
+
       # Default branch in the repository
       def root_ref
         gitaly_ref_client.default_branch_name

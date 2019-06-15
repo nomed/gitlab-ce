@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative 'test_env'
+require 'json'
+require 'securerandom'
 
 # This file is specific to specs in spec/lib/gitlab/git/
 
