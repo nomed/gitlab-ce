@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: tr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-13 13:22\n"
+"PO-Revision-Date: 2019-06-14 19:57\n"
 
 msgid " Please sign in."
 msgstr " Lütfen oturum açın."
@@ -5042,6 +5042,9 @@ msgstr ""
 msgid "Error loading branches."
 msgstr ""
 
+msgid "Error loading burndown chart data"
+msgstr ""
+
 msgid "Error loading file viewer."
 msgstr ""
 
@@ -6394,6 +6397,9 @@ msgstr ""
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr ""
 
+msgid "Got it"
+msgstr ""
+
 msgid "Got it!"
 msgstr ""
 
@@ -6871,6 +6877,9 @@ msgid "If any job surpasses this timeout threshold, it will be marked as failed.
 msgstr ""
 
 msgid "If checked, group owners can manage LDAP group links and LDAP member overrides"
+msgstr ""
+
+msgid "If checked, new group memberships and permissions can only be added via LDAP synchronization"
 msgstr ""
 
 msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored."
@@ -7469,6 +7478,9 @@ msgstr ""
 msgid "Job|with"
 msgstr ""
 
+msgid "Join Zoom meeting"
+msgstr ""
+
 msgid "Jul"
 msgstr "Tem"
 
@@ -7875,6 +7887,9 @@ msgstr ""
 msgid "Lock %{issuableDisplayName}"
 msgstr ""
 
+msgid "Lock memberships to LDAP synchronization"
+msgstr ""
+
 msgid "Lock not found"
 msgstr ""
 
@@ -8222,6 +8237,9 @@ msgstr "%{linkStart}%{commitId}%{linkEnd} işlemi ile ilgili bir tartışma baş
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr "%{paragraphStart}açıklama %{descriptionChangedTimes}sürelerini%{timeDifferenceMinutes} değiştirdi%{paragraphEnd}"
+
+msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
+msgstr ""
 
 msgid "MergeRequest|Error loading full diff. Please try again."
 msgstr "Tam değişiklik yüklenirken hata oluştu. Lütfen tekrar deneyin."
@@ -8698,6 +8716,9 @@ msgstr "Yeni etiket"
 
 msgid "New users set to external"
 msgstr "Yeni kullanıcılar harici olarak ayarlandı"
+
+msgid "New! Suggest changes directly"
+msgstr ""
 
 msgid "New..."
 msgstr "Yeni..."
@@ -9227,6 +9248,18 @@ msgid "Pages Domains"
 msgstr ""
 
 msgid "Pages getting started guide"
+msgstr ""
+
+msgid "Pagination|Go to first page"
+msgstr ""
+
+msgid "Pagination|Go to last page"
+msgstr ""
+
+msgid "Pagination|Go to next page"
+msgstr ""
+
+msgid "Pagination|Go to previous page"
 msgstr ""
 
 msgid "Pagination|Last »"
@@ -10839,10 +10872,16 @@ msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] "Güncellenmiş durumu göstermek için bir saniye içinde yenilenecek..."
 msgstr[1] "Güncellenmiş durumu göstermek için %d saniye içinde yenilenecek..."
 
+msgid "Regenerate instance ID"
+msgstr ""
+
 msgid "Regenerate key"
 msgstr ""
 
 msgid "Regenerate recovery codes"
+msgstr ""
+
+msgid "Regenerating the instance ID can break integration depending on the client you are using."
 msgstr ""
 
 msgid "Regex pattern"
@@ -12713,6 +12752,9 @@ msgstr ""
 msgid "Successfully unlocked"
 msgstr ""
 
+msgid "Suggest code changes which are immediately applied. Try it out!"
+msgstr ""
+
 msgid "Suggested change"
 msgstr ""
 
@@ -14183,6 +14225,9 @@ msgstr ""
 msgid "Unable to connect to server: %{error}"
 msgstr ""
 
+msgid "Unable to generate new instance ID"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
@@ -14454,9 +14499,6 @@ msgid "UsageQuota|Usage Quotas"
 msgstr ""
 
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"
-msgstr ""
-
-msgid "UsageQuota|Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|Usage since"

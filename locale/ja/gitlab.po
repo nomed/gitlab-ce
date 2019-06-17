@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-13 13:20\n"
+"PO-Revision-Date: 2019-06-14 19:52\n"
 
 msgid " Please sign in."
 msgstr " サインインしてください。"
@@ -347,11 +347,11 @@ msgstr[0] "%d 日"
 
 msgid "1 closed issue"
 msgid_plural "%{issues} closed issues"
-msgstr[0] ""
+msgstr[0] "%{issues}件のクローズされた課題"
 
 msgid "1 closed merge request"
 msgid_plural "%{merge_requests} closed merge requests"
-msgstr[0] ""
+msgstr[0] "%{merge_requests}件のクローズされたマージリクエスト"
 
 msgid "1 day"
 msgstr "1 日"
@@ -362,15 +362,15 @@ msgstr[0] "%dグループ"
 
 msgid "1 merged merge request"
 msgid_plural "%{merge_requests} merged merge requests"
-msgstr[0] ""
+msgstr[0] "%{merge_requests}件のマージされたマージリクエスト"
 
 msgid "1 open issue"
 msgid_plural "%{issues} open issues"
-msgstr[0] ""
+msgstr[0] "%{issues}件の課題"
 
 msgid "1 open merge request"
 msgid_plural "%{merge_requests} open merge requests"
-msgstr[0] ""
+msgstr[0] "%{merge_requests}件のマージリクエスト"
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
@@ -1010,7 +1010,7 @@ msgid "Also called \"Relying party service URL\" or \"Reply URL\""
 msgstr "\"Relying party service URL\" または \"Reply URL\" とも呼ばれます"
 
 msgid "Alternate support URL for help page"
-msgstr ""
+msgstr "ヘルプページの別のサポートURL"
 
 msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to connect."
 msgstr "あるいは、 %{personal_access_token_link} を使用することもできます。パーソナルアクセストークンを作成する際に、<code>repo</code> スコープを選択する必要があります。これにより、接続可能な公開リポジトリとプライベートリポジトリの一覧を表示することができます。"
@@ -1377,7 +1377,7 @@ msgid "ApprovalRule|Name"
 msgstr "名前"
 
 msgid "ApprovalRule|No. approvals required"
-msgstr ""
+msgstr "いいえ。承認が必要です。"
 
 msgid "ApprovalRule|e.g. QA, Security, etc."
 msgstr ""
@@ -1819,7 +1819,7 @@ msgid "BambooService|Bamboo root URL like https://bamboo.example.com"
 msgstr "Bamboo のルートURL 例: https://bamboo.example.com"
 
 msgid "BambooService|You must set up automatic revision labeling and a repository trigger in Bamboo."
-msgstr ""
+msgstr "Bambooで自動リビジョンラベリングとリポジトリトリガーを設定しなければなりません。"
 
 msgid "BatchComments|Delete all pending comments"
 msgstr "保留中のコメントをすべて削除"
@@ -4993,6 +4993,9 @@ msgstr "ブランチ データの読み込み中にエラーが発生しまし�
 msgid "Error loading branches."
 msgstr "ブランチのロードに失敗しました。"
 
+msgid "Error loading burndown chart data"
+msgstr ""
+
 msgid "Error loading file viewer."
 msgstr "ファイルビューワーの読み込みに失敗しました。"
 
@@ -6344,6 +6347,9 @@ msgstr "Google テイクアウト"
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr "Google 認証は %{link_to_documentation} ではありません。このサービスについては GitLab 管理者に問い合わせてください。"
 
+msgid "Got it"
+msgstr ""
+
 msgid "Got it!"
 msgstr "入手しましょう！"
 
@@ -6820,6 +6826,9 @@ msgid "If any job surpasses this timeout threshold, it will be marked as failed.
 msgstr ""
 
 msgid "If checked, group owners can manage LDAP group links and LDAP member overrides"
+msgstr ""
+
+msgid "If checked, new group memberships and permissions can only be added via LDAP synchronization"
 msgstr ""
 
 msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored."
@@ -7417,6 +7426,9 @@ msgstr ""
 msgid "Job|with"
 msgstr ""
 
+msgid "Join Zoom meeting"
+msgstr ""
+
 msgid "Jul"
 msgstr "7月"
 
@@ -7821,6 +7833,9 @@ msgstr "ロック"
 msgid "Lock %{issuableDisplayName}"
 msgstr "ロック %{issuableDisplayName}"
 
+msgid "Lock memberships to LDAP synchronization"
+msgstr ""
+
 msgid "Lock not found"
 msgstr "ロックが見つかりません"
 
@@ -8167,6 +8182,9 @@ msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{lin
 msgstr ""
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
+msgstr ""
+
+msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
 msgstr ""
 
 msgid "MergeRequest|Error loading full diff. Please try again."
@@ -8644,6 +8662,9 @@ msgstr "新規タグ"
 msgid "New users set to external"
 msgstr ""
 
+msgid "New! Suggest changes directly"
+msgstr ""
+
 msgid "New..."
 msgstr "新規...\t"
 
@@ -9093,7 +9114,7 @@ msgid "OperationsDashboard|Add a project to the dashboard"
 msgstr "ダッシュボードにプロジェクトを追加"
 
 msgid "OperationsDashboard|Add projects"
-msgstr ""
+msgstr "プロジェクトを追加"
 
 msgid "OperationsDashboard|More information"
 msgstr ""
@@ -9171,6 +9192,18 @@ msgid "Pages Domains"
 msgstr ""
 
 msgid "Pages getting started guide"
+msgstr ""
+
+msgid "Pagination|Go to first page"
+msgstr ""
+
+msgid "Pagination|Go to last page"
+msgstr ""
+
+msgid "Pagination|Go to next page"
+msgstr ""
+
+msgid "Pagination|Go to previous page"
 msgstr ""
 
 msgid "Pagination|Last »"
@@ -9270,7 +9303,7 @@ msgid "Personal Access Token"
 msgstr "個人のアクセストークン"
 
 msgid "Personal project creation is not allowed. Please contact your administrator with questions"
-msgstr ""
+msgstr "個人的なプロジェクトの作成は許可されていません。質問がある場合はシステムの管理者に連絡してください"
 
 msgid "Phabricator Server Import"
 msgstr ""
@@ -10782,10 +10815,16 @@ msgid "Refreshing in a second to show the updated status..."
 msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] ""
 
+msgid "Regenerate instance ID"
+msgstr ""
+
 msgid "Regenerate key"
 msgstr ""
 
 msgid "Regenerate recovery codes"
+msgstr ""
+
+msgid "Regenerating the instance ID can break integration depending on the client you are using."
 msgstr ""
 
 msgid "Regex pattern"
@@ -12652,6 +12691,9 @@ msgstr ""
 msgid "Successfully unlocked"
 msgstr ""
 
+msgid "Suggest code changes which are immediately applied. Try it out!"
+msgstr ""
+
 msgid "Suggested change"
 msgstr ""
 
@@ -14119,6 +14161,9 @@ msgstr "URL"
 msgid "Unable to connect to server: %{error}"
 msgstr ""
 
+msgid "Unable to generate new instance ID"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr "差分を読み込むことができません。%{button_try_again}"
 
@@ -14390,9 +14435,6 @@ msgid "UsageQuota|Usage Quotas"
 msgstr ""
 
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"
-msgstr ""
-
-msgid "UsageQuota|Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|Usage since"
@@ -15483,7 +15525,7 @@ msgid "You will lose all the unstaged changes you've made in this project. This 
 msgstr ""
 
 msgid "You will need to update your local repositories to point to the new location."
-msgstr ""
+msgstr "ローカルリポジトリが新しい場所を示すように更新する必要があります。"
 
 msgid "You will not get any notifications via email"
 msgstr "通知メールを送信しません"

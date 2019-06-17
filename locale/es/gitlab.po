@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: es-ES\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-13 13:22\n"
+"PO-Revision-Date: 2019-06-14 19:56\n"
 
 msgid " Please sign in."
 msgstr " Por favor, inicie sesión."
@@ -5042,6 +5042,9 @@ msgstr "Se ha producido un error al cargar los datos de la rama. Por favor, vuel
 msgid "Error loading branches."
 msgstr "Error al cargar ramas."
 
+msgid "Error loading burndown chart data"
+msgstr ""
+
 msgid "Error loading file viewer."
 msgstr "Se ha producido un error al cargar el visor de archivos."
 
@@ -6394,6 +6397,9 @@ msgstr "Google Takeout"
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr "La autenticación de Google no se encuentra %{link_to_documentation}. Pregúntale a tu administrador de GitLab si quieres utilizar este servicio."
 
+msgid "Got it"
+msgstr ""
+
 msgid "Got it!"
 msgstr "¡Lo tengo!"
 
@@ -6872,6 +6878,9 @@ msgstr "Si algún trabajo supera este umbral de tiempo de espera, se marcará co
 
 msgid "If checked, group owners can manage LDAP group links and LDAP member overrides"
 msgstr "Si está marcado, los propietarios de grupos pueden administrar enlaces de grupo LDAP y anular los miembros LDAP"
+
+msgid "If checked, new group memberships and permissions can only be added via LDAP synchronization"
+msgstr ""
 
 msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored."
 msgstr ""
@@ -7469,6 +7478,9 @@ msgstr "en"
 msgid "Job|with"
 msgstr "con"
 
+msgid "Join Zoom meeting"
+msgstr ""
+
 msgid "Jul"
 msgstr "Jul"
 
@@ -7875,6 +7887,9 @@ msgstr "Bloquear"
 msgid "Lock %{issuableDisplayName}"
 msgstr "Bloquear %{issuableDisplayName}"
 
+msgid "Lock memberships to LDAP synchronization"
+msgstr ""
+
 msgid "Lock not found"
 msgstr "Bloqueo no encontrado"
 
@@ -8222,6 +8237,9 @@ msgstr "comenzó una discusión en el commit %{linkStart}%{commitId}%{linkEnd}"
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr "%{paragraphStart}cambió la descripción %{descriptionChangedTimes} veces %{timeDifferenceMinutes}%{paragraphEnd}"
+
+msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
+msgstr ""
 
 msgid "MergeRequest|Error loading full diff. Please try again."
 msgstr "Se ha producido un error al cargar el diff completo. Por favor, inténtalo de nuevo."
@@ -8698,6 +8716,9 @@ msgstr "Nueva etiqueta"
 
 msgid "New users set to external"
 msgstr "Nuevos usuarios configurados como externos"
+
+msgid "New! Suggest changes directly"
+msgstr ""
 
 msgid "New..."
 msgstr "Nuevo..."
@@ -9228,6 +9249,18 @@ msgstr "Dominios de Pages"
 
 msgid "Pages getting started guide"
 msgstr "Guía de inicio de Pages"
+
+msgid "Pagination|Go to first page"
+msgstr ""
+
+msgid "Pagination|Go to last page"
+msgstr ""
+
+msgid "Pagination|Go to next page"
+msgstr ""
+
+msgid "Pagination|Go to previous page"
+msgstr ""
 
 msgid "Pagination|Last »"
 msgstr "Último »"
@@ -10839,11 +10872,17 @@ msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] "Actualizar en un segundo para mostrar el estado actualizado..."
 msgstr[1] "Actualizar en %d segundos para mostrar el estado actualizado..."
 
+msgid "Regenerate instance ID"
+msgstr ""
+
 msgid "Regenerate key"
 msgstr "Regenerar clave"
 
 msgid "Regenerate recovery codes"
 msgstr "Regenerar los códigos de recuperación"
+
+msgid "Regenerating the instance ID can break integration depending on the client you are using."
+msgstr ""
 
 msgid "Regex pattern"
 msgstr "Patrón regex"
@@ -12713,6 +12752,9 @@ msgstr "Desbloqueado con éxito"
 msgid "Successfully unlocked"
 msgstr "Desbloqueado con éxito"
 
+msgid "Suggest code changes which are immediately applied. Try it out!"
+msgstr ""
+
 msgid "Suggested change"
 msgstr "Cambio sugerido"
 
@@ -14183,6 +14225,9 @@ msgstr "URL"
 msgid "Unable to connect to server: %{error}"
 msgstr "Imposible conectar con el servidor: %{error}"
 
+msgid "Unable to generate new instance ID"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr "No se puede cargar el fichero diff. %{button_try_again}"
 
@@ -14455,9 +14500,6 @@ msgstr "Cuotas de uso"
 
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"
 msgstr "Uso de los recursos del grupo a través de los proyectos en el grupo %{strong_start}%{group_name}%{strong_end}"
-
-msgid "UsageQuota|Usage quotas"
-msgstr "Cuotas de uso"
 
 msgid "UsageQuota|Usage since"
 msgstr "Uso desde"

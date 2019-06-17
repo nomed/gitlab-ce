@@ -195,6 +195,7 @@ ActiveRecord::Schema.define(version: 20190611161641) do
     t.text "encrypted_lets_encrypt_private_key_iv"
     t.boolean "dns_rebinding_protection_enabled", default: true, null: false
     t.boolean "default_project_deletion_protection", default: false, null: false
+    t.boolean "lock_memberships_to_ldap", default: false, null: false
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
@@ -1189,6 +1190,8 @@ ActiveRecord::Schema.define(version: 20190611161641) do
     t.integer "project_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "repository_type", limit: 2
+    t.index ["lfs_object_id"], name: "index_lfs_objects_projects_on_lfs_object_id", using: :btree
     t.index ["project_id"], name: "index_lfs_objects_projects_on_project_id", using: :btree
   end
 
