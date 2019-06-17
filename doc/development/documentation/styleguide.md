@@ -469,7 +469,7 @@ For a video tutorial, see [Video Title](link-to-video).
 ```
 
 Note that the docs site does not support embedded videos because
-GitLab's markdown do not support iframes yet, therefore, it wouldn't
+GitLab's markdown does not support iframes yet. Therefore, it wouldn't
 work in GitLab's `/help`.
 
 ## Code blocks
