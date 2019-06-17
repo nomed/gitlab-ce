@@ -74,9 +74,9 @@ To define specs for each environment:
 
 1. Navigate to your project's **Operations > Feature Flags**.
 1. Click on the **New Feature Flag** button or edit an existing flag.
-1. Set the status of the default [spec](../../../ci/environments.md#scoping-environments-with-specs-premium) (`*`). This status will be used for _all_ environments.
+1. Set the status of the default [spec](../../../ci/environments.md#scoping-environments-with-specs-premium) (`*`). Optionally set a rollout percentage.  This status and rollout combination will be used for _all_ environments.
 1. If you want to enable/disable the feature on a specific environment, create a new [spec](../../../ci/environments.md#scoping-environments-with-specs-premium) and type the environment name.
-1. Set the status of the additional spec. This status takes precedence over the default spec's status since we always use the most specific match available.
+1. Set the status of the additional spec. Optionally set a rollout percentage. This status and rollout combination takes precedence over the default spec's status and rollout since we always use the most specific match available.
 1. Click **Create feature flag** or **Update feature flag**.
 
 ![Feature flag specs list](img/specs_list.png)
@@ -84,6 +84,16 @@ To define specs for each environment:
 NOTE: **NOTE**
 We'd highly recommend you to use the [Environment](../../../ci/environments.md)
 feature in order to quickly assess which flag is enabled per environment.
+
+## Rollout
+
+Set a rollout to enable the feature for a percentage of authenticated users. Set a value of 15, for example, to enable the feature for 15% of authenticated users. A rollout percentage may be between 0 and 100. If the rollout field is blank, the feature is toggled on or off only by the status.
+
+**If this value is set, then the Unleash client must be given a user id for the feature to be enabled.** See the [Ruby example](#ruby-application-example) below.
+
+The status of an environment spec ultimately determines whether or not the flag is enabled at all.  For instance, a feature will always be disabled for every user if the matching environment spec has a disabled status, regardless of if the rollout is blank, 50, or even 100.  A feature will be enabled for 50% of logged in users if the matching environment spec has an enabled status and a 50 rollout.
+
+Rollout percentage is implemented using the Unleash [gradualRolloutUserId](https://github.com/Unleash/unleash/blob/master/docs/activation-strategies.md#gradualrolloutuserid) activation strategy.
 
 ## Integrating with your application
 
@@ -174,4 +184,35 @@ func main() {
     http.HandleFunc("/", helloServer)
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
+```
+
+### Ruby application example
+
+Here's an example of how to integrate the feature flags in a Ruby application.
+
+The Unleash client is given a user id for use with a percentage rollout.
+
+```ruby
+#!/usr/bin/env ruby
+
+require 'unleash'
+require 'unleash/context'
+
+unleash = Unleash::Client.new({
+  url: 'http://gitlab.com/api/v4/feature_flags/unleash/42',
+  app_name: 'production',
+  instance_id: '29QmjsW6KngPR5JNPMWx'
+})
+
+unleash_context = Unleash::Context.new
+# Replace "123" with the id of an authenticated user.
+# Note that the context's user id must be a string:
+# https://github.com/Unleash/unleash/blob/master/docs/unleash-context.md
+unleash_context.user_id = "123"
+
+if unleash.is_enabled?("my_feature_name", unleash_context)
+  puts "Feature enabled"
+else
+  puts "hello, world!"
+end
 ```
