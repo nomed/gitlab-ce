@@ -378,8 +378,7 @@ class GfmAutoComplete {
             if (labels.find(label => label.title.startsWith(lastCandidate))) {
               return lastCandidate;
             }
-          }
-          else {
+          } else {
             fetchData(this.$inputor, this.at);
           }
 
