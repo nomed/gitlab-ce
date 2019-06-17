@@ -41,7 +41,7 @@ export default {
 <template>
   <div class="discussion-with-resolve-btn">
     <reply-placeholder
-      buttonText="MergeRequests|Reply..."
+      button-text="MergeRequests|Reply..."
       class="qa-discussion-reply"
       @onClick="$emit('showReplyForm')"
     />

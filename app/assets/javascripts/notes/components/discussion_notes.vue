@@ -1,11 +1,11 @@
 <script>
 import { mapGetters } from 'vuex';
 import { SYSTEM_NOTE } from '../constants';
-import { __ } from '~/locale';
-import NoteableNote from './noteable_note.vue';
-import PlaceholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
-import PlaceholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
+import { __, n__ } from '~/locale';
+import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
+import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
+import NoteableNote from './noteable_note.vue';
 import ToggleRepliesWidget from './toggle_replies_widget.vue';
 import NoteEditedText from './note_edited_text.vue';
 
@@ -45,6 +45,16 @@ export default {
       required: false,
       default: '',
     },
+    shouldRenderDiffs: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      repliesExpanded: true,
+    };
   },
   computed: {
     ...mapGetters(['userCanReply']),
@@ -70,6 +80,9 @@ export default {
         url: this.discussion.discussion_path,
       };
     },
+    repliesLength() {
+      return n__(__('%d reply'), __('%d replies'), this.replies.length);
+    },
   },
   methods: {
     componentName(note) {
@@ -89,6 +102,9 @@ export default {
     },
     componentData(note) {
       return note.isPlaceholderNote ? note.notes[0] : note;
+    },
+    toggleReplies() {
+      this.repliesExpanded = !this.repliesExpanded;
     },
   },
 };
@@ -135,21 +151,69 @@ export default {
             @handle-delete-note="$emit('deleteNote')"
           />
         </template>
+        <slot :show-replies="isExpanded || !hasReplies" name="footer"></slot>
       </template>
       <template v-else>
-        <component
-          :is="componentName(note)"
-          v-for="(note, index) in discussion.notes"
-          :key="note.id"
-          :note="componentData(note)"
-          :help-page-path="helpPagePath"
-          :line="diffLine"
-          @handle-delete-note="$emit('deleteNote')"
-        >
-          <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"></slot>
-        </component>
+        <template v-if="shouldRenderDiffs">
+          <component
+            :is="componentName(note)"
+            v-for="(note, index) in discussion.notes"
+            :key="note.id"
+            :note="componentData(note)"
+            :help-page-path="helpPagePath"
+            :line="diffLine"
+            @handle-delete-note="$emit('deleteNote')"
+          >
+            <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"></slot>
+          </component>
+          <slot :show-replies="isExpanded || !hasReplies" name="footer"></slot>
+        </template>
+        <template v-else>
+          <component
+            :is="componentName(firstNote)"
+            :key="firstNote.id"
+            :note="componentData(firstNote)"
+            :help-page-path="helpPagePath"
+            :line="diffLine"
+            @handle-delete-note="$emit('deleteNote')"
+          >
+            <slot slot="avatar-badge" name="avatar-badge"></slot>
+          </component>
+          <div class="discussion-collapsible bordered-box clearfix">
+            <toggle-replies-widget
+              v-if="hasReplies"
+              :collapsed="!repliesExpanded"
+              :replies="replies"
+              class="discussion-toggle-replies"
+              @toggle="toggleReplies"
+            />
+            <div v-show="repliesExpanded">
+              <component
+                :is="componentName(note)"
+                v-for="(note, index) in replies"
+                :key="note.id"
+                :note="componentData(note)"
+                :help-page-path="helpPagePath"
+                :line="diffLine"
+                @handle-delete-note="$emit('deleteNote')"
+              >
+                <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"></slot>
+              </component>
+              <slot
+                v-if="repliesExpanded || !hasReplies"
+                :show-replies="isExpanded || !hasReplies"
+                name="footer"
+              ></slot>
+            </div>
+          </div>
+        </template>
       </template>
     </ul>
-    <slot :show-replies="isExpanded || !hasReplies" name="footer"></slot>
   </div>
 </template>
+
+<style>
+.red {
+  border: 1px solid red;
+}
+</style>

@@ -253,6 +253,11 @@ export default {
       clearDraft(this.autosaveKey);
     },
     saveReply(noteText, form, callback) {
+      if (!noteText) {
+        this.cancelReplyForm();
+        callback();
+        return;
+      }
       const postData = {
         in_reply_to_discussion_id: this.discussion.reply_id,
         target_type: this.getNoteableData.targetType,
@@ -365,6 +370,7 @@ Please check your network connection and try again.`;
               :is-expanded="isExpanded"
               :line="line"
               :should-group-replies="shouldGroupReplies"
+              :should-render-diffs="shouldRenderDiffs"
               @startReplying="showReplyForm"
               @toggleDiscussion="toggleDiscussionHandler"
               @deleteNote="deleteNoteHandler"
@@ -379,7 +385,7 @@ Please check your network connection and try again.`;
                 <div
                   v-else-if="showReplies"
                   :class="{ 'is-replying': isReplying }"
-                  class="discussion-reply-holder"
+                  class="discussion-reply-holder clearfix"
                 >
                   <user-avatar-link
                     v-if="!isReplying && currentUser"

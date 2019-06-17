@@ -39,7 +39,7 @@ describe('InlineDiffView', () => {
 
       Vue.nextTick(() => {
         expect(el.querySelectorAll('.notes_holder').length).toEqual(1);
-        expect(el.querySelectorAll('.notes_holder .note-discussion li').length).toEqual(5);
+        expect(el.querySelectorAll('.notes_holder .note-discussion li').length).toEqual(6);
         expect(el.innerText.indexOf('comment 5')).toBeGreaterThan(-1);
         component.$store.dispatch('setInitialNotes', []);
 
