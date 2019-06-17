@@ -456,7 +456,7 @@ directly to an HTML `img` tag:
 
 ## Videos
 
-Adding existing GitLab's YouTube video tutorials to the documentation is
+Adding GitLab's existing YouTube video tutorials to the documentation is
 highly encouraged, unless the video is outdated. Videos should not
 replace documentation, but complement or illustrate it.
 
