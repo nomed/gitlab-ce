@@ -1,127 +1,137 @@
 # Manage feature flags
 
-Starting from GitLab 9.3 we support feature flags for features in GitLab via
-[Flipper](https://github.com/jnunemaker/flipper/). You should use the `Feature`
-class (defined in `lib/feature.rb`) in your code to get, set and list feature
-flags.
-
-During runtime you can set the values for the gates via the
-[features API](../api/features.md) (accessible to admins only).
-
-## Feature groups
-
-Starting from GitLab 9.4 we support feature groups via
-[Flipper groups](https://github.com/jnunemaker/flipper/blob/v0.10.2/docs/Gates.md#2-group).
-
-Feature groups must be defined statically in `lib/feature.rb` (in the
-`.register_feature_groups` method), but their implementation can obviously be
-dynamic (querying the DB etc.).
-
-Once defined in `lib/feature.rb`, you will be able to activate a
-feature for a given feature group via the [`feature_group` param of the features API](../api/features.md#set-or-create-a-feature)
-
-For GitLab.com, [team members have access to feature flags through Chatops](chatops_on_gitlabcom.md). Only
-percentage gates are supported at this time. Setting a feature to be used 50% of
-the time, you should execute `/chatops run feature set my_feature_flag 50`.
+Feature flags can be used to gradually roll out changes, be
+it a new feature, or a performance improvement. By using feature flags, we can
+comfortably measure the impact of our changes, while still being able to easily
+disable those changes, without having to revert an entire release.
 
 ## Feature flags for user applications
 
-This document only covers feature flags used in the development of GitLab 
-itself. Feature flags in deployed user applications can be found at 
-[Feature Flags](../user/project/operations/feature_flags.md)
+This document only covers feature flags used in the development of GitLab
+itself. Feature flags in deployed user applications can be found at
+[Feature Flags feature documentation](../user/project/operations/feature_flags.md).
 
-## Developing with feature flags
+## Feature flags in GitLab development
 
-In general, it's better to have a group- or user-based gate, and you should prefer
-it over the use of percentage gates. This would make debugging easier, as you
-filter for example logs and errors based on actors too. Furthermore, this allows
-for enabling for the `gitlab-org` group first, while the rest of the users
-aren't impacted.
+The following highlights should be considered when deciding if feature flags should be leveraged:
 
-```ruby
-# Good
-Feature.enabled?(:feature_flag, project)
+* By default, the feature flags should be **off**.
+* Feature flags should remain in the codebase for as short period as possible to reduce the need for feature flag accounting.
+* Person operating with feature flags is responsible for clearly communicating the status of a feature behind the feature flag with responsible stakeholders.
+* Merge requests that make changes hidden behind a feature flag, or remove an
+existing feature flag because a feature is deemed stable should have the ~"feature flag"
+label assigned.
 
-# Avoid, if possible
-Feature.enabled?(:feature_flag)
-```
+In order to build the final release and present the feature for self-hosted
+customers, the feature flag should be removed. This should happen before the
+22nd, _at least_ 2 days before. Take into consideration that such action can make the feature
+available on GitLab.com shortly after the change to the feature flag is merged.
 
-To use feature gates based on actors, the model needs to respond to
-`flipper_id`. For example, to enable for the Foo model:
+While rare, release managers may decide to reject picking or revert a change in a stable
+branch, even when feature flags are used. This might be necessary if the changes
+are deemed problematic, too invasive, or there simply isn't enough time to
+properly test how the changes behave on GitLab.com.
 
-```ruby
-class Foo < ActiveRecord::Base
-  include FeatureGate
-end
-```
+One might be tempted to think that feature flags will delay the release of a
+feature by at least one month (= one release). This is not the case. A feature
+flag does not have to stick around for a specific amount of time
+(e.g. at least one release), instead they should stick around until the feature
+is deemed stable. Stable means it works on GitLab.com without causing any
+problems, such as outages.
 
-Features that are developed and are intended to be merged behind a feature flag
-should not include a changelog entry. The entry should be added in the merge
-request removing the feature flags.
+For more information on how to add a feature flag, and how to roll out changes using feature flags, read [through the documentation](rolling_out_changes_using_feature_flags.md).
 
-In the rare case that you need the feature flag to be on automatically, use
-`default_enabled: true` when checking:
+### When to use feature flags
 
-```ruby
-Feature.enabled?(:feature_flag, project, default_enabled: true)
-```
+Starting with GitLab 11.4, developers are required to use feature flags for
+non-trivial changes. Such changes include:
 
-For more information about rolling out changes using feature flags, refer to the
-[Rolling out changes using feature flags](rolling_out_changes_using_feature_flags.md)
-guide.
+- New features (e.g. a new merge request widget, epics, etc).
+- Complex performance improvements that may require additional testing in
+  production, such as rewriting complex queries.
+- Invasive changes to the user interface, such as a new navigation bar or the
+  removal of a sidebar.
+- Adding support for importing projects from a third-party service.
 
-### Frontend
+In all cases, those working on the changes can best decide if a feature flag is
+necessary. For example, changing the color of a button doesn't need a feature
+flag, while changing the navigation bar definitely needs one. In case you are
+uncertain if a feature flag is necessary, simply ask about this in the merge
+request, and those reviewing the changes will likely provide you with an answer.
 
-For frontend code you can use the method `push_frontend_feature_flag`, which is
-available to all controllers that inherit from `ApplicationController`. Using
-this method you can expose the state of a feature flag as follows:
+When using a feature flag for UI elements, make sure to _also_ use a feature
+flag for the underlying backend code, if there is any. This ensures there is
+absolutely no way to use the feature until it is enabled.
 
-```ruby
-before_action do
-  push_frontend_feature_flag(:vim_bindings)
-end
+### The cost of feature flags
 
-def index
-  # ...
-end
+When reading the above, one might be tempted to think this procedure is going to
+add a lot of work. Fortunately, this is not the case, and we'll show why. For
+this example we'll specify the cost of the work to do as a number, ranging from
+0 to infinity. The greater the number, the more expensive the work is. The cost
+does _not_ translate to time, it's just a way of measuring complexity of one
+change relative to another.
 
-def edit
-  # ...
-end
-```
+Let's say we are building a new feature, and we have determined that the cost of
+this is 10. We have also determined that the cost of adding a feature flag check
+in a variety of places is 1. If we do not use feature flags, and our feature
+works as intended, our total cost is 10. This however is the best case scenario.
+Optimising for the best case scenario is guaranteed to lead to trouble, whereas
+optimising for the worst case scenario is almost always better.
 
-You can then check for the state of the feature flag in JavaScript as follows:
+To illustrate this, let's say our feature causes an outage, and there's no
+immediate way to resolve it. This means we'd have to take the following steps to
+resolve the outage:
 
-```javascript
-if ( gon.features.vimBindings ) {
-  // ...
-}
-```
+1. Revert the release.
+1. Perform any cleanups that might be necessary, depending on the changes that
+   were made.
+1. Revert the commit, ensuring the "master" branch remains stable. This is
+   especially necessary if solving the problem can take days or even weeks.
+1. Pick the revert commit into the appropriate stable branches, ensuring we
+   don't block any future releases until the problem is resolved.
 
-The name of the feature flag in JavaScript will always be camelCased, meaning
-that checking for `gon.features.vim_bindings` would not work.
+As history has shown, these steps are time consuming, complex, often involve
+many developers, and worst of all: our users will have a bad experience using
+GitLab.com until the problem is resolved.
 
-### Specs
+Now let's say that all of this has an associated cost of 10. This means that in
+the worst case scenario, which we should optimise for, our total cost is now 20.
 
-In the test environment `Feature.enabled?` is stubbed to always respond to `true`,
-so we make sure behavior under feature flag doesn't go untested in some non-specific
-contexts.
+If we had used a feature flag, things would have been very different. We don't
+need to revert a release, and because feature flags are disabled by default we
+don't need to revert and pick any Git commits. In fact, all we have to do is
+disable the feature, and in the worst case, perform cleanup. Let's say that
+the cost of this is 2. In this case, our best case cost is 11: 10 to build the
+feature, and 1 to add the feature flag. The worst case cost is now 13: 10 to
+build the feature, 1 to add the feature flag, and 2 to disable and clean up.
 
-Whenever a feature flag is present, make sure to test _both_ states of the
-feature flag.
+Here we can see that in the best case scenario the work necessary is only a tiny
+bit more compared to not using a feature flag. Meanwhile, the process of
+reverting our changes has been made significantly and reliably cheaper.
 
-See the
-[testing guide](testing_guide/best_practices.md#feature-flags-in-tests)
-for information and examples on how to stub feature flags in tests.
+In other words, feature flags do not slow down the development process. Instead,
+they speed up the process as managing incidents now becomes _much_ easier. Once
+continuous deployments are easier to perform, the time to iterate on a feature
+is reduced even further, as you no longer need to wait weeks before your changes
+are available on GitLab.com.
 
-## Enabling a feature flag (in development)
+#### Feature groups
 
-In the rails console (`rails c`), enter the following command to enable your feature flag
+This document was moved to [another location](rolling_out_changes_using_feature_flags.md).
 
-```ruby
-Feature.enable(:feature_flag_name)
-```
+#### Developing with feature flags
 
-## Enabling a feature flag (in production)
+This document was moved to [another location](rolling_out_changes_using_feature_flags.md).
 
-Check how to [roll out changes using feature flags](rolling_out_changes_using_feature_flags.md).
+#### Frontend
+
+This document was moved to [another location](rolling_out_changes_using_feature_flags.md).
+
+#### Specs
+
+This document was moved to [another location](rolling_out_changes_using_feature_flags.md).
+
+#### Enabling a feature flag (in production)
+
+This document was moved to [another location](rolling_out_changes_using_feature_flags.md).
