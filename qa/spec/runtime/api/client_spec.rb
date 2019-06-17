@@ -20,9 +20,7 @@ describe QA::Runtime::API::Client do
       end
 
       it 'returns specified token from env' do
-        client = described_class.new
-
-        expect(client.personal_access_token).to eq 'a_token'
+        expect(subject.personal_access_token).to eq 'a_token'
       end
     end
 
