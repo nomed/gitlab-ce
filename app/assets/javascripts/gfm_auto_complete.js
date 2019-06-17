@@ -320,6 +320,7 @@ class GfmAutoComplete {
   }
 
   setupLabels($input) {
+    const instance = this;
     const fetchData = this.fetchData.bind(this);
     const LABEL_COMMAND = { LABEL: '/label', UNLABEL: '/unlabel', RELABEL: '/relabel' };
     let command = '';
@@ -350,7 +351,6 @@ class GfmAutoComplete {
           }));
         },
         matcher(flag, subtext) {
-          const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           const subtextNodes = subtext
             .split(/\n+/g)
             .pop()
@@ -368,6 +368,19 @@ class GfmAutoComplete {
             return null;
           });
 
+          // If any label matches the inserted text after the last `~`, suggest those labels,
+          // even if any spaces or funky characters were typed.
+          // This allows matching labels like "Accepting merge requests".
+          const labels = instance.cachedData[flag];
+          if (labels) {
+            const candidateMatches = subtext.split(flag);
+            const lastCandidate = candidateMatches[candidateMatches.length - 1];
+            if (labels.find(label => label.title.startsWith(lastCandidate))) {
+              return lastCandidate;
+            }
+          }
+
+          const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;
         },
         filter(query, data, searchKey) {
