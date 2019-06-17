@@ -30,11 +30,11 @@ describe QA::Runtime::API::Client do
       end
 
       it 'returns a created token' do
-        client = described_class.new(user: { username: 'foo' })
+        subject { described_class.new(user: { username: 'foo' }) }
 
-        expect(client).to receive(:create_personal_access_token).and_return('created_token')
+        expect(subject).to receive(:create_personal_access_token).and_return('created_token')
 
-        expect(client.personal_access_token).to eq 'created_token'
+        expect(subject.personal_access_token).to eq 'created_token'
       end
     end
 
