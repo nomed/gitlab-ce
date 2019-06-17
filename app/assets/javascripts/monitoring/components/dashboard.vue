@@ -253,6 +253,7 @@ export default {
               :key="environment.id"
               :active="environment.name === currentEnvironmentName"
               active-class="is-active"
+              :href="environment.metrics_path"
               >{{ environment.name }}</gl-dropdown-item
             >
           </gl-dropdown>
