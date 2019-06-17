@@ -1,0 +1,5 @@
+---
+title: Fix broken environment selector on Monitoring dashboard
+merge_request: 29754
+author:
+type: fixed
