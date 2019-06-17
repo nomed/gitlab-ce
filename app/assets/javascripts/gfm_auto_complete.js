@@ -379,6 +379,9 @@ class GfmAutoComplete {
               return lastCandidate;
             }
           }
+          else {
+            fetchData(this.$inputor, this.at);
+          }
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;

@@ -1,16 +1,16 @@
 require 'rails_helper'
 
 describe 'GFM autocomplete', :js do
-  let(:issue_xss_title) {'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'}
-  let(:user_xss_title) {'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'}
-  let(:label_xss_title) {'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a'}
-  let(:milestone_xss_title) {'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a'}
+  let(:issue_xss_title) { 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
+  let(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
+  let(:label_xss_title) { 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a' }
+  let(:milestone_xss_title) { 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a' }
 
-  let(:user_xss) {create(:user, name: user_xss_title, username: 'xss.user')}
-  let(:user) {create(:user, name: '💃speciąl someone💃', username: 'someone.special')}
-  let(:project) {create(:project)}
-  let(:label) {create(:label, project: project, title: 'special+')}
-  let(:issue) {create(:issue, project: project)}
+  let(:user_xss) { create(:user, name: user_xss_title, username: 'xss.user') }
+  let(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
+  let(:project) { create(:project) }
+  let(:label) { create(:label, project: project, title: 'special+') }
+  let(:issue) { create(:issue, project: project) }
 
   before do
     project.add_maintainer(user)
@@ -351,36 +351,36 @@ describe 'GFM autocomplete', :js do
   end
 
   context 'issues' do
-    let(:object) {issue}
-    let(:expected_body) {object.to_reference}
+    let(:object) { issue }
+    let(:expected_body) { object.to_reference }
 
     it_behaves_like 'autocomplete suggestions'
   end
 
   context 'merge requests' do
-    let(:object) {create(:merge_request, source_project: project)}
-    let(:expected_body) {object.to_reference}
+    let(:object) { create(:merge_request, source_project: project) }
+    let(:expected_body) { object.to_reference }
 
     it_behaves_like 'autocomplete suggestions'
   end
 
   context 'project snippets' do
-    let!(:object) {create(:project_snippet, project: project, title: 'code snippet')}
-    let(:expected_body) {object.to_reference}
+    let!(:object) { create(:project_snippet, project: project, title: 'code snippet') }
+    let(:expected_body) { object.to_reference }
 
     it_behaves_like 'autocomplete suggestions'
   end
 
   context 'label' do
-    let!(:object) {label}
-    let(:expected_body) {object.title}
+    let!(:object) { label }
+    let(:expected_body) { object.title }
 
     it_behaves_like 'autocomplete suggestions'
   end
 
   context 'milestone' do
-    let!(:object) {create(:milestone, project: project)}
-    let(:expected_body) {object.to_reference}
+    let!(:object) { create(:milestone, project: project) }
+    let(:expected_body) { object.to_reference }
 
     it_behaves_like 'autocomplete suggestions'
   end
@@ -404,12 +404,12 @@ describe 'GFM autocomplete', :js do
     page.within('.atwho-container') do
       if shown
         expect(page).to have_selector('.atwho-view li', count: shown.size)
-        shown.each {|label| expect(page).to have_content(label.title)}
+        shown.each { |label| expect(page).to have_content(label.title) }
       end
 
       if not_shown
         expect(page).not_to have_selector('.atwho-view li') unless shown
-        not_shown.each {|label| expect(page).not_to have_content(label.title)}
+        not_shown.each { |label| expect(page).not_to have_content(label.title) }
       end
     end
   end
