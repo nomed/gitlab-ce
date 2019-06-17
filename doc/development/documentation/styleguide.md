@@ -100,7 +100,7 @@ use regular Markdown markup, following the rules in the linked style guide.
 
 Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
 
-Hard-coded HTML is valid, although it's discoraged to be used while we have `/help`. HTML is permitted as long as:
+Hard-coded HTML is valid, although it's discouraged to be used while we have `/help`. HTML is permitted as long as:
 
 - There's no equivalent markup in markdown.
 - Advanced tables are necessary.
