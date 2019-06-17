@@ -466,7 +466,7 @@ describe Ci::Pipeline, :mailer do
           target_branch: 'master')
       end
 
-      let(:pipeline) { merge_request.merge_request_pipelines.first }
+      let(:pipeline) { merge_request.pipelines_for_merge_request.first }
 
       it 'does not return the pipeline' do
         is_expected.to be_empty
@@ -1378,6 +1378,40 @@ describe Ci::Pipeline, :mailer do
         expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
 
         pipeline.cancel
+      end
+    end
+
+    describe 'auto merge' do
+      let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+      let(:pipeline) do
+        create(:ci_pipeline, :running, project: merge_request.source_project,
+                                       ref: merge_request.source_branch,
+                                       sha: merge_request.diff_head_sha)
+      end
+
+      before do
+        merge_request.update_head_pipeline
+      end
+
+      %w[succeed! drop! cancel! skip!].each do |action|
+        context "when the pipeline recieved #{action} event" do
+          it 'performs AutoMergeProcessWorker' do
+            expect(AutoMergeProcessWorker).to receive(:perform_async).with(merge_request.id)
+
+            pipeline.public_send(action)
+          end
+        end
+      end
+
+      context 'when auto merge is not enabled in the merge request' do
+        let(:merge_request) { create(:merge_request) }
+
+        it 'performs AutoMergeProcessWorker' do
+          expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+          pipeline.succeed!
+        end
       end
     end
 
@@ -2939,6 +2973,38 @@ describe Ci::Pipeline, :mailer do
 
       it "returns false" do
         expect(subject).to be_falsey
+      end
+    end
+  end
+
+  describe '#find_stage_by_name' do
+    let(:pipeline) { create(:ci_pipeline) }
+    let(:stage_name) { 'test' }
+
+    let(:stage) do
+      create(:ci_stage_entity,
+             pipeline: pipeline,
+             project: pipeline.project,
+             name: 'test')
+    end
+
+    before do
+      create_list(:ci_build, 2, pipeline: pipeline, stage: stage.name)
+    end
+
+    subject { pipeline.find_stage_by_name!(stage_name) }
+
+    context 'when stage exists' do
+      it { is_expected.to eq(stage) }
+    end
+
+    context 'when stage does not exist' do
+      let(:stage_name) { 'build' }
+
+      it 'raises an ActiveRecord exception' do
+        expect do
+          subject
+        end.to raise_exception(ActiveRecord::RecordNotFound)
       end
     end
   end

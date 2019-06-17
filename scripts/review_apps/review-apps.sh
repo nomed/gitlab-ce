@@ -209,6 +209,7 @@ HELM_CMD=$(cat << EOF
     --timeout 600 \
     --set global.appConfig.enableUsagePing=false \
     --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
+    --set global.imagePullPolicy=Always \
     --set global.hosts.hostSuffix="$HOST_SUFFIX" \
     --set global.hosts.domain="$REVIEW_APPS_DOMAIN" \
     --set certmanager.install=false \
@@ -216,6 +217,7 @@ HELM_CMD=$(cat << EOF
     --set global.ingress.configureCertmanager=false \
     --set global.ingress.tls.secretName=tls-cert \
     --set global.ingress.annotations."external-dns\.alpha\.kubernetes\.io/ttl"="10"
+    --set nginx-ingress.controller.service.enableHttp=false \
     --set nginx-ingress.defaultBackend.resources.requests.memory=7Mi \
     --set nginx-ingress.controller.resources.requests.memory=440M \
     --set nginx-ingress.controller.replicaCount=2 \

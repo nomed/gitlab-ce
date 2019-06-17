@@ -3,6 +3,7 @@ require "spec_helper"
 
 describe Gitlab::Git::Repository, :seed_helper do
   include Gitlab::EncodingHelper
+  include RepoHelpers
   using RSpec::Parameterized::TableSyntax
 
   shared_examples 'wrapping gRPC errors' do |gitaly_client_class, gitaly_client_method|
@@ -27,51 +28,6 @@ describe Gitlab::Git::Repository, :seed_helper do
   let(:repository_rugged) { Rugged::Repository.new(repository_path) }
   let(:storage_path) { TestEnv.repos_path }
   let(:user) { build(:user) }
-
-  describe '.create_hooks' do
-    let(:repo_path) { File.join(storage_path, 'hook-test.git') }
-    let(:hooks_dir) { File.join(repo_path, 'hooks') }
-    let(:target_hooks_dir) { Gitlab::Shell.new.hooks_path }
-    let(:existing_target) { File.join(repo_path, 'foobar') }
-
-    before do
-      FileUtils.rm_rf(repo_path)
-      FileUtils.mkdir_p(repo_path)
-    end
-
-    context 'hooks is a directory' do
-      let(:existing_file) { File.join(hooks_dir, 'my-file') }
-
-      before do
-        FileUtils.mkdir_p(hooks_dir)
-        FileUtils.touch(existing_file)
-        described_class.create_hooks(repo_path, target_hooks_dir)
-      end
-
-      it { expect(File.readlink(hooks_dir)).to eq(target_hooks_dir) }
-      it { expect(Dir[File.join(repo_path, "hooks.old.*/my-file")].count).to eq(1) }
-    end
-
-    context 'hooks is a valid symlink' do
-      before do
-        FileUtils.mkdir_p existing_target
-        File.symlink(existing_target, hooks_dir)
-        described_class.create_hooks(repo_path, target_hooks_dir)
-      end
-
-      it { expect(File.readlink(hooks_dir)).to eq(target_hooks_dir) }
-    end
-
-    context 'hooks is a broken symlink' do
-      before do
-        FileUtils.rm_f(existing_target)
-        File.symlink(existing_target, hooks_dir)
-        described_class.create_hooks(repo_path, target_hooks_dir)
-      end
-
-      it { expect(File.readlink(hooks_dir)).to eq(target_hooks_dir) }
-    end
-  end
 
   describe "Respond to" do
     subject { repository }
@@ -228,6 +184,18 @@ describe Gitlab::Git::Repository, :seed_helper do
     subject { repository.size }
 
     it { is_expected.to be < 2 }
+  end
+
+  describe '#object_directory_size' do
+    before do
+      allow(repository.gitaly_repository_client)
+        .to receive(:get_object_directory_size)
+        .and_return(2)
+    end
+
+    subject { repository.object_directory_size }
+
+    it { is_expected.to eq 2048 }
   end
 
   describe '#empty?' do
@@ -1958,13 +1926,6 @@ describe Gitlab::Git::Repository, :seed_helper do
       expect { imported_repo.fsck }.not_to raise_exception
     end
 
-    it 'creates a symlink to the global hooks dir' do
-      imported_repo.create_from_bundle(valid_bundle_path)
-      hooks_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { File.join(imported_repo.path, 'hooks') }
-
-      expect(File.readlink(hooks_path)).to eq(Gitlab::Shell.new.hooks_path)
-    end
-
     it 'raises an error if the bundle is an attempted malicious payload' do
       expect do
         imported_repo.create_from_bundle(malicious_bundle_path)
@@ -2209,86 +2170,48 @@ describe Gitlab::Git::Repository, :seed_helper do
     repository_rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
   end
 
-  # Build the options hash that's passed to Rugged::Commit#create
-  def commit_options(repo, index, target, ref, message)
-    options = {}
-    options[:tree] = index.write_tree(repo)
-    options[:author] = {
-      email: "test@example.com",
-      name: "Test Author",
-      time: Time.gm(2014, "mar", 3, 20, 15, 1)
-    }
-    options[:committer] = {
-      email: "test@example.com",
-      name: "Test Author",
-      time: Time.gm(2014, "mar", 3, 20, 15, 1)
-    }
-    options[:message] ||= message
-    options[:parents] = repo.empty? ? [] : [target].compact
-    options[:update_ref] = ref
-
-    options
-  end
-
-  # Writes a new commit to the repo and returns a Rugged::Commit.  Replaces the
-  # contents of CHANGELOG with a single new line of text.
-  def new_commit_edit_old_file(repo)
-    oid = repo.write("I replaced the changelog with this text", :blob)
-    index = repo.index
-    index.read_tree(repo.head.target.tree)
-    index.add(path: "CHANGELOG", oid: oid, mode: 0100644)
-
-    options = commit_options(
-      repo,
-      index,
-      repo.head.target,
-      "HEAD",
-      "Edit CHANGELOG in its original location"
-    )
-
-    sha = Rugged::Commit.create(repo, options)
-    repo.lookup(sha)
-  end
-
-  # Writes a new commit to the repo and returns a Rugged::Commit.  Replaces the
-  # contents of the specified file_path with new text.
-  def new_commit_edit_new_file(repo, file_path, commit_message, text, branch = repo.head)
-    oid = repo.write(text, :blob)
-    index = repo.index
-    index.read_tree(branch.target.tree)
-    index.add(path: file_path, oid: oid, mode: 0100644)
-    options = commit_options(repo, index, branch.target, branch.canonical_name, commit_message)
-    sha = Rugged::Commit.create(repo, options)
-    repo.lookup(sha)
-  end
-
-  # Writes a new commit to the repo and returns a Rugged::Commit.  Replaces the
-  # contents of encoding/CHANGELOG with new text.
-  def new_commit_edit_new_file_on_branch(repo, file_path, branch_name, commit_message, text)
-    branch = repo.branches[branch_name]
-    new_commit_edit_new_file(repo, file_path, commit_message, text, branch)
-  end
-
-  # Writes a new commit to the repo and returns a Rugged::Commit.  Moves the
-  # CHANGELOG file to the encoding/ directory.
-  def new_commit_move_file(repo)
-    blob_oid = repo.head.target.tree.detect { |i| i[:name] == "CHANGELOG" }[:oid]
-    file_content = repo.lookup(blob_oid).content
-    oid = repo.write(file_content, :blob)
-    index = repo.index
-    index.read_tree(repo.head.target.tree)
-    index.add(path: "encoding/CHANGELOG", oid: oid, mode: 0100644)
-    index.remove("CHANGELOG")
-
-    options = commit_options(repo, index, repo.head.target, "HEAD", "Move CHANGELOG to encoding/")
-
-    sha = Rugged::Commit.create(repo, options)
-    repo.lookup(sha)
-  end
-
   def refs(dir)
     IO.popen(%W[git -C #{dir} for-each-ref], &:read).split("\n").map do |line|
       line.split("\t").last
+    end
+  end
+
+  describe '#disconnect_alternates' do
+    let(:project) { create(:project, :repository) }
+    let(:pool_repository) { create(:pool_repository) }
+    let(:repository) { project.repository }
+    let(:repository_path) { File.join(TestEnv.repos_path, repository.relative_path) }
+    let(:object_pool) { pool_repository.object_pool }
+    let(:object_pool_path) { File.join(TestEnv.repos_path, object_pool.repository.relative_path) }
+    let(:object_pool_rugged) { Rugged::Repository.new(object_pool_path) }
+
+    before do
+      object_pool.create
+    end
+
+    it 'does not raise an error when disconnecting a non-linked repository' do
+      expect { repository.disconnect_alternates }.not_to raise_error
+    end
+
+    it 'removes the alternates file' do
+      object_pool.link(repository)
+
+      alternates_file = File.join(repository_path, "objects", "info", "alternates")
+      expect(File.exist?(alternates_file)).to be_truthy
+
+      repository.disconnect_alternates
+
+      expect(File.exist?(alternates_file)).to be_falsey
+    end
+
+    it 'can still access objects in the object pool' do
+      object_pool.link(repository)
+      new_commit = new_commit_edit_old_file(object_pool_rugged)
+      expect(repository.commit(new_commit.oid).id).to eq(new_commit.oid)
+
+      repository.disconnect_alternates
+
+      expect(repository.commit(new_commit.oid).id).to eq(new_commit.oid)
     end
   end
 end

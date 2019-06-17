@@ -1,12 +1,17 @@
 import Clusters from '~/clusters/clusters_bundle';
-import { APPLICATION_STATUS, INGRESS_DOMAIN_SUFFIX } from '~/clusters/constants';
+import {
+  APPLICATION_STATUS,
+  INGRESS_DOMAIN_SUFFIX,
+  APPLICATIONS,
+  RUNNER,
+} from '~/clusters/constants';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { loadHTMLFixture } from 'helpers/fixtures';
 import { setTestTimeout } from 'helpers/timeout';
 import $ from 'jquery';
 
-const { INSTALLING, INSTALLABLE, INSTALLED } = APPLICATION_STATUS;
+const { INSTALLING, INSTALLABLE, INSTALLED, UNINSTALLING } = APPLICATION_STATUS;
 
 describe('Clusters', () => {
   setTestTimeout(1000);
@@ -209,58 +214,35 @@ describe('Clusters', () => {
         expect(cluster.errorContainer.classList.contains('hidden')).toBeFalsy();
       });
     });
+
+    describe('when cluster is unreachable', () => {
+      it('should show the unreachable warning container', () => {
+        cluster.updateContainer(null, 'unreachable');
+
+        expect(cluster.unreachableContainer.classList.contains('hidden')).toBe(false);
+      });
+    });
+
+    describe('when cluster has an authentication failure', () => {
+      it('should show the authentication failure warning container', () => {
+        cluster.updateContainer(null, 'authentication_failure');
+
+        expect(cluster.authenticationFailureContainer.classList.contains('hidden')).toBe(false);
+      });
+    });
   });
 
   describe('installApplication', () => {
-    it('tries to install helm', () => {
+    it.each(APPLICATIONS)('tries to install %s', applicationId => {
       jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
 
-      cluster.store.state.applications.helm.status = INSTALLABLE;
+      cluster.store.state.applications[applicationId].status = INSTALLABLE;
 
-      cluster.installApplication({ id: 'helm' });
+      cluster.installApplication({ id: applicationId });
 
-      expect(cluster.store.state.applications.helm.status).toEqual(INSTALLING);
-      expect(cluster.store.state.applications.helm.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('helm', undefined);
-    });
-
-    it('tries to install ingress', () => {
-      jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
-
-      cluster.store.state.applications.ingress.status = INSTALLABLE;
-
-      cluster.installApplication({ id: 'ingress' });
-
-      expect(cluster.store.state.applications.ingress.status).toEqual(INSTALLING);
-      expect(cluster.store.state.applications.ingress.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('ingress', undefined);
-    });
-
-    it('tries to install runner', () => {
-      jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
-
-      cluster.store.state.applications.runner.status = INSTALLABLE;
-
-      cluster.installApplication({ id: 'runner' });
-
-      expect(cluster.store.state.applications.runner.status).toEqual(INSTALLING);
-      expect(cluster.store.state.applications.runner.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('runner', undefined);
-    });
-
-    it('tries to install jupyter', () => {
-      jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
-
-      cluster.installApplication({
-        id: 'jupyter',
-        params: { hostname: cluster.store.state.applications.jupyter.hostname },
-      });
-
-      cluster.store.state.applications.jupyter.status = INSTALLABLE;
-      expect(cluster.store.state.applications.jupyter.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalledWith('jupyter', {
-        hostname: cluster.store.state.applications.jupyter.hostname,
-      });
+      expect(cluster.store.state.applications[applicationId].status).toEqual(INSTALLING);
+      expect(cluster.store.state.applications[applicationId].requestReason).toEqual(null);
+      expect(cluster.service.installApplication).toHaveBeenCalledWith(applicationId, undefined);
     });
 
     it('sets error request status when the request fails', () => {
@@ -272,13 +254,40 @@ describe('Clusters', () => {
 
       const promise = cluster.installApplication({ id: 'helm' });
 
-      expect(cluster.store.state.applications.helm.status).toEqual(INSTALLING);
-      expect(cluster.store.state.applications.helm.requestReason).toEqual(null);
-      expect(cluster.service.installApplication).toHaveBeenCalled();
-
       return promise.then(() => {
         expect(cluster.store.state.applications.helm.status).toEqual(INSTALLABLE);
         expect(cluster.store.state.applications.helm.installFailed).toBe(true);
+
+        expect(cluster.store.state.applications.helm.requestReason).toBeDefined();
+      });
+    });
+  });
+
+  describe('uninstallApplication', () => {
+    it.each(APPLICATIONS)('tries to uninstall %s', applicationId => {
+      jest.spyOn(cluster.service, 'uninstallApplication').mockResolvedValueOnce();
+
+      cluster.store.state.applications[applicationId].status = INSTALLED;
+
+      cluster.uninstallApplication({ id: applicationId });
+
+      expect(cluster.store.state.applications[applicationId].status).toEqual(UNINSTALLING);
+      expect(cluster.store.state.applications[applicationId].requestReason).toEqual(null);
+      expect(cluster.service.uninstallApplication).toHaveBeenCalledWith(applicationId);
+    });
+
+    it('sets error request status when the uninstall request fails', () => {
+      jest
+        .spyOn(cluster.service, 'uninstallApplication')
+        .mockRejectedValueOnce(new Error('STUBBED ERROR'));
+
+      cluster.store.state.applications.helm.status = INSTALLED;
+
+      const promise = cluster.uninstallApplication({ id: 'helm' });
+
+      return promise.then(() => {
+        expect(cluster.store.state.applications.helm.status).toEqual(INSTALLED);
+        expect(cluster.store.state.applications.helm.uninstallFailed).toBe(true);
 
         expect(cluster.store.state.applications.helm.requestReason).toBeDefined();
       });
@@ -347,6 +356,32 @@ describe('Clusters', () => {
 
         expect(cluster.ingressDomainHelpText.classList.contains('hide')).toEqual(true);
       });
+    });
+  });
+
+  describe('updateApplication', () => {
+    const params = { version: '1.0.0' };
+    let storeUpdateApplication;
+    let installApplication;
+
+    beforeEach(() => {
+      storeUpdateApplication = jest.spyOn(cluster.store, 'updateApplication');
+      installApplication = jest.spyOn(cluster.service, 'installApplication');
+
+      cluster.updateApplication({ id: RUNNER, params });
+    });
+
+    afterEach(() => {
+      storeUpdateApplication.mockRestore();
+      installApplication.mockRestore();
+    });
+
+    it('calls store updateApplication method', () => {
+      expect(storeUpdateApplication).toHaveBeenCalledWith(RUNNER);
+    });
+
+    it('sends installApplication request', () => {
+      expect(installApplication).toHaveBeenCalledWith(RUNNER, params);
     });
   });
 });

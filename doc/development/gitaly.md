@@ -63,6 +63,8 @@ If your test-suite is failing with Gitaly issues, as a first step, try running:
 rm -rf tmp/tests/gitaly
 ```
 
+During rspec tests, the Gitaly instance will write logs to `gitlab/log/gitaly-test.log`.
+
 ## Legacy Rugged code
 
 While Gitaly can handle all Git access, many of GitLab customers still
@@ -243,7 +245,7 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
      // go implementation
    } else {
    	findAllTagsRequests.WithLabelValues("ruby").Inc()
-     // ruby impelmentation
+     // ruby implementation
    }
    ```
 

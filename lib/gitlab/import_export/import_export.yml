@@ -157,6 +157,9 @@ excluded_attributes:
     - :when
     - :artifacts_file
     - :artifacts_metadata
+    - :artifacts_file_store
+    - :artifacts_metadata_store
+    - :artifacts_size
     - :commands
   push_event_payload:
     - :event_id
@@ -177,6 +180,8 @@ excluded_attributes:
     - :enabled
 
 methods:
+  notes:
+    - :type
   labels:
     - :type
   label:

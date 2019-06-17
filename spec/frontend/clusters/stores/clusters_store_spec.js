@@ -63,6 +63,8 @@ describe('Clusters Store', () => {
             installed: false,
             installFailed: false,
             uninstallable: false,
+            uninstallSuccessful: false,
+            uninstallFailed: false,
           },
           ingress: {
             title: 'Ingress',
@@ -74,6 +76,8 @@ describe('Clusters Store', () => {
             installed: false,
             installFailed: true,
             uninstallable: false,
+            uninstallSuccessful: false,
+            uninstallFailed: false,
           },
           runner: {
             title: 'GitLab Runner',
@@ -81,14 +85,15 @@ describe('Clusters Store', () => {
             statusReason: mockResponseData.applications[2].status_reason,
             requestReason: null,
             version: mockResponseData.applications[2].version,
-            upgradeAvailable: mockResponseData.applications[2].update_available,
+            updateAvailable: mockResponseData.applications[2].update_available,
             chartRepo: 'https://gitlab.com/charts/gitlab-runner',
             installed: false,
             installFailed: false,
-            updateAcknowledged: true,
             updateFailed: false,
             updateSuccessful: false,
             uninstallable: false,
+            uninstallSuccessful: false,
+            uninstallFailed: false,
           },
           prometheus: {
             title: 'Prometheus',
@@ -98,6 +103,8 @@ describe('Clusters Store', () => {
             installed: false,
             installFailed: true,
             uninstallable: false,
+            uninstallSuccessful: false,
+            uninstallFailed: false,
           },
           jupyter: {
             title: 'JupyterHub',
@@ -108,6 +115,8 @@ describe('Clusters Store', () => {
             installed: false,
             installFailed: false,
             uninstallable: false,
+            uninstallSuccessful: false,
+            uninstallFailed: false,
           },
           knative: {
             title: 'Knative',
@@ -121,6 +130,10 @@ describe('Clusters Store', () => {
             installed: false,
             installFailed: false,
             uninstallable: false,
+            uninstallSuccessful: false,
+            uninstallFailed: false,
+            updateSuccessful: false,
+            updateFailed: false,
           },
           cert_manager: {
             title: 'Cert-Manager',
@@ -131,6 +144,8 @@ describe('Clusters Store', () => {
             email: mockResponseData.applications[6].email,
             installed: false,
             uninstallable: false,
+            uninstallSuccessful: false,
+            uninstallFailed: false,
           },
         },
       });
