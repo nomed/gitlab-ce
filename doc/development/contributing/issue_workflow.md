@@ -57,7 +57,7 @@ Subject labels are always all-lowercase.
 
 ## Team labels 
 
-**Important**: Team labels will be soon deprecated in favor of [Group labels](#group-labels). 
+**Important**: Most of the team labels will be soon deprecated in favor of [Group labels](#group-labels). 
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
