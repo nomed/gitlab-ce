@@ -6,7 +6,7 @@ import {
   selectCollapseButton,
   selectForm,
   selectFormContainer,
-  selectNoteContainer
+  selectNoteContainer,
 } from './utils';
 import { commentIcon, compressIcon } from './wrapper_icons';
 

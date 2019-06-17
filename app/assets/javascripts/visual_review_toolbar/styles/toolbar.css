@@ -27,7 +27,7 @@
 }
 
 #gitlab-form-wrapper {
-  overflow: scroll;
+  overflow: auto;
   display: flex;
   flex-direction: row-reverse;
   border-radius: 4px;
@@ -36,6 +36,7 @@
 #gitlab-review-container {
   max-width: 22rem;
   max-height: 22rem;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   position: fixed;

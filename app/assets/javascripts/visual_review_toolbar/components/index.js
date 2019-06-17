@@ -1,5 +1,12 @@
 import { comment, postComment } from './comment';
-import { COLLAPSE_BUTTON, COMMENT_BUTTON, FORM_CONTAINER, LOGIN, LOGOUT, REVIEW_CONTAINER } from './constants';
+import {
+  COLLAPSE_BUTTON,
+  COMMENT_BUTTON,
+  FORM_CONTAINER,
+  LOGIN,
+  LOGOUT,
+  REVIEW_CONTAINER,
+} from './constants';
 import { authorizeUser, login } from './login';
 import { note } from './note';
 import { selectContainer } from './utils';

@@ -5,7 +5,7 @@ import {
   selectCommentBox,
   selectCommentButton,
   selectNote,
-  selectNoteContainer
+  selectNoteContainer,
 } from './utils';
 
 const comment = `
@@ -37,7 +37,7 @@ const resetCommentBox = () => {
 const resetCommentText = () => {
   const commentBox = selectCommentBox();
   commentBox.value = '';
-}
+};
 
 const resetComment = () => {
   resetCommentButton();
@@ -45,7 +45,7 @@ const resetComment = () => {
   resetCommentText();
 };
 
-const confirmAndClear = (feedbackInfo) => {
+const confirmAndClear = feedbackInfo => {
   const commentButton = selectCommentButton();
   const currentNote = selectNote();
   const noteContainer = selectNoteContainer();

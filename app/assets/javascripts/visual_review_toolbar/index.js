@@ -22,10 +22,6 @@ window.addEventListener('load', () => {
 
   const mainContent = buttonAndForm(getInitialView(window));
   const container = document.createElement('div');
-  // buttonAndForm.setAttribute('id', FORM_CONTAINER);
-  // buttonAndForm.className = 'gitlab-form-open';
-  // buttonAndForm.insertAdjacentHTML('beforeend', toggleButton);
-  // buttonAndForm.insertAdjacentHTML('beforeend', form(content));
   container.setAttribute('id', REVIEW_CONTAINER);
   container.insertAdjacentHTML('beforeend', note);
   container.insertAdjacentHTML('beforeend', mainContent);
