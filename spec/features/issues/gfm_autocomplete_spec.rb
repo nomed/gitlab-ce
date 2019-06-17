@@ -293,6 +293,32 @@ describe 'GFM autocomplete', :js do
         expect(find('.atwho-view-ul').text).to have_content('alert label')
       end
     end
+
+    it 'allows colons when autocompleting scoped labels' do
+      create(:label, project: project, title: 'scoped:label')
+
+      note = find('#note-body')
+      type(note, '~scoped:')
+
+      wait_for_requests
+
+      page.within '.atwho-container #at-view-labels' do
+        expect(find('.atwho-view-ul').text).to have_content('scoped:label')
+      end
+    end
+
+    it 'allows colons when autocompleting scoped labels with double colons' do
+      create(:label, project: project, title: 'scoped::label')
+
+      note = find('#note-body')
+      type(note, '~scoped::')
+
+      wait_for_requests
+
+      page.within '.atwho-container #at-view-labels' do
+        expect(find('.atwho-view-ul').text).to have_content('scoped::label')
+      end
+    end
   end
 
   shared_examples 'autocomplete suggestions' do
