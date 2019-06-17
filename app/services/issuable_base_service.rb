@@ -217,7 +217,7 @@ class IssuableBaseService < BaseService
       # the changed fields upon calling #save.
       update_project_counters = issuable.project && update_project_counter_caches?(issuable)
 
-      if issuable.with_transaction_returning_status { issuable.save }
+      if issuable.with_transaction_returning_status { issuable.save(touch: false) }
         # We do not touch as it will affect a update on updated_at field
         ActiveRecord::Base.no_touching do
           Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
