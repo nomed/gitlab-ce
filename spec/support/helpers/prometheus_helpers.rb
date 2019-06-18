@@ -71,6 +71,8 @@ module PrometheusHelpers
   end
 
   def stub_all_prometheus_requests(environment_slug, body: nil, status: 200)
+    WebMock.stub_request(:any, /.*prometheus.example.com.*/)
+
     stub_prometheus_request(
       prometheus_query_with_time_url(prometheus_memory_query(environment_slug), Time.now.utc),
       status: status,

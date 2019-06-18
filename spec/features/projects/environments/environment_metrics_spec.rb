@@ -9,10 +9,10 @@ describe 'Environment > Metrics' do
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:environment) { create(:environment, project: project) }
   let(:current_time) { Time.now.utc }
+  let!(:staging) { create(:environment, name: 'staging', project: project) }
 
   before do
     project.add_developer(user)
-    create(:deployment, environment: environment, deployable: build)
     stub_all_prometheus_requests(environment.slug)
 
     sign_in(user)
@@ -23,12 +23,40 @@ describe 'Environment > Metrics' do
     Timecop.freeze(current_time) { example.run }
   end
 
+  shared_examples 'has environment selector' do
+    it 'has a working environment selector', :js do
+      click_link('See metrics')
+
+      expect(page).to have_current_path(metrics_project_environment_path(project, id: environment.id))
+      expect(page).to have_css('div.js-environments-dropdown')
+
+      within('div.js-environments-dropdown') do
+        click_on(environment.name)
+        click_on(staging.name)
+      end
+
+      expect(page).to have_current_path(metrics_project_environment_path(project, id: staging.id))
+
+      wait_for_requests
+    end
+  end
+
+  context 'without deployments' do
+    it_behaves_like 'has environment selector'
+  end
+
   context 'with deployments and related deployable present' do
+    before do
+      create(:deployment, environment: environment, deployable: build)
+    end
+
     it 'shows metrics' do
       click_link('See metrics')
 
       expect(page).to have_css('div#prometheus-graphs')
     end
+
+    it_behaves_like 'has environment selector'
   end
 
   def visit_environment(environment)
