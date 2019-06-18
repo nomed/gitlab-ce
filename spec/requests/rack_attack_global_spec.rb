@@ -189,7 +189,15 @@ describe 'Rack Attack global throttles' do
           expect(response).to have_http_status 200
         end
 
-        expect(Gitlab::AuthLogger).to receive(:error).once
+        arguments = {
+          message: 'Rack_Attack',
+          env: :throttle,
+          ip: '127.0.0.1',
+          request_method: 'GET',
+          fullpath: '/users/sign_in'
+        }
+
+        expect(Gitlab::AuthLogger).to receive(:error).with(arguments)
 
         get url_that_does_not_require_authentication
       end
@@ -345,7 +353,16 @@ describe 'Rack Attack global throttles' do
           expect(response).to have_http_status 200
         end
 
-        expect(Gitlab::AuthLogger).to receive(:error).once
+        arguments = {
+          message: 'Rack_Attack',
+          env: :throttle,
+          ip: '127.0.0.1',
+          request_method: 'GET',
+          fullpath: '/users/sign_in',
+          user_id: user.id
+        }
+
+        expect(Gitlab::AuthLogger).to receive(:error).with(arguments).once
 
         get url_that_requires_authentication
       end
