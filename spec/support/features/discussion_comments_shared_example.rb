@@ -175,7 +175,10 @@ shared_examples 'discussion comments' do |resource_name|
         end
 
         if resource_name == 'merge request'
-          find('.replies-toggle').click
+          before do
+            find('.replies-toggle').click
+          end
+          
           let(:note_id) { find("#{comments_selector} .note:first-child", match: :first)['data-note-id'] }
           let(:reply_id) { find("#{comments_selector} .note:last-child", match: :first)['data-note-id'] }
 
