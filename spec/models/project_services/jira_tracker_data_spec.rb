@@ -10,7 +10,15 @@ describe JiraTrackerData do
   end
 
   describe 'Validations' do
-    subject { described_class.new(service: service) }
+    subject do
+      described_class.new(
+        service: service,
+        url: 'http://jira.example.com',
+        api_url: 'http://api-jira.example.com',
+        username: 'jira_username',
+        password: 'jira_password'
+      )
+    end
 
     context 'jira_issue_transition_id' do
       it { is_expected.to allow_value(nil).for(:jira_issue_transition_id) }
@@ -36,6 +44,42 @@ describe JiraTrackerData do
         it { is_expected.to validate_presence_of(:url) }
         it { is_expected.to validate_presence_of(:username) }
         it { is_expected.to validate_presence_of(:password) }
+
+        context 'validating urls' do
+          it 'is valid when all fields have required values' do
+            expect(subject).to be_valid
+          end
+
+          it 'is not valid when url is not a valid url' do
+            subject.url = 'not valid'
+
+            expect(subject).not_to be_valid
+          end
+
+          it 'is not valid when api url is not a valid url' do
+            subject.api_url = 'not valid'
+
+            expect(subject).not_to be_valid
+          end
+
+          it 'is not valid when username is missing' do
+            subject.username = nil
+
+            expect(subject).not_to be_valid
+          end
+
+          it 'is not valid when password is missing' do
+            subject.password = nil
+
+            expect(subject).not_to be_valid
+          end
+
+          it 'is valid when api url is a valid url' do
+            subject.api_url = 'http://jira.test.com/api'
+
+            expect(subject).to be_valid
+          end
+        end
       end
     end
   end
