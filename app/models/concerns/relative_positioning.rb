@@ -159,7 +159,7 @@ module RelativePositioning
   def save_positionable_neighbours
     return unless @positionable_neighbours
 
-    status = @positionable_neighbours.all?(&:save)
+    status = @positionable_neighbours.all? { |issue| issue.save(touch: false) }
     @positionable_neighbours = nil
 
     status

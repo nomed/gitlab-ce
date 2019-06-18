@@ -102,6 +102,26 @@ shared_examples 'issues move service' do |group|
       expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
     end
 
+    it 'does not update updated_at' do
+      [issue, issue1, issue2].each do |issue|
+        issue.move_to_end && issue.save!
+      end
+
+      updated_at = issue.updated_at
+      updated_at1 = issue1.updated_at
+      updated_at2 = issue2.updated_at
+
+      params.merge!(move_after_id: issue1.id, move_before_id: issue2.id)
+
+      Timecop.freeze(1.minute.from_now) do
+        described_class.new(parent, user, params).execute(issue)
+      end
+
+      expect(issue.reload.updated_at.change(usec: 0)).to eq updated_at.change(usec: 0)
+      expect(issue1.reload.updated_at.change(usec: 0)).to eq updated_at1.change(usec: 0)
+      expect(issue2.reload.updated_at.change(usec: 0)).to eq updated_at2.change(usec: 0)
+    end
+
     if group
       context 'when on a group board' do
         it 'sends the board_group_id parameter' do
