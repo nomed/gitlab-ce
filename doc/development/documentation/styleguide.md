@@ -100,7 +100,7 @@ use regular Markdown markup, following the rules in the linked style guide.
 
 Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
 
-Hard-coded HTML is valid, although it's discoraged to be used while we have `/help`. HTML is permitted as long as:
+Hard-coded HTML is valid, although it's discouraged to be used while we have `/help`. HTML is permitted as long as:
 
 - There's no equivalent markup in markdown.
 - Advanced tables are necessary.
@@ -456,7 +456,7 @@ directly to an HTML `img` tag:
 
 ## Videos
 
-Adding existing GitLab's YouTube video tutorials to the documentation is
+Adding GitLab's existing YouTube video tutorials to the documentation is
 highly encouraged, unless the video is outdated. Videos should not
 replace documentation, but complement or illustrate it.
 
@@ -467,7 +467,6 @@ can quickly and easily scan the page for videos before reading:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video tutorial, see [Video Title](link-to-video).
 ```
-
 ### Embedded videos
 
 GitLab docs (docs.gitlab.com) support embedded videos from
