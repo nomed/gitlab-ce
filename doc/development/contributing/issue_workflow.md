@@ -8,7 +8,7 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~feature, ~bug, ~customer, etc.
 - Subject: ~wiki, ~"Container Registry", ~ldap, ~api, etc.
-- Team: ~Documentation, Delivery, etc.
+- Team: ~Documentation, ~Delivery, etc.
 - Stage: ~"devops::plan", ~"devops::create", etc.
 - Group: ~"group::source code" ~"group::knowledge" ~"group::editor", etc.
 - Department: ~UX, ~Quality
