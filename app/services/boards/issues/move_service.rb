@@ -4,13 +4,23 @@ module Boards
   module Issues
     class MoveService < Boards::BaseService
       def execute(issue)
+        move_single_issue(issue)
+      end
+
+      def execute_multiple(issues)
+        # TODO: This needs to be changed (query count / performance need a check)
+        # TODO: Order of issues
+        issues.all?(&method(:move_single_issue))
+      end
+
+      private
+
+      def move_single_issue(issue)
         return false unless can?(current_user, :update_issue, issue)
         return false if issue_params(issue).empty?
 
         update(issue)
       end
-
-      private
 
       def board
         @board ||= parent.boards.find(params[:board_id])
