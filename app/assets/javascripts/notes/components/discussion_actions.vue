@@ -41,14 +41,23 @@ export default {
 <template>
   <div class="discussion-with-resolve-btn">
     <reply-placeholder class="qa-discussion-reply" @onClick="$emit('showReplyForm')" />
-    <resolve-discussion-button
-      v-if="discussion.resolvable"
-      :is-resolving="isResolving"
-      :button-title="resolveButtonTitle"
-      @onClick="$emit('resolve')"
-    />
-    <div v-if="discussion.resolvable" class="btn-group discussion-actions ml-sm-2" role="group">
-      <resolve-with-issue-button v-if="resolveWithIssuePath" :url="resolveWithIssuePath" />
+
+    <div class="btn-group d-flex" role="group">
+      <resolve-discussion-button
+        class="discussion-button"
+        v-if="discussion.resolvable"
+        :is-resolving="isResolving"
+        :button-title="resolveButtonTitle"
+        @onClick="$emit('resolve')"
+      />
+      <resolve-with-issue-button
+        class="discussion-actions"
+        v-if="discussion.resolvable && resolveWithIssuePath"
+        :url="resolveWithIssuePath"
+      />
+    </div>
+
+    <div class="discussion-actions ml-sm-2" v-if="discussion.resolvable">
       <jump-to-next-discussion-button
         v-if="shouldShowJumpToNextDiscussion"
         @onClick="$emit('jumpToNextDiscussion')"

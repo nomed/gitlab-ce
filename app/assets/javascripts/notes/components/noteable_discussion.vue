@@ -127,7 +127,6 @@ export default {
     },
     shouldShowJumpToNextDiscussion() {
       return this.showJumpToNextDiscussion(
-        this.discussion.id,
         this.discussionsByDiffOrder ? 'diff' : 'discussion',
       );
     },

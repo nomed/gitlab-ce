@@ -644,14 +644,16 @@ $note-form-margin-left: 72px;
  * Actions for Discussions/Notes
  */
 
-.discussion-actions {
-  float: right;
-  color: $gray-darkest;
-
+.discussion-button, .discussion-actions  {
   @include media-breakpoint-down(xs) {
     width: 100%;
     margin: $gl-padding-8 0;
   }
+}
+
+.discussion-actions {
+  float: right;
+  color: $gray-darkest;
 
   .btn-group > .discussion-next-btn {
     margin-left: -1px;

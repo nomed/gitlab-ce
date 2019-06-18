@@ -38,6 +38,12 @@ describe('Getters Notes Store', () => {
     });
   });
 
+  describe('showJumpToNextDiscussion', () => {
+    it('should return true if there are 2 or more unresolved discussions', () => {});
+
+    it('should return false if there are 1 or less unresolved discussions', () => {});
+  });
+
   describe('resolvedDiscussionsById', () => {
     it('ignores unresolved system notes', () => {
       const [discussion] = getJSONFixture(discussionWithTwoUnresolvedNotes);
