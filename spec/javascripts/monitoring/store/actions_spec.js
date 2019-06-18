@@ -240,7 +240,7 @@ describe('Monitoring store actions', () => {
       const response = metricsDashboardResponse;
 
       response.all_dashboards = dashboardGitResponse;
-      state.multipleDashboards = true;
+      state.multipleDashboardsEnabled = true;
 
       receiveMetricsDashboardSuccess({ state, commit, dispatch }, { response, params });
 

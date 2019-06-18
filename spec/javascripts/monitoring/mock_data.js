@@ -926,10 +926,12 @@ export const metricsDashboardResponse = {
 export const dashboardGitResponse = [
   {
     path: 'config/prometheus/common_metrics.yml',
+    display_name: 'Common Metrics',
     default: true,
   },
   {
     path: '.gitlab/dashboards/super.yml',
+    display_name: 'Custom Dashboard 1',
     default: false,
   },
 ];

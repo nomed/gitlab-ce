@@ -332,45 +332,6 @@ describe('Dashboard', () => {
         done();
       });
     });
-
-    it('shows the dashboard dropdown', done => {
-      component = new DashboardComponent({
-        el: document.querySelector('.prometheus-graphs'),
-        propsData: {
-          ...propsData,
-          hasMetrics: true,
-          showPanels: false,
-        },
-        store,
-      });
-
-      component.$store.dispatch('monitoringDashboard/setFeatureFlags', {
-        prometheusEndpoint: false,
-        multipleDashboards: true,
-      });
-
-      component.$store.commit(
-        `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
-        environmentData,
-      );
-
-      component.$store.commit(
-        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
-        singleGroupResponse,
-      );
-
-      component.$store.commit(
-        `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,
-        dashboardGitResponse,
-      );
-
-      setTimeout(() => {
-        const dashboardDropdown = component.$el.querySelector('.js-dashboards-dropdown');
-
-        expect(dashboardDropdown).not.toEqual(null);
-        done();
-      });
-    });
   });
 
   describe('when the window resizes', () => {
@@ -434,6 +395,51 @@ describe('Dashboard', () => {
         expect(component.$el.querySelector('.js-external-dashboard-link').innerText).toContain(
           'View full dashboard',
         );
+        done();
+      });
+    });
+  });
+
+  describe('Dashboard dropdown', () => {
+    beforeEach(() => {
+      mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
+
+      component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showPanels: false,
+        },
+        store,
+      });
+
+      component.$store.dispatch('monitoringDashboard/setFeatureFlags', {
+        prometheusEndpoint: false,
+        multipleDashboardsEnabled: true,
+      });
+
+      component.$store.commit(
+        `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
+        environmentData,
+      );
+
+      component.$store.commit(
+        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
+        singleGroupResponse,
+      );
+
+      component.$store.commit(
+        `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,
+        dashboardGitResponse,
+      );
+    });
+
+    it('shows the dashboard dropdown', done => {
+      setTimeout(() => {
+        const dashboardDropdown = component.$el.querySelector('.js-dashboards-dropdown');
+
+        expect(dashboardDropdown).not.toEqual(null);
         done();
       });
     });

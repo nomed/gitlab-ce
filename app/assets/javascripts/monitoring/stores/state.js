@@ -8,7 +8,7 @@ export default () => ({
   deploymentsEndpoint: null,
   dashboardEndpoint: invalidUrl,
   useDashboardEndpoint: false,
-  multipleDashboards: false,
+  multipleDashboardsEnabled: false,
   emptyState: 'gettingStarted',
   showEmptyState: true,
   groups: [],

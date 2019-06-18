@@ -147,10 +147,13 @@ export default {
       'metricsWithData',
       'useDashboardEndpoint',
       'allDashboards',
-      'multipleDashboards',
+      'multipleDashboardsEnabled',
     ]),
     groupsWithData() {
       return this.groups.filter(group => this.chartsWithData(group.metrics).length > 0);
+    },
+    selectedDashboardText() {
+      return this.currentDashboard || (this.allDashboards[0] && this.allDashboards[0].display_name);
     },
   },
   created() {
@@ -250,15 +253,12 @@ export default {
         v-if="environmentsEndpoint"
         class="dropdowns d-flex align-items-center justify-content-between"
       >
-        <div v-if="multipleDashboards" class="d-flex align-items-center">
+        <div v-if="multipleDashboardsEnabled" class="d-flex align-items-center">
           <label class="mb-0">{{ __('Dashboard') }}</label>
           <gl-dropdown
             class="ml-2 mr-3 js-dashboards-dropdown"
             toggle-class="dropdown-menu-toggle"
-            :text="
-              currentDashboard ||
-                (allDashboards[0] && allDashboards[0].path) /* todo this is gross */
-            "
+            :text="selectedDashboardText"
           >
             <gl-dropdown-item
               v-for="dashboard in allDashboards"
@@ -267,7 +267,7 @@ export default {
               active-class="is-active"
               :href="`?dashboard=${dashboard.path}`"
             >
-              {{ dashboard.name || dashboard.path }}
+              {{ dashboard.display_name || dashboard.path }}
             </gl-dropdown-item>
           </gl-dropdown>
         </div>

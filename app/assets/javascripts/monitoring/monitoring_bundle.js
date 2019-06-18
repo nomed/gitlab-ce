@@ -10,7 +10,7 @@ export default (props = {}) => {
   if (el && el.dataset) {
     store.dispatch('monitoringDashboard/setFeatureFlags', {
       prometheusEndpoint: gon.features.environmentMetricsUsePrometheusEndpoint,
-      multipleDashboards: gon.features.environmentMetricsShowMultipleDashboards,
+      multipleDashboardsEnabled: gon.features.environmentMetricsShowMultipleDashboards,
     });
 
     const [currentDashboard] = getParameterValues('dashboard');
