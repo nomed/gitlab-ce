@@ -644,7 +644,8 @@ $note-form-margin-left: 72px;
  * Actions for Discussions/Notes
  */
 
-.discussion-button, .discussion-actions  {
+.discussion-button,
+.discussion-actions {
   @include media-breakpoint-down(xs) {
     width: 100%;
     margin: $gl-padding-8 0;

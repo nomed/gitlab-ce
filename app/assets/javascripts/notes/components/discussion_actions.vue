@@ -44,20 +44,20 @@ export default {
 
     <div class="btn-group d-flex" role="group">
       <resolve-discussion-button
-        class="discussion-button"
         v-if="discussion.resolvable"
+        class="discussion-button"
         :is-resolving="isResolving"
         :button-title="resolveButtonTitle"
         @onClick="$emit('resolve')"
       />
       <resolve-with-issue-button
-        class="discussion-actions"
         v-if="discussion.resolvable && resolveWithIssuePath"
+        class="discussion-actions"
         :url="resolveWithIssuePath"
       />
     </div>
 
-    <div class="discussion-actions ml-sm-2" v-if="discussion.resolvable">
+    <div v-if="discussion.resolvable" class="discussion-actions ml-sm-2">
       <jump-to-next-discussion-button
         v-if="shouldShowJumpToNextDiscussion"
         @onClick="$emit('jumpToNextDiscussion')"
