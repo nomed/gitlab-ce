@@ -53,6 +53,7 @@ scope format: false do
 
     get '/branches/:state', to: 'branches#index', as: :branches_filtered, constraints: { state: /active|stale|all/ }
     resources :branches, only: [:index, :new, :create, :destroy]
+    get '/branches/diverging_counts', to: 'diverging_counts#index'
     delete :merged_branches, controller: 'branches', action: :destroy_all_merged
     resources :tags, only: [:index, :show, :new, :create, :destroy] do
       resource :release, controller: 'tags/releases', only: [:edit, :update]
