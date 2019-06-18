@@ -416,11 +416,13 @@ To indicate the steps of navigation through the UI:
   number corresponding to the release milestone the image was added to,
   or corresponding to the release the screenshot was taken from, using the
   format `image_name_vX_Y.png`.
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/61027) in GitLab 12.1.)
 - For example, for a screenshot taken from the pipelines page of
   GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're
   adding an illustration that does not include parts of the UI,
   add the release number corresponding to the release the image
-  was added to. Example: `devops_diagram_v11_1.png`.
+  was added to. Example, for an MR added to 11.1's milestone,
+  a valid name for an illustration is `devops_diagram_v11_1.png`.
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
 - Compress all images with <https://tinypng.com/> or similar tool.
