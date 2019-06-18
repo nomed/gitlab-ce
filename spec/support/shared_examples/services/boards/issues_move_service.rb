@@ -16,6 +16,14 @@ shared_examples 'issues move service' do |group|
 
       expect(issue.reload.labels).to contain_exactly(bug, testing)
     end
+
+    it 'updates updated_at' do
+      Timecop.travel(1.minute.from_now) do
+        described_class.new(parent, user, params).execute(issue)
+      end
+
+      expect(issue.reload.updated_at).to be > Time.now
+    end
   end
 
   context 'when moving to closed' do
@@ -37,6 +45,14 @@ shared_examples 'issues move service' do |group|
       expect(issue.labels).to contain_exactly(bug, regression)
       expect(issue).to be_closed
     end
+
+    it 'updates updated_at' do
+      Timecop.travel(1.minute.from_now) do
+        described_class.new(parent, user, params).execute(issue)
+      end
+
+      expect(issue.reload.updated_at).to be > Time.now
+    end
   end
 
   context 'when moving to backlog' do
@@ -52,6 +68,14 @@ shared_examples 'issues move service' do |group|
 
       expect(issue.labels).to contain_exactly(bug, regression)
       expect(issue.milestone).to eq(milestone)
+    end
+
+    it 'updates updated_at' do
+      Timecop.travel(1.minute.from_now) do
+        described_class.new(parent, user, params).execute(issue)
+      end
+
+      expect(issue.reload.updated_at).to be > Time.now
     end
   end
 
@@ -71,6 +95,14 @@ shared_examples 'issues move service' do |group|
 
       expect(issue.labels).to contain_exactly(bug, testing)
       expect(issue).to be_opened
+    end
+
+    it 'updates updated_at' do
+      Timecop.travel(1.minute.from_now) do
+        described_class.new(parent, user, params).execute(issue)
+      end
+
+      expect(issue.reload.updated_at).to be > Time.now
     end
   end
 
@@ -113,7 +145,7 @@ shared_examples 'issues move service' do |group|
 
       params.merge!(move_after_id: issue1.id, move_before_id: issue2.id)
 
-      Timecop.freeze(1.minute.from_now) do
+      Timecop.travel(1.minute.from_now) do
         described_class.new(parent, user, params).execute(issue)
       end
 
