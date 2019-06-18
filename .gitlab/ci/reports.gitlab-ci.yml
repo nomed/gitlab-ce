@@ -15,10 +15,12 @@ code_quality:
 sast:
   extends: .dedicated-no-docs
   before_script: []
+  tags: []
   variables:
     SAST_CONFIDENCE_LEVEL: 2
     DOCKER_DRIVER: overlay2
 
 dependency_scanning:
   before_script: []
+  tags: []
   extends: .dedicated-no-docs
