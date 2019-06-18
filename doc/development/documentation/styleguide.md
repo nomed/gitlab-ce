@@ -150,7 +150,7 @@ The table below shows what kind of documentation goes where.
    a proper naming would be `import_projects_from_github.md`. The same rule
    applies to images.
 1. For image files, do not exceed 100KB.
-1. We do not yet support embedded videos. But it's encouraged to [link them out](#videos).
+1. Embed [videos](#videos) from GitLab's YouTube account only.
 1. There are four main directories, `user`, `administration`, `api` and `development`.
 1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
    `profile/`, `dashboard/` and `admin_area/`.
@@ -429,7 +429,7 @@ To indicate the steps of navigation through the UI:
 - Images should be used (only when necessary) to _illustrate_ the description
   of a process, not to _replace_ it.
 - Max image size: 100KB (gifs included).
-- The GitLab docs do not support embedded videos yet. [Link them out](#videos) instead.
+- See also how to link and embed [videos](#videos) to illustrate the docs.
 
 Inside the document:
 
@@ -468,9 +468,54 @@ can quickly and easily scan the page for videos before reading:
 For a video tutorial, see [Video Title](link-to-video).
 ```
 
-Note that the docs site does not support embedded videos because
-GitLab's markdown do not support iframes yet, therefore, it wouldn't
-work in GitLab's `/help`.
+### Embedded videos
+
+GitLab docs (docs.gitlab.com) support embedded videos from
+[GitLab's official YT account](https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg).
+To embed a video, follow the instructions below and make sure
+you have your MR reviewed and approved by a technical writer.
+
+1. Copy the code below and paste it into your markdown file.
+  Leave a blank line above and below it. Do NOT edit the code
+  (don't remove or add any spaces, etc).
+1. On YouTube, visit the video URL you want to display. Copy
+  the regular URL (`https://www.youtube.com/watch?v=VIDEO-ID`)
+  and replace the video title and link in the `<div class="video-fallback">`.
+1. On YouTube, click on "Share", then "Embed".
+1. Copy the `<iframe>` source (`src`) **URL only**
+  (`https://www.youtube.com/embed/VIDEO-ID`),
+  and paste it replacing the content of the `src` field in the
+  `iframe` tag.
+
+```html
+leave a blank line here
+<div class="video-fallback">
+  See the video tutorial [Video title](https://www.youtube.com/watch?v=MqL6BMOySIQ).
+</div>
+
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+leave a blank line here
+```
+
+This is how it's going to render on docs.gitlab.com:
+
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
+<div class="video-fallback">
+  See video tutorial [Video title](https://www.youtube.com/watch?v=enMumwvLAug).
+</div>
+
+> Notes:
+>
+> - The `figure` tag is required for semantic SEO and the `video_container`
+class is necessary to make sure the video is responsive and displays
+nicely on different mobile devices.
+> - The `<div class="video-fallback">` is a fallback necessary for GitLab's
+`/help`, as it GitLab's markdown processor does not support iframes. It's hidden on the docs site but will be displayed on GitLab's `/help`.
 
 ## Code blocks
 
