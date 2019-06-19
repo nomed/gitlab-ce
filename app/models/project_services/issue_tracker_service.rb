@@ -3,7 +3,49 @@
 class IssueTrackerService < Service
   validate :one_issue_tracker, if: :activated?, on: :manual_change
 
+  data_fields :project_url, :issues_url, :new_issue_url
   default_value_for :category, 'issue_tracker'
+
+  before_update :clear_properties
+  after_save :set_data_fields
+
+  def data_fields
+    issue_tracker_data || IssueTrackerData.new(service: self)
+  end
+
+  def update(values)
+    super
+    set_data_fields(values)
+
+    self
+  end
+
+  def set_data_fields(values={})
+    if values.blank?
+      field_keys.each do |field|
+        if data_fields.saved_change_to_attribute?(field)#  send("#{field}_changed?")
+          values[field] = attribute(field)
+        end
+      end
+    end
+
+    data_fields.update(values.slice(fields))
+  end
+
+  def clear_properties
+    return if properties.blank?
+
+    data_fields.update(properties.slice(*field_keys))
+    self.properties = {}
+  end
+
+  def field_keys
+    data_fields.attributes.keys.reject { |k| k.include?('encrypted') || skipped_data_fields.include?(k) }
+  end
+
+  def skipped_data_fields
+    %w(id service_id)
+  end
 
   # Pattern used to extract links from comments
   # Override this method on services that uses different patterns
@@ -45,27 +87,6 @@ class IssueTrackerService < Service
       { type: 'text', name: 'issues_url', placeholder: 'Issue url', required: true },
       { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url', required: true }
     ]
-  end
-
-  # Initialize with default properties values
-  # or receive a block with custom properties
-  def initialize_properties(&block)
-    return unless properties.nil?
-
-    if enabled_in_gitlab_config
-      if block_given?
-        yield
-      else
-        self.properties = {
-          title: issues_tracker['title'],
-          project_url: issues_tracker['project_url'],
-          issues_url: issues_tracker['issues_url'],
-          new_issue_url: issues_tracker['new_issue_url']
-        }
-      end
-    else
-      self.properties = {}
-    end
   end
 
   def self.supported_events

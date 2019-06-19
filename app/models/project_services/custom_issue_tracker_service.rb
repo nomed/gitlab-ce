@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 class CustomIssueTrackerService < IssueTrackerService
-  validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
-
-  prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
-
   def title
     if self.properties && self.properties['title'].present?
       self.properties['title']

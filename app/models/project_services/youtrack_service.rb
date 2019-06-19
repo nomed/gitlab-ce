@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 class YoutrackService < IssueTrackerService
-  validates :project_url, :issues_url, presence: true, public_url: true, if: :activated?
-
-  prop_accessor :description, :project_url, :issues_url
-
   # {PROJECT-KEY}-{NUMBER} Examples: YT-1, PRJ-1, gl-030
   def self.reference_pattern(only_long: false)
     if only_long

@@ -3,10 +3,6 @@
 class GitlabIssueTrackerService < IssueTrackerService
   include Gitlab::Routing
 
-  validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
-
-  prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
-
   default_value_for :default, true
 
   def self.to_param

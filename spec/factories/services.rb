@@ -44,6 +44,7 @@ FactoryBot.define do
   factory :jira_service do
     project
     active true
+    # TODO: change this as part of #63084
     properties(
       url: 'https://jira.example.com',
       username: 'jira_user',
@@ -61,6 +62,18 @@ FactoryBot.define do
       password: 'my-secret-password',
       project_key: 'jira-key'
     )
+  end
+
+  factory :redmine_service do
+    project
+  end
+
+  factory :bugzilla_service do
+    project
+  end
+
+  factory :youtrack_service do
+    project
   end
 
   factory :hipchat_service do

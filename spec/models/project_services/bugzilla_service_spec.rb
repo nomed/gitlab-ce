@@ -8,28 +8,35 @@ describe BugzillaService do
     it { is_expected.to have_one :service_hook }
   end
 
-  describe 'Validations' do
-    context 'when service is active' do
-      before do
-        subject.active = true
-      end
+  # we need to make sure we are able to read both from properties and issue_tracker_data table
+  # TODO: change this as part of #63084
+  describe 'handling data fields' do
+    let(:project_url) { 'http://bugzilla.example.com/project' }
+    let(:issues_url) { 'http://bugzilla.example.com/issues' }
+    let(:new_issue_url) { 'http://bugzilla.example.com/issues/new' }
 
-      it { is_expected.to validate_presence_of(:project_url) }
-      it { is_expected.to validate_presence_of(:issues_url) }
-      it { is_expected.to validate_presence_of(:new_issue_url) }
-      it_behaves_like 'issue tracker service URL attribute', :project_url
-      it_behaves_like 'issue tracker service URL attribute', :issues_url
-      it_behaves_like 'issue tracker service URL attribute', :new_issue_url
+    let(:params) do
+      { project_url: project_url, issues_url: issues_url, new_issue_url: new_issue_url }
+    end
+    let(:service_with_properties) do
+      create(:bugzilla_service, properties: params)
+    end
+    let(:service_data_table) do
+      create(:bugzilla_service, properties: nil).tap do |service|
+        create(:issue_tracker_data, params.merge(service: service))
+      end
     end
 
-    context 'when service is inactive' do
-      before do
-        subject.active = false
-      end
+    context 'when data stored in properties' do
+      let(:service) { service_with_properties }
 
-      it { is_expected.not_to validate_presence_of(:project_url) }
-      it { is_expected.not_to validate_presence_of(:issues_url) }
-      it { is_expected.not_to validate_presence_of(:new_issue_url) }
+      it_behaves_like 'data fields handling'
+    end
+
+    context 'when data stored in the issue_tracker_data table' do
+      let(:service) { service_data_table }
+
+      it_behaves_like 'data fields handling'
     end
   end
 end

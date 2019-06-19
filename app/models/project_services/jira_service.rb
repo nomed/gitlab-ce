@@ -5,23 +5,18 @@ class JiraService < IssueTrackerService
   include ApplicationHelper
   include ActionView::Helpers::AssetUrlHelper
 
-  validates :url, public_url: true, presence: true, if: :activated?
-  validates :api_url, public_url: true, allow_blank: true
-  validates :username, presence: true, if: :activated?
-  validates :password, presence: true, if: :activated?
-
-  validates :jira_issue_transition_id,
-            format: { with: Gitlab::Regex.jira_transition_id_regex, message: s_("JiraService|transition ids can have only numbers which can be split with , or ;") },
-            allow_blank: true
-
   # JIRA cloud version is deprecating authentication via username and password.
   # We should use username/password for JIRA server and email/api_token for JIRA cloud,
   # for more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/49936.
-  prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id, :title, :description
+  data_fields :username, :password, :url, :api_url, :jira_issue_transition_id
 
   before_update :reset_password
 
   alias_method :project_url, :url
+
+  def data_fields
+    jira_tracker_data || JiraTrackerData.new(service: self)
+  end
 
   # When these are false GitLab does not create cross reference
   # comments on JIRA except when an issue gets transitioned.
@@ -34,26 +29,22 @@ class JiraService < IssueTrackerService
     @reference_pattern ||= /(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)/
   end
 
-  def initialize_properties
-    super do
-      self.properties = {
-        title: issues_tracker['title'],
-        url: issues_tracker['url'],
-        api_url: issues_tracker['api_url']
-      }
-    end
-  end
-
   def reset_password
-    self.password = nil if reset_password?
+    return unless reset_password?
+
+    if properties.present?
+      properties['password'] = nil
+    else
+      self.password = nil
+    end
   end
 
   def options
     url = URI.parse(client_url)
 
     {
-      username: self.username,
-      password: self.password,
+      username: username,
+      password: password,
       site: URI.join(url, '/').to_s, # Intended to find the root
       context_path: url.path.chomp('/'),
       auth_type: :basic,
@@ -75,19 +66,7 @@ class JiraService < IssueTrackerService
   end
 
   def title
-    if self.properties && self.properties['title'].present?
-      self.properties['title']
-    else
-      'JIRA'
-    end
-  end
-
-  def description
-    if self.properties && self.properties['description'].present?
-      self.properties['description']
-    else
-      s_('JiraService|Jira issue tracker')
-    end
+    self.attributes['title'] || 'JIRA'
   end
 
   def self.to_param
