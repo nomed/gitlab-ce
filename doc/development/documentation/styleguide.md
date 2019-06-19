@@ -515,7 +515,7 @@ This is how it renders on docs.gitlab.com:
 class is necessary to make sure the video is responsive and displays
 nicely on different mobile devices.
 > - The `<div class="video-fallback">` is a fallback necessary for GitLab's
-`/help`, as it GitLab's markdown processor does not support iframes. It's hidden on the docs site but will be displayed on GitLab's `/help`.
+`/help`, as GitLab's markdown processor does not support iframes. It's hidden on the docs site but will be displayed on GitLab's `/help`.
 
 ## Code blocks
 
