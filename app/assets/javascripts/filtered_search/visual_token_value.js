@@ -5,6 +5,8 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import Flash from '~/flash';
 import UsersCache from '~/lib/utils/users_cache';
+import { __ } from '~/locale';
+import { USER_TOKEN_TYPES } from 'ee_else_ce/filtered_search/constants';
 
 export default class VisualTokenValue {
   constructor(tokenValue, tokenType) {
@@ -21,7 +23,7 @@ export default class VisualTokenValue {
 
     if (tokenType === 'label') {
       this.updateLabelTokenColor(tokenValueContainer);
-    } else if (tokenType === 'author' || tokenType === 'assignee') {
+    } else if (USER_TOKEN_TYPES.includes(tokenType)) {
       this.updateUserTokenAppearance(tokenValueContainer, tokenValueElement);
     } else if (tokenType === 'my-reaction') {
       this.updateEmojiTokenAppearance(tokenValueContainer, tokenValueElement);
@@ -55,13 +57,13 @@ export default class VisualTokenValue {
   updateLabelTokenColor(tokenValueContainer) {
     const { tokenValue } = this;
     const filteredSearchInput = FilteredSearchContainer.container.querySelector('.filtered-search');
-    const { baseEndpoint } = filteredSearchInput.dataset;
-    const labelsEndpoint = FilteredSearchVisualTokens.getEndpointWithQueryParams(
-      `${baseEndpoint}/labels.json`,
+    const { labelsEndpoint } = filteredSearchInput.dataset;
+    const labelsEndpointWithParams = FilteredSearchVisualTokens.getEndpointWithQueryParams(
+      `${labelsEndpoint}.json`,
       filteredSearchInput.dataset.endpointQueryParams,
     );
 
-    return AjaxCache.retrieve(labelsEndpoint)
+    return AjaxCache.retrieve(labelsEndpointWithParams)
       .then(labels => {
         const matchingLabel = (labels || []).find(
           label => `~${DropdownUtils.getEscapedText(label.title)}` === tokenValue,
@@ -77,7 +79,7 @@ export default class VisualTokenValue {
           matchingLabel.text_color,
         );
       })
-      .catch(() => new Flash('An error occurred while fetching label colors.'));
+      .catch(() => new Flash(__('An error occurred while fetching label colors.')));
   }
 
   static setTokenStyle(tokenValueContainer, backgroundColor, textColor) {
@@ -102,24 +104,15 @@ export default class VisualTokenValue {
     return (
       import(/* webpackChunkName: 'emoji' */ '../emoji')
         .then(Emoji => {
-          Emoji.initEmojiMap()
-            .then(() => {
-              if (!Emoji.isEmojiNameValid(value)) {
-                return;
-              }
+          if (!Emoji.isEmojiNameValid(value)) {
+            return;
+          }
 
-              container.dataset.originalValue = value;
-              element.innerHTML = Emoji.glEmojiTag(value);
-            })
-            // ignore error and leave emoji name in the search bar
-            .catch(err => {
-              throw err;
-            });
+          container.dataset.originalValue = value;
+          element.innerHTML = Emoji.glEmojiTag(value);
         })
         // ignore error and leave emoji name in the search bar
-        .catch(importError => {
-          throw importError;
-        })
+        .catch(() => {})
     );
   }
 }

@@ -166,6 +166,16 @@ module Ci
         end
       end
 
+      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+        pipeline.run_after_commit do
+          pipeline.all_merge_requests.each do |merge_request|
+            next unless merge_request.auto_merge_enabled?
+
+            AutoMergeProcessWorker.perform_async(merge_request.id)
+          end
+        end
+      end
+
       after_transition any => [:success, :failed] do |pipeline|
         pipeline.run_after_commit do
           PipelineNotificationWorker.perform_async(pipeline.id)
@@ -208,6 +218,10 @@ module Ci
 
     scope :triggered_for_branch, -> (ref) do
       where(source: branch_pipeline_sources).where(ref: ref, tag: false)
+    end
+
+    scope :with_reports, -> (reports_scope) do
+      where('EXISTS (?)', ::Ci::Build.latest.with_reports(reports_scope).where('ci_pipelines.id=ci_builds.commit_id').select(1))
     end
 
     # Returns the pipelines in descending order (= newest first), optionally
@@ -638,6 +652,7 @@ module Ci
         variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
         variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
         variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
+        variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!protected_ref?).to_s)
 
         if merge_request_event? && merge_request
           variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)
@@ -686,16 +701,16 @@ module Ci
       # We purposely cast the builds to an Array here. Because we always use the
       # rows if there are more than 0 this prevents us from having to run two
       # queries: one to get the count and one to get the rows.
-      @latest_builds_with_artifacts ||= builds.latest.with_artifacts_archive.to_a
+      @latest_builds_with_artifacts ||= builds.latest.with_artifacts_not_expired.to_a
     end
 
-    def has_test_reports?
-      complete? && builds.latest.with_test_reports.any?
+    def has_reports?(reports_scope)
+      complete? && builds.latest.with_reports(reports_scope).exists?
     end
 
     def test_reports
       Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
-        builds.latest.with_test_reports.each do |build|
+        builds.latest.with_reports(Ci::JobArtifact.test_reports).each do |build|
           build.collect_test_reports!(test_reports)
         end
       end
@@ -748,6 +763,26 @@ module Ci
 
     def matches_sha_or_source_sha?(sha)
       self.sha == sha || self.source_sha == sha
+    end
+
+    def triggered_by?(current_user)
+      user == current_user
+    end
+
+    def source_ref
+      if triggered_by_merge_request?
+        merge_request.source_branch
+      else
+        ref
+      end
+    end
+
+    def source_ref_slug
+      Gitlab::Utils.slugify(source_ref.to_s)
+    end
+
+    def find_stage_by_name!(name)
+      stages.find_by!(name: name)
     end
 
     private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module Project
@@ -10,6 +12,7 @@ module QA
         end
 
         view 'app/views/projects/_new_project_fields.html.haml' do
+          element :initialize_with_readme_checkbox
           element :project_namespace_select
           element :project_namespace_field, 'namespaces_options' # rubocop:disable QA/ElementWithPattern
           element :project_name, 'text_field :name' # rubocop:disable QA/ElementWithPattern
@@ -61,6 +64,10 @@ module QA
 
         def click_github_link
           click_link 'GitHub'
+        end
+
+        def enable_initialize_with_readme
+          check_element :initialize_with_readme_checkbox
         end
       end
     end

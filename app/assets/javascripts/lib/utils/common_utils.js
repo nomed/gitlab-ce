@@ -7,7 +7,7 @@ import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 import { convertToCamelCase } from './text_utility';
 import { isObject } from './type_utility';
-import BreakpointInstance from '../../breakpoints';
+import breakpointInstance from '../../breakpoints';
 
 export const getPagePath = (index = 0) => {
   const page = $('body').attr('data-page') || '';
@@ -94,6 +94,8 @@ export const handleLocationHash = () => {
   const fixedNav = document.querySelector('.navbar-gitlab');
   const performanceBar = document.querySelector('#js-peek');
   const topPadding = 8;
+  const diffFileHeader = document.querySelector('.js-file-title');
+  const versionMenusContainer = document.querySelector('.mr-version-menus-container');
 
   let adjustment = 0;
   if (fixedNav) adjustment -= fixedNav.offsetHeight;
@@ -112,6 +114,14 @@ export const handleLocationHash = () => {
 
   if (performanceBar) {
     adjustment -= performanceBar.offsetHeight;
+  }
+
+  if (diffFileHeader) {
+    adjustment -= diffFileHeader.offsetHeight;
+  }
+
+  if (versionMenusContainer) {
+    adjustment -= versionMenusContainer.offsetHeight;
   }
 
   if (isInMRPage()) {
@@ -198,11 +208,10 @@ export const contentTop = () => {
   const mrTabsHeight = $('.merge-request-tabs').outerHeight() || 0;
   const headerHeight = $('.navbar-gitlab').outerHeight() || 0;
   const diffFilesChanged = $('.js-diff-files-changed').outerHeight() || 0;
-  const mdScreenOrBigger = ['lg', 'md'].includes(BreakpointInstance.getBreakpointSize());
+  const isDesktop = breakpointInstance.isDesktop();
   const diffFileTitleBar =
-    (mdScreenOrBigger && $('.diff-file .file-title-flex-parent:visible').outerHeight()) || 0;
-  const compareVersionsHeaderHeight =
-    (mdScreenOrBigger && $('.mr-version-controls').outerHeight()) || 0;
+    (isDesktop && $('.diff-file .file-title-flex-parent:visible').outerHeight()) || 0;
+  const compareVersionsHeaderHeight = (isDesktop && $('.mr-version-controls').outerHeight()) || 0;
 
   return (
     perfBar +
@@ -724,6 +733,18 @@ export const NavigationType = {
  * @returns Boolean
  */
 export const isEE = () => window.gon && window.gon.ee;
+
+/**
+ * Checks if the given Label has a special syntax `::` in
+ * it's title.
+ *
+ * Expected Label to be an Object with `title` as a key:
+ *   { title: 'LabelTitle', ...otherProperties };
+ *
+ * @param {Object} label
+ * @returns Boolean
+ */
+export const isScopedLabel = ({ title = '' }) => title.indexOf('::') !== -1;
 
 window.gl = window.gl || {};
 window.gl.utils = {

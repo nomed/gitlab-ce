@@ -36,8 +36,8 @@ describe('MergeRequestStore', () => {
         expect(store.isPipelinePassing).toBe(true);
       });
 
-      it('is true when the CI status is `success_with_warnings`', () => {
-        store.setData({ ...mockData, ci_status: 'success_with_warnings' });
+      it('is true when the CI status is `success-with-warnings`', () => {
+        store.setData({ ...mockData, ci_status: 'success-with-warnings' });
 
         expect(store.isPipelinePassing).toBe(true);
       });
@@ -80,6 +80,48 @@ describe('MergeRequestStore', () => {
         store.state = 'state';
 
         expect(store.isNothingToMergeState).toEqual(false);
+      });
+    });
+
+    describe('mergePipelinesEnabled', () => {
+      it('should set mergePipelinesEnabled = true when merge_pipelines_enabled is true', () => {
+        store.setData({ ...mockData, merge_pipelines_enabled: true });
+
+        expect(store.mergePipelinesEnabled).toBe(true);
+      });
+
+      it('should set mergePipelinesEnabled = false when merge_pipelines_enabled is not provided', () => {
+        store.setData({ ...mockData, merge_pipelines_enabled: undefined });
+
+        expect(store.mergePipelinesEnabled).toBe(false);
+      });
+    });
+
+    describe('mergeTrainsCount', () => {
+      it('should set mergeTrainsCount when merge_trains_count is provided', () => {
+        store.setData({ ...mockData, merge_trains_count: 3 });
+
+        expect(store.mergeTrainsCount).toBe(3);
+      });
+
+      it('should set mergeTrainsCount = 0 when merge_trains_count is not provided', () => {
+        store.setData({ ...mockData, merge_trains_count: undefined });
+
+        expect(store.mergeTrainsCount).toBe(0);
+      });
+    });
+
+    describe('mergeTrainIndex', () => {
+      it('should set mergeTrainIndex when merge_train_index is provided', () => {
+        store.setData({ ...mockData, merge_train_index: 3 });
+
+        expect(store.mergeTrainIndex).toBe(3);
+      });
+
+      it('should not set mergeTrainIndex when merge_train_index is not provided', () => {
+        store.setData({ ...mockData, merge_train_index: undefined });
+
+        expect(store.mergeTrainIndex).toBeUndefined();
       });
     });
   });

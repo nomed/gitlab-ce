@@ -611,6 +611,9 @@ describe('diff_file_header', () => {
           vm = mountComponentWithStore(Component, { props, store });
 
           expect(viewFileButton().getAttribute('href')).toBe('view-path');
+          expect(viewFileButton().getAttribute('data-original-title')).toEqual(
+            `View file @ ${props.diffFile.content_sha.substr(0, 8)}`,
+          );
         });
 
         it('should not render external url view link if diff file has no external url', () => {
@@ -672,7 +675,7 @@ describe('diff_file_header', () => {
 
       vm = mountComponentWithStore(Component, { props, store });
 
-      expect(vm.$el.querySelector('.js-expand-file').textContent).toContain('Show changes only');
+      expect(vm.$el.querySelector('.ic-doc-changes')).not.toBeNull();
     });
 
     it('shows expand text', () => {
@@ -680,7 +683,7 @@ describe('diff_file_header', () => {
 
       vm = mountComponentWithStore(Component, { props, store });
 
-      expect(vm.$el.querySelector('.js-expand-file').textContent).toContain('Show full file');
+      expect(vm.$el.querySelector('.ic-doc-expand')).not.toBeNull();
     });
 
     it('renders loading icon', () => {

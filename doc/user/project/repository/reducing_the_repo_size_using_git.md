@@ -1,6 +1,6 @@
 # Reducing the repository size using Git
 
-A GitLab Enterprise Edition administrator can set a [repository size limit][admin-repo-size]
+A GitLab Enterprise Edition administrator can set a [repository size limit](../../admin_area/settings/account_and_limit_settings.md)
 which will prevent you from exceeding it.
 
 When a project has reached its size limit, you will not be able to push to it,
@@ -14,7 +14,8 @@ move some blobs to LFS, or remove some old dependency updates from history.
 Unfortunately, it's not so easy and that workflow won't work. Deleting files in
 a commit doesn't actually reduce the size of the repo since the earlier commits
 and blobs are still around. What you need to do is rewrite history with Git's
-[`filter-branch` option][gitscm], or a tool like the [BFG Repo-Cleaner][bfg].
+[`filter-branch` option](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#The-Nuclear-Option:-filter-branch),
+or a tool like the [BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/).
 
 Note that even with that method, until `git gc` runs on the GitLab side, the
 "removed" commits and blobs will still be around. You also need to be able to
@@ -34,16 +35,16 @@ BFG Repo-Cleaner](#using-the-bfg-repo-cleaner). It's faster and simpler than
 `git filter-branch`, and GitLab can use its account of what has changed to clean
 up its own internal state, maximizing the space saved.
 
-> **Warning:**
-> Make sure to first make a copy of your repository since rewriting history will
-> purge the files and information you are about to delete. Also make sure to
-> inform any collaborators to not use `pull` after your changes, but use `rebase`.
+CAUTION: **Caution:**
+Make sure to first make a copy of your repository since rewriting history will
+purge the files and information you are about to delete. Also make sure to
+inform any collaborators to not use `pull` after your changes, but use `rebase`.
 
-> **Warning:**
-> This process is not suitable for removing sensitive data like password or keys
-> from your repository. Information about commits, including file content, is
-> cached in the database, and will remain visible even after they have been
-> removed from the repository.
+CAUTION: **Caution:**
+This process is not suitable for removing sensitive data like password or keys
+from your repository. Information about commits, including file content, is
+cached in the database, and will remain visible even after they have been
+removed from the repository.
 
 ## Using the BFG Repo-Cleaner
 
@@ -98,6 +99,13 @@ up its own internal state, maximizing the space saved.
     `git gc` against the repository. You will receive an email once it has
     completed.
 
+NOTE: **Note:**
+This process will remove some copies of the rewritten commits from GitLab's
+cache and database, but there are still numerous gaps in coverage - at present,
+some of the copies may persist indefinitely. [Clearing the instance cache](../../../administration/raketasks/maintenance.md#clear-redis-cache)
+may help to remove some of them, but it should not be depended on for security
+purposes!
+
 ## Using `git filter-branch`
 
 1. Navigate to your repository:
@@ -131,7 +139,3 @@ up its own internal state, maximizing the space saved.
     ```
 
 Your repository should now be below the size limit.
-
-[admin-repo-size]: https://docs.gitlab.com/ee/user/admin_area/settings/account_and_limit_settings.html#repository-size-limit
-[bfg]: https://rtyley.github.io/bfg-repo-cleaner/
-[gitscm]: https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#The-Nuclear-Option:-filter-branch

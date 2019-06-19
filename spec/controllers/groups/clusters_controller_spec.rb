@@ -189,6 +189,7 @@ describe Groups::ClustersController do
       {
         cluster: {
           name: 'new-cluster',
+          managed: '1',
           provider_gcp_attributes: {
             gcp_project_id: 'gcp-project-12345',
             legacy_abac: legacy_abac_param
@@ -218,6 +219,7 @@ describe Groups::ClustersController do
           expect(cluster).to be_gcp
           expect(cluster).to be_kubernetes
           expect(cluster.provider_gcp).to be_legacy_abac
+          expect(cluster).to be_managed
         end
 
         context 'when legacy_abac param is false' do
@@ -278,6 +280,7 @@ describe Groups::ClustersController do
       {
         cluster: {
           name: 'new-cluster',
+          managed: '1',
           platform_kubernetes_attributes: {
             api_url: 'http://my-url',
             token: 'test'
@@ -303,6 +306,7 @@ describe Groups::ClustersController do
           expect(response).to redirect_to(group_cluster_path(group, cluster))
           expect(cluster).to be_user
           expect(cluster).to be_kubernetes
+          expect(cluster).to be_managed
         end
       end
 
@@ -332,6 +336,29 @@ describe Groups::ClustersController do
           expect(cluster).to be_user
           expect(cluster).to be_kubernetes
           expect(cluster).to be_platform_kubernetes_rbac
+        end
+      end
+
+      context 'when creates a user-managed cluster' do
+        let(:params) do
+          {
+            cluster: {
+              name: 'new-cluster',
+              managed: '0',
+              platform_kubernetes_attributes: {
+                api_url: 'http://my-url',
+                token: 'test',
+                authorization_type: 'rbac'
+              }
+            }
+          }
+        end
+
+        it 'creates a new user-managed cluster' do
+          go
+
+          cluster = group.clusters.first
+          expect(cluster.managed?).to be_falsy
         end
       end
     end
@@ -436,6 +463,7 @@ describe Groups::ClustersController do
         cluster: {
           enabled: false,
           name: 'my-new-cluster-name',
+          managed: false,
           base_domain: domain
         }
       }
@@ -449,13 +477,14 @@ describe Groups::ClustersController do
       expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
       expect(cluster.enabled).to be_falsey
       expect(cluster.name).to eq('my-new-cluster-name')
+      expect(cluster).not_to be_managed
       expect(cluster.domain).to eq('test-domain.com')
     end
 
     context 'when domain is invalid' do
       let(:domain) { 'http://not-a-valid-domain' }
 
-      it 'should not update cluster attributes' do
+      it 'does not update cluster attributes' do
         go
 
         cluster.reload
@@ -473,6 +502,7 @@ describe Groups::ClustersController do
               cluster: {
                 enabled: false,
                 name: 'my-new-cluster-name',
+                managed: false,
                 domain: domain
               }
             }
@@ -485,6 +515,7 @@ describe Groups::ClustersController do
             expect(response).to have_http_status(:no_content)
             expect(cluster.enabled).to be_falsey
             expect(cluster.name).to eq('my-new-cluster-name')
+            expect(cluster).not_to be_managed
           end
         end
 

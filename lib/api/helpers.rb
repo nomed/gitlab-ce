@@ -67,10 +67,6 @@ module API
       initial_current_user != current_user
     end
 
-    def user_namespace
-      @user_namespace ||= find_namespace!(params[:id])
-    end
-
     def user_group
       @group ||= find_group!(params[:id])
     end
@@ -237,6 +233,10 @@ module API
 
     def authorize_push_project
       authorize! :push_code, user_project
+    end
+
+    def authorize_admin_tag
+      authorize! :admin_tag, user_project
     end
 
     def authorize_admin_project
@@ -449,7 +449,7 @@ module API
     end
 
     def present_carrierwave_file!(file, supports_direct_download: true)
-      return not_found! unless file.exists?
+      return not_found! unless file&.exists?
 
       if file.file_storage?
         present_disk_file!(file.path, file.filename)

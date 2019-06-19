@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe ProjectPolicy do
+  include ExternalAuthorizationServiceHelpers
   include_context 'ProjectPolicy context'
   set(:guest) { create(:user) }
   set(:reporter) { create(:user) }
@@ -16,7 +17,7 @@ describe ProjectPolicy do
       read_project_for_iids read_issue_iid read_label
       read_milestone read_project_snippet read_project_member read_note
       create_project create_issue create_note upload_file create_merge_request_in
-      award_emoji
+      award_emoji read_release
     ]
   end
 
@@ -25,7 +26,7 @@ describe ProjectPolicy do
       download_code fork_project create_project_snippet update_issue
       admin_issue admin_label admin_list read_commit_status read_build
       read_container_image read_pipeline read_environment read_deployment
-      read_merge_request download_wiki_code read_sentry_issue read_release
+      read_merge_request download_wiki_code read_sentry_issue
     ]
   end
 
@@ -35,10 +36,10 @@ describe ProjectPolicy do
 
   let(:developer_permissions) do
     %i[
-      admin_milestone admin_merge_request update_merge_request create_commit_status
+      admin_tag admin_milestone admin_merge_request update_merge_request create_commit_status
       update_commit_status create_build update_build create_pipeline
       update_pipeline create_merge_request_from create_wiki push_code
-      resolve_note create_container_image update_container_image
+      resolve_note create_container_image update_container_image destroy_container_image
       create_environment create_deployment create_release update_release
     ]
   end
@@ -65,7 +66,7 @@ describe ProjectPolicy do
     %i[
       change_namespace change_visibility_level rename_project remove_project
       archive_project remove_fork_project destroy_merge_request destroy_issue
-      set_issue_iid set_issue_created_at set_note_created_at
+      set_issue_iid set_issue_created_at set_issue_updated_at set_note_created_at
     ]
   end
 
@@ -290,6 +291,58 @@ describe ProjectPolicy do
              :provided_by_gcp,
              :project,
              projects: [clusterable])
+    end
+  end
+
+  context 'reading a project' do
+    it 'allows access when a user has read access to the repo' do
+      expect(described_class.new(owner, project)).to be_allowed(:read_project)
+      expect(described_class.new(developer, project)).to be_allowed(:read_project)
+      expect(described_class.new(admin, project)).to be_allowed(:read_project)
+    end
+
+    it 'never checks the external service' do
+      expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+
+      expect(described_class.new(owner, project)).to be_allowed(:read_project)
+    end
+
+    context 'with an external authorization service' do
+      before do
+        enable_external_authorization_service_check
+      end
+
+      it 'allows access when the external service allows it' do
+        external_service_allow_access(owner, project)
+        external_service_allow_access(developer, project)
+
+        expect(described_class.new(owner, project)).to be_allowed(:read_project)
+        expect(described_class.new(developer, project)).to be_allowed(:read_project)
+      end
+
+      it 'does not check the external service for admins and allows access' do
+        expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+
+        expect(described_class.new(admin, project)).to be_allowed(:read_project)
+      end
+
+      it 'prevents all but seeing a public project in a list when access is denied' do
+        [developer, owner, build(:user), nil].each do |user|
+          external_service_deny_access(user, project)
+          policy = described_class.new(user, project)
+
+          expect(policy).not_to be_allowed(:read_project)
+          expect(policy).not_to be_allowed(:owner_access)
+          expect(policy).not_to be_allowed(:change_namespace)
+        end
+      end
+
+      it 'passes the full path to external authorization for logging purposes' do
+        expect(::Gitlab::ExternalAuthorization)
+          .to receive(:access_allowed?).with(owner, 'default_label', project.full_path).and_call_original
+
+        described_class.new(owner, project).allowed?(:read_project)
+      end
     end
   end
 end

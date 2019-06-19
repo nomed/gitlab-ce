@@ -64,28 +64,33 @@ module Gitlab
       end
 
       def send_git_archive(repository, ref:, format:, append_sha:, path: nil)
+        path_enabled = Feature.enabled?(:git_archive_path, default_enabled: true)
+        path = nil unless path_enabled
+
         format ||= 'tar.gz'
         format = format.downcase
-        metadata = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format, append_sha: append_sha, path: path)
+
+        metadata = repository.archive_metadata(
+          ref,
+          Gitlab.config.gitlab.repository_downloads_path,
+          format,
+          append_sha: append_sha,
+          path: path
+        )
 
         raise "Repository or ref not found" if metadata.empty?
 
-        params = {
-          'GitalyServer' => gitaly_server_hash(repository),
-          'ArchivePath' => metadata['ArchivePath'],
-          'GetArchiveRequest' => encode_binary(
-            Gitaly::GetArchiveRequest.new(
-              repository: repository.gitaly_repository,
-              commit_id: metadata['CommitId'],
-              prefix: metadata['ArchivePrefix'],
-              format: archive_format(format),
-              path: path.presence || ""
-            ).to_proto
-          )
-        }
+        params =
+          if path_enabled
+            send_git_archive_params(repository, metadata, path, archive_format(format))
+          else
+            metadata
+          end
 
-        # If present DisableCache must be a Boolean. Otherwise workhorse ignores it.
+        # If present, DisableCache must be a Boolean. Otherwise
+        # workhorse ignores it.
         params['DisableCache'] = true if git_archive_cache_disabled?
+        params['GitalyServer'] = gitaly_server_hash(repository)
 
         [
           SEND_DATA_HEADER,
@@ -162,16 +167,16 @@ module Gitlab
         ]
       end
 
-      def terminal_websocket(terminal)
+      def channel_websocket(channel)
         details = {
-          'Terminal' => {
-            'Subprotocols' => terminal[:subprotocols],
-            'Url' => terminal[:url],
-            'Header' => terminal[:headers],
-            'MaxSessionTime' => terminal[:max_session_time]
+          'Channel' => {
+            'Subprotocols' => channel[:subprotocols],
+            'Url' => channel[:url],
+            'Header' => channel[:headers],
+            'MaxSessionTime' => channel[:max_session_time]
           }
         }
-        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.key?(:ca_pem)
+        details['Channel']['CAPem'] = channel[:ca_pem] if channel.key?(:ca_pem)
 
         details
       end
@@ -229,12 +234,17 @@ module Gitlab
 
       protected
 
+      # This is the outermost encoding of a senddata: header. It is safe for
+      # inclusion in HTTP response headers
       def encode(hash)
         Base64.urlsafe_encode64(JSON.dump(hash))
       end
 
+      # This is for encoding individual fields inside the senddata JSON that
+      # contain binary data. In workhorse, the corresponding struct field should
+      # be type []byte
       def encode_binary(binary)
-        Base64.urlsafe_encode64(binary)
+        Base64.encode64(binary)
       end
 
       def gitaly_server_hash(repository)
@@ -267,6 +277,21 @@ module Gitlab
         else
           Gitaly::GetArchiveRequest::Format::TAR_GZ
         end
+      end
+
+      def send_git_archive_params(repository, metadata, path, format)
+        {
+          'ArchivePath' => metadata['ArchivePath'],
+          'GetArchiveRequest' => encode_binary(
+            Gitaly::GetArchiveRequest.new(
+              repository: repository.gitaly_repository,
+              commit_id: metadata['CommitId'],
+              prefix: metadata['ArchivePrefix'],
+              format: format,
+              path: path.presence || ""
+            ).to_proto
+          )
+        }
       end
     end
   end

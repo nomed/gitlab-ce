@@ -10,6 +10,12 @@ describe Clusters::Applications::CertManager do
   include_examples 'cluster application version specs', :clusters_applications_cert_managers
   include_examples 'cluster application initial status specs'
 
+  describe '#can_uninstall?' do
+    subject { cert_manager.can_uninstall? }
+
+    it { is_expected.to be_falsey }
+  end
+
   describe '#install_command' do
     let(:cert_email) { 'admin@example.com' }
 
@@ -36,7 +42,7 @@ describe Clusters::Applications::CertManager do
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
 
-    it 'should be initialized with cert_manager arguments' do
+    it 'is initialized with cert_manager arguments' do
       expect(subject.name).to eq('certmanager')
       expect(subject.chart).to eq('stable/cert-manager')
       expect(subject.version).to eq('v0.5.2')
@@ -52,7 +58,7 @@ describe Clusters::Applications::CertManager do
         cert_manager.email = cert_email
       end
 
-      it 'should use his/her email to register issuer with certificate provider' do
+      it 'uses his/her email to register issuer with certificate provider' do
         expect(subject.files).to eq(cert_manager.files.merge(cluster_issuer_file))
       end
     end
@@ -68,7 +74,7 @@ describe Clusters::Applications::CertManager do
     context 'application failed to install previously' do
       let(:cert_manager) { create(:clusters_applications_cert_managers, :errored, version: '0.0.1') }
 
-      it 'should be initialized with the locked version' do
+      it 'is initialized with the locked version' do
         expect(subject.version).to eq('v0.5.2')
       end
     end
@@ -80,7 +86,7 @@ describe Clusters::Applications::CertManager do
 
     subject { application.files }
 
-    it 'should include cert_manager specific keys in the values.yaml file' do
+    it 'includes cert_manager specific keys in the values.yaml file' do
       expect(values).to include('ingressShim')
     end
   end

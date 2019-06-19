@@ -7,6 +7,9 @@ module QA
     class Project < Base
       include Events::Project
 
+      attr_writer :initialize_with_readme
+
+      attribute :id
       attribute :name
       attribute :add_name_uuid
       attribute :description
@@ -17,7 +20,11 @@ module QA
       end
 
       attribute :path_with_namespace do
-        "#{group.sandbox.path}/#{group.path}/#{name}" if group
+        "#{sandbox_path}#{group.path}/#{name}" if group
+      end
+
+      def sandbox_path
+        group.respond_to?('sandbox') ? "#{group.sandbox.path}/" : ''
       end
 
       attribute :repository_ssh_location do
@@ -36,6 +43,7 @@ module QA
         @add_name_uuid = true
         @standalone = false
         @description = 'My awesome project'
+        @initialize_with_readme = false
       end
 
       def name=(raw_name)
@@ -53,6 +61,7 @@ module QA
           page.choose_name(@name)
           page.add_description(@description)
           page.set_visibility('Public')
+          page.enable_initialize_with_readme if @initialize_with_readme
           page.create_new_project
         end
       end
@@ -79,7 +88,8 @@ module QA
         post_body = {
           name: name,
           description: description,
-          visibility: 'public'
+          visibility: 'public',
+          initialize_with_readme: @initialize_with_readme
         }
 
         unless @standalone

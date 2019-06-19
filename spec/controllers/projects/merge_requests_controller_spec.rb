@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::MergeRequestsController do
@@ -60,6 +62,8 @@ describe Projects::MergeRequestsController do
       end
 
       it "renders merge request page" do
+        expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+
         go(format: :html)
 
         expect(response).to be_success
@@ -236,11 +240,11 @@ describe Projects::MergeRequestsController do
         assignee = create(:user)
         project.add_developer(assignee)
 
-        update_merge_request({ assignee_id: assignee.id }, format: :json)
+        update_merge_request({ assignee_ids: [assignee.id] }, format: :json)
+
         body = JSON.parse(response.body)
 
-        expect(body['assignee'].keys)
-          .to match_array(%w(name username avatar_url id state web_url))
+        expect(body['assignees']).to all(include(*%w(name username avatar_url id state web_url)))
       end
     end
 
@@ -408,7 +412,7 @@ describe Projects::MergeRequestsController do
         end
       end
 
-      context 'when the pipeline succeeds is passed' do
+      context 'when merge when pipeline succeeds option is passed' do
         let!(:head_pipeline) do
           create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
         end
@@ -425,8 +429,9 @@ describe Projects::MergeRequestsController do
 
         it 'sets the MR to merge when the pipeline succeeds' do
           service = double(:merge_when_pipeline_succeeds_service)
+          allow(service).to receive(:available_for?) { true }
 
-          expect(MergeRequests::MergeWhenPipelineSucceedsService)
+          expect(AutoMerge::MergeWhenPipelineSucceedsService)
             .to receive(:new).with(project, anything, anything)
             .and_return(service)
           expect(service).to receive(:execute).with(merge_request)
@@ -455,6 +460,30 @@ describe Projects::MergeRequestsController do
             merge_when_pipeline_succeeds
 
             expect(json_response).to eq('status' => 'merge_when_pipeline_succeeds')
+          end
+        end
+
+        context 'when auto merge has not been enabled yet' do
+          it 'calls AutoMergeService#execute' do
+            expect_next_instance_of(AutoMergeService) do |service|
+              expect(service).to receive(:execute).with(merge_request, 'merge_when_pipeline_succeeds')
+            end
+
+            merge_when_pipeline_succeeds
+          end
+        end
+
+        context 'when auto merge has already been enabled' do
+          before do
+            merge_request.update!(auto_merge_enabled: true, merge_user: user)
+          end
+
+          it 'calls AutoMergeService#update' do
+            expect_next_instance_of(AutoMergeService) do |service|
+              expect(service).to receive(:update).with(merge_request)
+            end
+
+            merge_when_pipeline_succeeds
           end
         end
       end
@@ -709,9 +738,9 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'POST cancel_merge_when_pipeline_succeeds' do
+  describe 'POST cancel_auto_merge' do
     subject do
-      post :cancel_merge_when_pipeline_succeeds,
+      post :cancel_auto_merge,
         params: {
           format: :json,
           namespace_id: merge_request.project.namespace.to_param,
@@ -721,14 +750,15 @@ describe Projects::MergeRequestsController do
         xhr: true
     end
 
-    it 'calls MergeRequests::MergeWhenPipelineSucceedsService' do
-      mwps_service = double
+    it 'calls AutoMergeService' do
+      auto_merge_service = double
 
-      allow(MergeRequests::MergeWhenPipelineSucceedsService)
+      allow(AutoMergeService)
         .to receive(:new)
-        .and_return(mwps_service)
+        .and_return(auto_merge_service)
 
-      expect(mwps_service).to receive(:cancel).with(merge_request)
+      allow(auto_merge_service).to receive(:available_strategies).with(merge_request)
+      expect(auto_merge_service).to receive(:cancel).with(merge_request)
 
       subject
     end

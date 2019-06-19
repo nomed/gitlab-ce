@@ -5,7 +5,7 @@ class LfsObject < ApplicationRecord
   include ObjectStorage::BackgroundMove
 
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :projects, through: :lfs_objects_projects
+  has_many :projects, -> { distinct }, through: :lfs_objects_projects
 
   scope :with_files_stored_locally, -> { where(file_store: LfsObjectUploader::Store::LOCAL) }
 
@@ -13,7 +13,7 @@ class LfsObject < ApplicationRecord
 
   mount_uploader :file, LfsObjectUploader
 
-  after_save :update_file_store, if: :file_changed?
+  after_save :update_file_store, if: :saved_change_to_file?
 
   def update_file_store
     # The file.object_store is set during `uploader.store!`

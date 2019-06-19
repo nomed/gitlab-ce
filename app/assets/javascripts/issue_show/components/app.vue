@@ -11,6 +11,7 @@ import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
+import PinnedLinks from './pinned_links.vue';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
 
 export default {
@@ -19,6 +20,7 @@ export default {
     titleComponent,
     editedComponent,
     formComponent,
+    PinnedLinks,
   },
   mixins: [recaptchaModalImplementor],
   props: {
@@ -156,12 +158,26 @@ export default {
       return this.store.formState;
     },
     hasUpdated() {
-      return !!this.state.updatedAt;
+      return Boolean(this.state.updatedAt);
     },
     issueChanged() {
-      const descriptionChanged = this.initialDescriptionText !== this.store.formState.description;
-      const titleChanged = this.initialTitleText !== this.store.formState.title;
-      return descriptionChanged || titleChanged;
+      const {
+        store: {
+          formState: { description, title },
+        },
+        initialDescriptionText,
+        initialTitleText,
+      } = this;
+
+      if (initialDescriptionText || description) {
+        return initialDescriptionText !== description;
+      }
+
+      if (initialTitleText || title) {
+        return initialTitleText !== title;
+      }
+
+      return false;
     },
     defaultErrorMessage() {
       return sprintf(s__('Error updating %{issuableType}'), { issuableType: this.issuableType });
@@ -326,6 +342,7 @@ export default {
         :title-text="state.titleText"
         :show-inline-edit-button="showInlineEditButton"
       />
+      <pinned-links :description-html="state.descriptionHtml" />
       <description-component
         v-if="state.descriptionHtml"
         :can-update="canUpdate"

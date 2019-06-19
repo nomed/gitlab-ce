@@ -15,6 +15,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   alias_method :authenticated_user, :actor
 
   # Git clients will not know what authenticity token to send along
+  skip_around_action :set_session_storage
   skip_before_action :verify_authenticity_token
   skip_before_action :repository
   before_action :authenticate_user
@@ -83,7 +84,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
   def render_missing_personal_access_token
     render plain: "HTTP Basic: Access denied\n" \
-                  "You must use a personal access token with 'api' scope for Git over HTTP.\n" \
+                  "You must use a personal access token with 'read_repository' or 'write_repository' scope for Git over HTTP.\n" \
                   "You can generate one at #{profile_personal_access_tokens_url}",
            status: :unauthorized
   end
@@ -98,10 +99,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
   def repo_type
     parse_repo_path unless defined?(@repo_type)
-    # When there a project did not exist, the parsed repo_type would be empty.
-    # In that case, we want to continue with a regular project repository. As we
-    # could create the project if the user pushing is allowed to do so.
-    @repo_type || Gitlab::GlRepository::PROJECT
+
+    @repo_type
   end
 
   def handle_basic_authentication(login, password)

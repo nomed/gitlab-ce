@@ -382,6 +382,54 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#source_ref' do
+    subject { pipeline.source_ref }
+
+    let(:pipeline) { create(:ci_pipeline, ref: 'feature') }
+
+    it 'returns source ref' do
+      is_expected.to eq('feature')
+    end
+
+    context 'when the pipeline is a detached merge request pipeline' do
+      let(:merge_request) { create(:merge_request) }
+
+      let(:pipeline) do
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, ref: merge_request.ref_path)
+      end
+
+      it 'returns source ref' do
+        is_expected.to eq(merge_request.source_branch)
+      end
+    end
+  end
+
+  describe '#source_ref_slug' do
+    subject { pipeline.source_ref_slug }
+
+    let(:pipeline) { create(:ci_pipeline, ref: 'feature') }
+
+    it 'slugifies with the source ref' do
+      expect(Gitlab::Utils).to receive(:slugify).with('feature')
+
+      subject
+    end
+
+    context 'when the pipeline is a detached merge request pipeline' do
+      let(:merge_request) { create(:merge_request) }
+
+      let(:pipeline) do
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, ref: merge_request.ref_path)
+      end
+
+      it 'slugifies with the source ref of the merge request' do
+        expect(Gitlab::Utils).to receive(:slugify).with(merge_request.source_branch)
+
+        subject
+      end
+    end
+  end
+
   describe '.triggered_for_branch' do
     subject { described_class.triggered_for_branch(ref) }
 
@@ -418,9 +466,29 @@ describe Ci::Pipeline, :mailer do
           target_branch: 'master')
       end
 
-      let(:pipeline) { merge_request.merge_request_pipelines.first }
+      let(:pipeline) { merge_request.pipelines_for_merge_request.first }
 
       it 'does not return the pipeline' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '.with_reports' do
+    subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
+
+    context 'when pipeline has a test report' do
+      let!(:pipeline_with_report) { create(:ci_pipeline, :with_test_reports) }
+
+      it 'selects the pipeline' do
+        is_expected.to eq([pipeline_with_report])
+      end
+    end
+
+    context 'when pipeline does not have metrics reports' do
+      let!(:pipeline_without_report) { create(:ci_empty_pipeline) }
+
+      it 'does not select the pipeline' do
         is_expected.to be_empty
       end
     end
@@ -670,7 +738,8 @@ describe Ci::Pipeline, :mailer do
                             CI_PIPELINE_SOURCE
                             CI_COMMIT_MESSAGE
                             CI_COMMIT_TITLE
-                            CI_COMMIT_DESCRIPTION]
+                            CI_COMMIT_DESCRIPTION
+                            CI_COMMIT_REF_PROTECTED]
     end
 
     context 'when source is merge request' do
@@ -684,12 +753,12 @@ describe Ci::Pipeline, :mailer do
                source_branch: 'feature',
                target_project: project,
                target_branch: 'master',
-               assignee: assignee,
+               assignees: assignees,
                milestone: milestone,
                labels: labels)
       end
 
-      let(:assignee) { create(:user) }
+      let(:assignees) { create_list(:user, 2) }
       let(:milestone) { create(:milestone, project: project) }
       let(:labels) { create_list(:label, 2) }
 
@@ -710,7 +779,7 @@ describe Ci::Pipeline, :mailer do
             'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' => merge_request.source_branch.to_s,
             'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' => pipeline.source_sha.to_s,
             'CI_MERGE_REQUEST_TITLE' => merge_request.title,
-            'CI_MERGE_REQUEST_ASSIGNEES' => assignee.username,
+            'CI_MERGE_REQUEST_ASSIGNEES' => merge_request.assignee_username_list,
             'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
             'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).join(','))
       end
@@ -730,7 +799,7 @@ describe Ci::Pipeline, :mailer do
       end
 
       context 'without assignee' do
-        let(:assignee) { nil }
+        let(:assignees) { [] }
 
         it 'does not expose assignee variable' do
           expect(subject.to_hash.keys).not_to include('CI_MERGE_REQUEST_ASSIGNEES')
@@ -893,7 +962,11 @@ describe Ci::Pipeline, :mailer do
         end
 
         context 'when kubernetes is active' do
-          shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+          context 'when user configured kubernetes from CI/CD > Clusters' do
+            let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+            let(:project) { cluster.project }
+            let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
+
             it 'returns seeds for kubernetes dependent job' do
               seeds = pipeline.stage_seeds
 
@@ -901,21 +974,6 @@ describe Ci::Pipeline, :mailer do
               expect(seeds.dig(0, 0, :name)).to eq 'spinach'
               expect(seeds.dig(1, 0, :name)).to eq 'production'
             end
-          end
-
-          context 'when user configured kubernetes from Integration > Kubernetes' do
-            let(:project) { create(:kubernetes_project) }
-            let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
-
-            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-          end
-
-          context 'when user configured kubernetes from CI/CD > Clusters' do
-            let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-            let(:project) { cluster.project }
-            let(:pipeline) { build(:ci_pipeline, project: project, config: config) }
-
-            it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
           end
         end
 
@@ -1312,6 +1370,40 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
+    describe 'auto merge' do
+      let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+      let(:pipeline) do
+        create(:ci_pipeline, :running, project: merge_request.source_project,
+                                       ref: merge_request.source_branch,
+                                       sha: merge_request.diff_head_sha)
+      end
+
+      before do
+        merge_request.update_head_pipeline
+      end
+
+      %w[succeed! drop! cancel! skip!].each do |action|
+        context "when the pipeline recieved #{action} event" do
+          it 'performs AutoMergeProcessWorker' do
+            expect(AutoMergeProcessWorker).to receive(:perform_async).with(merge_request.id)
+
+            pipeline.public_send(action)
+          end
+        end
+      end
+
+      context 'when auto merge is not enabled in the merge request' do
+        let(:merge_request) { create(:merge_request) }
+
+        it 'performs AutoMergeProcessWorker' do
+          expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+          pipeline.succeed!
+        end
+      end
+    end
+
     def create_build(name, *traits, queued_at: current, started_from: 0, **opts)
       create(:ci_build, *traits,
              name: name,
@@ -1576,23 +1668,13 @@ describe Ci::Pipeline, :mailer do
 
   describe '#has_kubernetes_active?' do
     context 'when kubernetes is active' do
-      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
-        it 'returns true' do
-          expect(pipeline).to have_kubernetes_active
-        end
-      end
-
-      context 'when user configured kubernetes from Integration > Kubernetes' do
-        let(:project) { create(:kubernetes_project) }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-      end
-
       context 'when user configured kubernetes from CI/CD > Clusters' do
         let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
 
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+        it 'returns true' do
+          expect(pipeline).to have_kubernetes_active
+        end
       end
     end
 
@@ -2633,7 +2715,7 @@ describe Ci::Pipeline, :mailer do
       create(:ci_pipeline,
              project: project,
              sha: project.commit('master').sha,
-             user: create(:user))
+             user: project.owner)
     end
 
     before do
@@ -2705,18 +2787,19 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#latest_builds_with_artifacts' do
-    let!(:pipeline) { create(:ci_pipeline, :success) }
-
-    let!(:build) do
-      create(:ci_build, :success, :artifacts, pipeline: pipeline)
-    end
+    let!(:fresh_build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+    let!(:stale_build) { create(:ci_build, :success, :expired, :artifacts, pipeline: pipeline) }
 
     it 'returns an Array' do
       expect(pipeline.latest_builds_with_artifacts).to be_an_instance_of(Array)
     end
 
-    it 'returns the latest builds' do
-      expect(pipeline.latest_builds_with_artifacts).to eq([build])
+    it 'returns the latest builds with non-expired artifacts' do
+      expect(pipeline.latest_builds_with_artifacts).to contain_exactly(fresh_build)
+    end
+
+    it 'does not return builds with expired artifacts' do
+      expect(pipeline.latest_builds_with_artifacts).not_to include(stale_build)
     end
 
     it 'memoizes the returned relation' do
@@ -2728,8 +2811,8 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '#has_test_reports?' do
-    subject { pipeline.has_test_reports? }
+  describe '#has_reports?' do
+    subject { pipeline.has_reports?(Ci::JobArtifact.test_reports) }
 
     context 'when pipeline has builds with test reports' do
       before do
@@ -2869,6 +2952,38 @@ describe Ci::Pipeline, :mailer do
 
       it "returns false" do
         expect(subject).to be_falsey
+      end
+    end
+  end
+
+  describe '#find_stage_by_name' do
+    let(:pipeline) { create(:ci_pipeline) }
+    let(:stage_name) { 'test' }
+
+    let(:stage) do
+      create(:ci_stage_entity,
+             pipeline: pipeline,
+             project: pipeline.project,
+             name: 'test')
+    end
+
+    before do
+      create_list(:ci_build, 2, pipeline: pipeline, stage: stage.name)
+    end
+
+    subject { pipeline.find_stage_by_name!(stage_name) }
+
+    context 'when stage exists' do
+      it { is_expected.to eq(stage) }
+    end
+
+    context 'when stage does not exist' do
+      let(:stage_name) { 'build' }
+
+      it 'raises an ActiveRecord exception' do
+        expect do
+          subject
+        end.to raise_exception(ActiveRecord::RecordNotFound)
       end
     end
   end

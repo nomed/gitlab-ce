@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Pipeline', :js do
   include RoutesHelpers
   include ProjectForksHelper
+  include ::ExclusiveLeaseHelpers
 
   let(:project) { create(:project) }
   let(:user) { create(:user) }
@@ -89,7 +92,7 @@ describe 'Pipeline', :js do
 
       within '.pipeline-info' do
         expect(page).to have_content("#{pipeline.statuses.count} jobs " \
-                                      "for #{pipeline.ref} ")
+                                      "for #{pipeline.ref}")
         expect(page).to have_link(pipeline.ref,
           href: project_commits_path(pipeline.project, pipeline.ref))
       end
@@ -154,7 +157,7 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to retry the success job' do
+        it 'is possible to retry the success job' do
           find('#ci-badge-build .ci-action-icon-container').click
 
           expect(page).not_to have_content('Retry job')
@@ -194,13 +197,13 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to retry the failed build' do
+        it 'is possible to retry the failed build' do
           find('#ci-badge-test .ci-action-icon-container').click
 
           expect(page).not_to have_content('Retry job')
         end
 
-        it 'should include the failure reason' do
+        it 'includes the failure reason' do
           page.within('#ci-badge-test') do
             build_link = page.find('.js-pipeline-graph-job-link')
             expect(build_link['data-original-title']).to eq('test - failed - (unknown failure)')
@@ -220,7 +223,7 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to play the manual job' do
+        it 'is possible to play the manual job' do
           find('#ci-badge-manual-build .ci-action-icon-container').click
 
           expect(page).not_to have_content('Play job')
@@ -233,6 +236,20 @@ describe 'Pipeline', :js do
           expect(page).to have_content('jenkins')
           expect(page).to have_link('jenkins', href: 'http://gitlab.com/status')
         end
+      end
+    end
+
+    context 'when the pipeline has manual stage' do
+      before do
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'CentOS')
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'Debian')
+        create(:ci_build, :manual, pipeline: pipeline, stage: 'publish', name: 'OpenSUDE')
+
+        visit_pipeline
+      end
+
+      it 'displays play all button' do
+        expect(page).to have_selector('.js-stage-action')
       end
     end
 
@@ -314,6 +331,12 @@ describe 'Pipeline', :js do
         expect(page).not_to have_link(pipeline.ref)
         expect(page).to have_content(pipeline.ref)
       end
+
+      it 'does not render render raw HTML to the pipeline ref' do
+        page.within '.pipeline-info' do
+          expect(page).not_to have_content('<span class="ref-name"')
+        end
+      end
     end
 
     context 'when pipeline is detached merge request pipeline' do
@@ -331,11 +354,9 @@ describe 'Pipeline', :js do
         merge_request.all_pipelines.last
       end
 
-      before do
-        visit_pipeline
-      end
-
       it 'shows the pipeline information' do
+        visit_pipeline
+
         within '.pipeline-info' do
           expect(page).to have_content("#{pipeline.statuses.count} jobs " \
                                        "for !#{merge_request.iid} " \
@@ -344,6 +365,21 @@ describe 'Pipeline', :js do
             href: project_merge_request_path(project, merge_request))
           expect(page).to have_link(merge_request.source_branch,
             href: project_commits_path(merge_request.source_project, merge_request.source_branch))
+        end
+      end
+
+      context 'when source branch does not exist' do
+        before do
+          project.repository.rm_branch(user, merge_request.source_branch)
+        end
+
+        it 'does not link to the source branch commit path' do
+          visit_pipeline
+
+          within '.pipeline-info' do
+            expect(page).not_to have_link(merge_request.source_branch)
+            expect(page).to have_content(merge_request.source_branch)
+          end
         end
       end
 
@@ -386,11 +422,11 @@ describe 'Pipeline', :js do
 
       before do
         pipeline.update(user: user)
-
-        visit_pipeline
       end
 
       it 'shows the pipeline information' do
+        visit_pipeline
+
         within '.pipeline-info' do
           expect(page).to have_content("#{pipeline.statuses.count} jobs " \
                                        "for !#{merge_request.iid} " \
@@ -402,6 +438,21 @@ describe 'Pipeline', :js do
             href: project_commits_path(merge_request.source_project, merge_request.source_branch))
           expect(page).to have_link(merge_request.target_branch,
             href: project_commits_path(merge_request.target_project, merge_request.target_branch))
+        end
+      end
+
+      context 'when target branch does not exist' do
+        before do
+          project.repository.rm_branch(user, merge_request.target_branch)
+        end
+
+        it 'does not link to the target branch commit path' do
+          visit_pipeline
+
+          within '.pipeline-info' do
+            expect(page).not_to have_link(merge_request.target_branch)
+            expect(page).to have_content(merge_request.target_branch)
+          end
         end
       end
 
@@ -454,7 +505,7 @@ describe 'Pipeline', :js do
         expect(page).to have_content('Cancel running')
       end
 
-      it 'should not link to job' do
+      it 'does not link to job' do
         expect(page).not_to have_selector('.js-pipeline-graph-job-link')
       end
     end
@@ -488,6 +539,44 @@ describe 'Pipeline', :js do
       it 'shows the pipeline with a bridge job' do
         expect(page).to have_selector('.pipeline-visualization')
         expect(page).to have_content('cross-build')
+      end
+
+      context 'when a scheduled pipeline is created by a blocked user' do
+        let(:project)  { create(:project, :repository) }
+
+        let(:schedule) do
+          create(:ci_pipeline_schedule,
+            project: project,
+            owner: project.owner,
+            description: 'blocked user schedule'
+          ).tap do |schedule|
+            schedule.update_column(:next_run_at, 1.minute.ago)
+          end
+        end
+
+        before do
+          schedule.owner.block!
+
+          begin
+            PipelineScheduleWorker.new.perform
+          rescue Ci::CreatePipelineService::CreateError
+            # Do nothing, assert view code after the Pipeline failed to create.
+          end
+        end
+
+        it 'displays the PipelineSchedule in an active state' do
+          visit project_pipeline_schedules_path(project)
+          page.click_link('Active')
+
+          expect(page).to have_selector('table.ci-table > tbody > tr > td', text: 'blocked user schedule')
+        end
+
+        it 'does not create a new Pipeline' do
+          visit project_pipelines_path(project)
+
+          expect(page).not_to have_selector('.ci-table')
+          expect(schedule.last_pipeline).to be_nil
+        end
       end
     end
 

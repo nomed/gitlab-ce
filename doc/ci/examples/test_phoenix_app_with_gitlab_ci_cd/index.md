@@ -3,6 +3,7 @@ author: Alexandre S Hostert
 author_gitlab: Hostert
 level: beginner
 article_type: tutorial
+type: tutorial
 date: 2018-02-20
 last_updated: 2019-03-06
 ---
@@ -11,23 +12,23 @@ last_updated: 2019-03-06
 
 [Phoenix][phoenix-site] is a web development framework written in [Elixir][elixir-site], which is a
 functional language designed for productivity and maintainability that runs on the
-[Erlang VM][erlang-site]. Erlang VM is really really fast and can handle very large numbers of
+[Erlang VM](https://www.erlang.org). Erlang VM is really really fast and can handle very large numbers of
 simultaneous users.
 
 That's why we're hearing so much about Phoenix today.
 
-In this tutorial, we'll teach you how to set up GitLab CI/CD to build and test a Phoenix
+In this tutorial, we'll teach you how to set up [GitLab CI/CD](../../README.md) to build and test a Phoenix
 application.
 
-_We assume that you know how to create a Phoenix app, run tests locally, and how to work with Git
-and GitLab UI._
+The tutorial assumes that you know how to create a Phoenix app, run tests locally, and how to work with Git
+and the GitLab UI.
 
 ## Introduction
 
 ### What is Phoenix?
 
 [Phoenix][phoenix-site] is a web development framework written in [Elixir][elixir-site] very useful
- to build fast, reliable, and high-performance applications, as it uses [Erlang VM][erlang-site].
+ to build fast, reliable, and high-performance applications, as it uses [Erlang VM](https://www.erlang.org).
 
 Many components and concepts are similar to Ruby on Rails or Python's Django. High developer
 productivity and high application performance are only a few advantages on learning how to use it.
@@ -406,7 +407,6 @@ other reasons][ci-reasons] to keep using GitLab CI/CD. The benefits to our teams
 [elixir-site]: http://elixir-lang.org/ "Elixir"
 [elixir-mix]: http://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html "Introduction to mix"
 [elixir-docs]: http://elixir-lang.org/getting-started/introduction.html "Elixir Documentation"
-[erlang-site]: http://erlang.org "Erlang"
 [elixir-install]: https://elixir-lang.org/install.html "Elixir Installation"
 [ecto]: http://hexdocs.pm/ecto "Ecto"
 [ecto-repo]: https://hexdocs.pm/ecto/Ecto.html#module-repositories "Ecto Repositories"

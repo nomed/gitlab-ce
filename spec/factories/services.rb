@@ -24,6 +24,8 @@ FactoryBot.define do
       api_url: 'https://kubernetes.example.com',
       token: 'a' * 40
     })
+
+    skip_deprecation_validation true
   end
 
   factory :mock_deployment_service do
@@ -61,5 +63,11 @@ FactoryBot.define do
       password: 'my-secret-password',
       project_key: 'jira-key'
     )
+  end
+
+  factory :hipchat_service do
+    project
+    type 'HipchatService'
+    token 'test_token'
   end
 end

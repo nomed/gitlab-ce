@@ -21,7 +21,6 @@ describe('mrWidgetOptions', () => {
   const COLLABORATION_MESSAGE = 'Allows commits from members who can merge to the target branch';
 
   beforeEach(() => {
-    gon.features = { approvalRules: false };
     // Prevent component mounting
     delete mrWidgetOptions.el;
 
@@ -32,7 +31,6 @@ describe('mrWidgetOptions', () => {
   });
 
   afterEach(() => {
-    gon.features = null;
     vm.$destroy();
   });
 
@@ -180,6 +178,47 @@ describe('mrWidgetOptions', () => {
           it('should not render collaboration status', () => {
             expect(vm.$el.textContent).not.toContain(COLLABORATION_MESSAGE);
           });
+        });
+      });
+    });
+
+    describe('showMergePipelineForkWarning', () => {
+      describe('when the source project and target project are the same', () => {
+        beforeEach(done => {
+          Vue.set(vm.mr, 'mergePipelinesEnabled', true);
+          Vue.set(vm.mr, 'sourceProjectId', 1);
+          Vue.set(vm.mr, 'targetProjectId', 1);
+          vm.$nextTick(done);
+        });
+
+        it('should be false', () => {
+          expect(vm.showMergePipelineForkWarning).toEqual(false);
+        });
+      });
+
+      describe('when merge pipelines are not enabled', () => {
+        beforeEach(done => {
+          Vue.set(vm.mr, 'mergePipelinesEnabled', false);
+          Vue.set(vm.mr, 'sourceProjectId', 1);
+          Vue.set(vm.mr, 'targetProjectId', 2);
+          vm.$nextTick(done);
+        });
+
+        it('should be false', () => {
+          expect(vm.showMergePipelineForkWarning).toEqual(false);
+        });
+      });
+
+      describe('when merge pipelines are enabled _and_ the source project and target project are different', () => {
+        beforeEach(done => {
+          Vue.set(vm.mr, 'mergePipelinesEnabled', true);
+          Vue.set(vm.mr, 'sourceProjectId', 1);
+          Vue.set(vm.mr, 'targetProjectId', 2);
+          vm.$nextTick(done);
+        });
+
+        it('should be true', () => {
+          expect(vm.showMergePipelineForkWarning).toEqual(true);
         });
       });
     });

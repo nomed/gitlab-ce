@@ -39,7 +39,7 @@
 
 .settings-header {
   position: relative;
-  padding: 20px 110px 10px 0;
+  padding: 20px 110px 0 0;
 
   h4 {
     margin-top: 0;
@@ -232,7 +232,7 @@
   }
 }
 
-.settings-flex-row {
+.content-list > .settings-flex-row {
   display: flex;
   align-items: center;
 
@@ -340,6 +340,11 @@
 
 .deprecated-service {
   cursor: default;
+
+  a {
+    font-weight: $gl-font-weight-bold;
+    color: $white-light;
+  }
 }
 
 .personal-access-tokens-never-expires-label {

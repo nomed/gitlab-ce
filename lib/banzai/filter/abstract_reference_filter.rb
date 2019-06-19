@@ -195,13 +195,19 @@ module Banzai
 
             content = link_content || object_link_text(object, matches)
 
-            %(<a href="#{url}" #{data}
-                 title="#{escape_once(title)}"
-                 class="#{klass}">#{content}</a>)
+            link = %(<a href="#{url}" #{data}
+                        title="#{escape_once(title)}"
+                        class="#{klass}">#{content}</a>)
+
+            wrap_link(link, object)
           else
             match
           end
         end
+      end
+
+      def wrap_link(link, object)
+        link
       end
 
       def data_attributes_for(text, parent, object, link_content: false, link_reference: false)
@@ -356,6 +362,14 @@ module Banzai
         return current_parent_path unless group_ref
 
         group_ref
+      end
+
+      def unescape_html_entities(text)
+        CGI.unescapeHTML(text.to_s)
+      end
+
+      def escape_html_entities(text)
+        CGI.escapeHTML(text.to_s)
       end
     end
   end

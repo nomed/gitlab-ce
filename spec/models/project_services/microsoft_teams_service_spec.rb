@@ -30,6 +30,12 @@ describe MicrosoftTeamsService do
     end
   end
 
+  describe '.supported_events' do
+    it 'does not support deployment_events' do
+      expect(described_class.supported_events).not_to include('deployment')
+    end
+  end
+
   describe "#execute" do
     let(:user)    { create(:user) }
     set(:project) { create(:project, :repository, :wiki_repo) }
@@ -282,6 +288,18 @@ describe MicrosoftTeamsService do
 
           expect(result).to be_falsy
         end
+      end
+
+      context 'when disabled' do
+        let(:pipeline) do
+          create(:ci_pipeline, :failed, project: project, ref: 'not-the-default-branch')
+        end
+
+        before do
+          chat_service.notify_only_default_branch = false
+        end
+
+        it_behaves_like 'call Microsoft Teams API'
       end
     end
   end

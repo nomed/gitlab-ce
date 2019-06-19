@@ -1,5 +1,15 @@
 # GraphQL API
 
+## Deep Dive
+
+In March 2019, Nick Thomas hosted a [Deep Dive] on GitLab's [GraphQL API] to share his domain specific knowledge with anyone who may work in this part of the code base in the future. You can find the [recording on YouTube], and the slides on [Google Slides] and in [PDF]. Everything covered in this deep dive was accurate as of GitLab 11.9, and while specific details may have changed since then, it should still serve as a good introduction.
+
+[Deep Dive]: https://gitlab.com/gitlab-org/create-stage/issues/1
+[Pull Repository Mirroring functionality]: ../api/graphql/
+[recording on YouTube]: https://www.youtube.com/watch?v=-9L_1MWrjkg
+[Google Slides]: https://docs.google.com/presentation/d/1qOTxpkTdHIp1CRjuTvO-aXg0_rUtzE3ETfLUdnBB5uQ/edit
+[PDF]: https://gitlab.com/gitlab-org/create-stage/uploads/8e78ea7f326b2ef649e7d7d569c26d56/GraphQL_Deep_Dive__Create_.pdf
+
 ## Authentication
 
 Authentication happens through the `GraphqlController`, right now this
@@ -31,6 +41,21 @@ a new presenter specifically for GraphQL.
 
 The presenter is initialized using the object resolved by a field, and
 the context.
+
+### Exposing Global ids
+
+When exposing an `id` field on a type, we will by default try to
+expose a global id by calling `to_global_id` on the resource being
+rendered.
+
+To override this behaviour, you can implement an `id` method on the
+type for which you are exposing an id. Please make sure that when
+exposing a `GraphQL::ID_TYPE` using a custom method that it is
+globally unique.
+
+The records that are exposing a `full_path` as an `ID_TYPE` are one of
+these exceptions. Since the full path is a unique identifier for a
+`Project` or `Namespace`.
 
 ### Connection Types
 
@@ -79,14 +104,14 @@ look like this:
           {
             "cursor": "Nzc=",
             "node": {
-              "id": "77",
+              "id": "gid://gitlab/Pipeline/77",
               "status": "FAILED"
             }
           },
           {
             "cursor": "Njc=",
             "node": {
-              "id": "67",
+              "id": "gid://gitlab/Pipeline/67",
               "status": "FAILED"
             }
           }
@@ -330,7 +355,7 @@ argument :project_path, GraphQL::ID_TYPE,
          required: true,
          description: "The project the merge request to mutate is in"
 
-argument :iid, GraphQL::ID_TYPE,
+argument :iid, GraphQL::STRING_TYPE,
          required: true,
          description: "The iid of the merge request to mutate"
 

@@ -11,13 +11,13 @@ module ActiveRecord
 
     def show_backtrace(values)
       Rails.logger.debug("QueryRecorder SQL: #{values[:sql]}")
-      caller.each { |line| Rails.logger.debug("   --> #{line}") }
+      Gitlab::Profiler.clean_backtrace(caller).each { |line| Rails.logger.debug("   --> #{line}") }
     end
 
     def callback(name, start, finish, message_id, values)
       show_backtrace(values) if ENV['QUERY_RECORDER_DEBUG']
 
-      if values[:name]&.include?("CACHE") && skip_cached
+      if values[:cached] && skip_cached
         @cached << values[:sql]
       elsif !values[:name]&.include?("SCHEMA")
         @log << values[:sql]

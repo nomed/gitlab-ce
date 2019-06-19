@@ -3,10 +3,20 @@
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) is a high-level Git RPC service used by GitLab CE/EE,
 Workhorse and GitLab-Shell.
 
+## Deep Dive
+
+In May 2019, Bob Van Landuyt hosted a [Deep Dive] on GitLab's [Gitaly project] and how to contribute to it as a Ruby developer, to share his domain specific knowledge with anyone who may work in this part of the code base in the future. You can find the [recording on YouTube], and the slides on [Google Slides] and in [PDF]. Everything covered in this deep dive was accurate as of GitLab 11.11, and while specific details may have changed since then, it should still serve as a good introduction.
+
+[Deep Dive]: https://gitlab.com/gitlab-org/create-stage/issues/1
+[Gitaly project]: https://gitlab.com/gitlab-org/gitaly
+[recording on YouTube]: https://www.youtube.com/watch?v=BmlEWFS8ORo
+[Google Slides]: https://docs.google.com/presentation/d/1VgRbiYih9ODhcPnL8dS0W98EwFYpJ7GXMPpX-1TM6YE/edit
+[PDF]: https://gitlab.com/gitlab-org/create-stage/uploads/a4fdb1026278bda5c1c5bb574379cf80/Create_Deep_Dive__Gitaly_for_Create_Ruby_Devs.pdf
+
 ## Beginner's guide
 
 Start by reading the gitaly repository's
-[Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/beginners_guide.md). 
+[Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/beginners_guide.md).
 It describes how to setup gitaly, the various components of gitaly and what they do, and how to run its test suites.
 
 ## Developing new Git features
@@ -63,6 +73,8 @@ If your test-suite is failing with Gitaly issues, as a first step, try running:
 rm -rf tmp/tests/gitaly
 ```
 
+During rspec tests, the Gitaly instance will write logs to `gitlab/log/gitaly-test.log`.
+
 ## Legacy Rugged code
 
 While Gitaly can handle all Git access, many of GitLab customers still
@@ -80,6 +92,8 @@ most commonly-used RPCs can be enabled via feature flags:
 * `rugged_get_tree_entries`
 * `rugged_tree_entry`
 * `rugged_commit_is_ancestor`
+* `rugged_commit_tree_entry`
+* `rugged_list_commits_by_oid`
 
 A convenience Rake task can be used to enable or disable these flags
 all together. To enable:
@@ -192,7 +206,7 @@ GITALY_REPO_URL=https://gitlab+deploy-token-1000:token-here@gitlab.com/nick.thom
 
 To use a custom Gitaly repository in CI, for instance if you want your
 GitLab fork to always use your own Gitaly fork, set `GITALY_REPO_URL`
-as a [CI environment variable](../ci/variables/README.md#variables).
+as a [CI environment variable](../ci/variables/README.md#gitlab-cicd-environment-variables).
 
 ---
 
@@ -241,7 +255,7 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
      // go implementation
    } else {
    	findAllTagsRequests.WithLabelValues("ruby").Inc()
-     // ruby impelmentation
+     // ruby implementation
    }
    ```
 

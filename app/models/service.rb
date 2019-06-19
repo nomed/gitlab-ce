@@ -6,6 +6,7 @@ class Service < ApplicationRecord
   include Sortable
   include Importable
   include ProjectServicesLoggable
+  include DataFields
 
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -50,6 +51,7 @@ class Service < ApplicationRecord
   scope :job_hooks, -> { where(job_events: true, active: true) }
   scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
+  scope :deployment_hooks, -> { where(deployment_events: true, active: true) }
   scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
   scope :deployment, -> { where(category: 'deployment') }
 
@@ -118,7 +120,7 @@ class Service < ApplicationRecord
   end
 
   def self.event_names
-    self.supported_events.map { |event| "#{event}_events" }
+    self.supported_events.map { |event| ServicesHelper.service_event_field_name(event) }
   end
 
   def event_field(event)
@@ -150,7 +152,7 @@ class Service < ApplicationRecord
   end
 
   def self.supported_events
-    %w(push tag_push issue confidential_issue merge_request wiki_page)
+    %w(commit push tag_push issue confidential_issue merge_request wiki_page)
   end
 
   def execute(data)
@@ -255,6 +257,7 @@ class Service < ApplicationRecord
       external_wiki
       flowdock
       hangouts_chat
+      hipchat
       irker
       jira
       kubernetes
@@ -334,6 +337,8 @@ class Service < ApplicationRecord
       "Event will be triggered when a wiki page is created/updated"
     when "commit", "commit_events"
       "Event will be triggered when a commit is created/updated"
+    when "deployment"
+      "Event will be triggered when a deployment finishes"
     end
   end
 

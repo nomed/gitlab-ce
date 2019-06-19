@@ -50,8 +50,8 @@ variables:
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
   POSTGRES_VERSION: 9.6.2
 
-  KUBERNETES_VERSION: 1.11.9
-  HELM_VERSION: 2.13.1
+  KUBERNETES_VERSION: 1.11.10
+  HELM_VERSION: 2.14.0
 
   DOCKER_DRIVER: overlay2
 
@@ -60,6 +60,7 @@ variables:
 stages:
   - build
   - test
+  - deploy  # dummy stage to follow the template guidelines
   - review
   - dast
   - staging
@@ -78,8 +79,14 @@ include:
   - template: Jobs/Code-Quality.gitlab-ci.yml
   - template: Jobs/Deploy.gitlab-ci.yml
   - template: Jobs/Browser-Performance-Testing.gitlab-ci.yml
-  - template: Jobs/DAST.gitlab-ci.yml
+  - template: Security/DAST.gitlab-ci.yml
   - template: Security/Container-Scanning.gitlab-ci.yml
   - template: Security/Dependency-Scanning.gitlab-ci.yml
   - template: Security/License-Management.gitlab-ci.yml
   - template: Security/SAST.gitlab-ci.yml
+
+# Override DAST job to exclude master branch
+dast:
+  except:
+    refs:
+      - master

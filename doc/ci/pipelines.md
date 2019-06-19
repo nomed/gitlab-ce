@@ -1,3 +1,7 @@
+---
+type: reference
+---
+
 # Creating and using CI/CD pipelines
 
 > Introduced in GitLab 8.8.
@@ -19,7 +23,7 @@ If all the jobs in a stage:
 - Fail, the next stage is not (usually) executed and the pipeline ends early.
 
 NOTE: **Note:**
-If you have a [mirrored repository that GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository-starter),
+If you have a [mirrored repository that GitLab pulls from](../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -135,6 +139,20 @@ The union of A, B, and C is (1, 4) and (6, 7). Therefore, the total running time
 (4 - 1) + (7 - 6) => 4
 ```
 
+### Expanding and collapsing job log sections
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/14664) in GitLab
+> 12.0.
+
+Job logs are divided into sections that can be collapsed or expanded.
+
+In the following example:
+
+- Two sections are expanded and can be collapsed.
+- One section is collapsed and can be expanded.
+
+![Collapsible sections](img/collapsible_log.png)
+
 ## Configuring pipelines
 
 Pipelines, and their component jobs and stages, are defined in the [`.gitlab-ci.yml`](yaml/README.md) file for each project.
@@ -220,7 +238,7 @@ For information on adding pipeline badges to projects, see [Pipeline badges](../
 
 Pipelines for different projects can be combined and visualized together.
 
-For more information, see [Multi-project pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipelines.html).
+For more information, see [Multi-project pipelines](multi_project_pipelines.md).
 
 ## Working with pipelines
 
@@ -295,7 +313,7 @@ You can do this straight from the pipeline graph. Just click on the play button
 to execute that particular job.
 
 For example, your pipeline start automatically, but require manual action to
-[deploy to production](environments.md#manually-deploying-to-environments). In the example below, the `production`
+[deploy to production](environments.md#configuring-manual-deployments). In the example below, the `production`
 stage has a job with a manual action.
 
 ![Pipelines example](img/pipelines.png)
@@ -313,7 +331,7 @@ For example, if you start rolling out new code and:
 
 - Users do not experience trouble, GitLab can automatically complete the deployment from 0% to 100%.
 - Users experience trouble with the new code, you can stop the timed incremental rollout by canceling the pipeline
-  and [rolling](environments.md#rolling-back-changes) back to the last stable version.
+  and [rolling](environments.md#retrying-and-rolling-back) back to the last stable version.
 
 ![Pipelines example](img/pipeline_incremental_rollout.png)
 
@@ -326,6 +344,19 @@ GitLab provides API endpoints to:
 - Trigger pipeline runs. For more information, see:
   - [Triggering pipelines through the API](triggers/README.md).
   - [Pipeline triggers API](../api/pipeline_triggers.md).
+
+### Start multiple manual actions in a stage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27188) in GitLab 11.11.
+
+Multiple manual actions in a single stage can be started at the same time using the "Play all manual" button.
+Once the user clicks this button, each individual manual action will be triggered and refreshed
+to an updated status.
+
+This functionality is only available:
+
+- For users with at least Developer access.
+- If the the stage contains [manual actions](#manual-actions-from-pipeline-graphs).
 
 ## Security on protected branches
 

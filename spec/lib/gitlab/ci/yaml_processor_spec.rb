@@ -3,6 +3,8 @@ require 'spec_helper'
 module Gitlab
   module Ci
     describe YamlProcessor do
+      include StubRequests
+
       subject { described_class.new(config, user: nil) }
 
       describe '#build_attributes' do
@@ -263,6 +265,19 @@ module Gitlab
             end
           end
 
+          context "in default context" do
+            let(:config) do
+              {
+                default: { before_script: ["global script"] },
+                test: { script: ["script"] }
+              }
+            end
+
+            it "return commands with scripts concencaced" do
+              expect(subject[:options][:before_script]).to eq(["global script"])
+            end
+          end
+
           context "overwritten in local context" do
             let(:config) do
               {
@@ -291,6 +306,19 @@ module Gitlab
 
         describe "after_script" do
           context "in global context" do
+            let(:config) do
+              {
+                after_script: ["after_script"],
+                test: { script: ["script"] }
+              }
+            end
+
+            it "return after_script in options" do
+              expect(subject[:options][:after_script]).to eq(["after_script"])
+            end
+          end
+
+          context "in default context" do
             let(:config) do
               {
                 after_script: ["after_script"],
@@ -615,11 +643,19 @@ module Gitlab
         subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config), opts) }
 
         context "when validating a ci config file with no project context" do
+          context "when a single string is provided" do
+            let(:include_content) { "/local.gitlab-ci.yml" }
+
+            it "returns a validation error" do
+              expect { subject }.to raise_error /does not have project/
+            end
+          end
+
           context "when an array is provided" do
             let(:include_content) { ["/local.gitlab-ci.yml"] }
 
-            it "does not return any error" do
-              expect { subject }.not_to raise_error
+            it "returns a validation error" do
+              expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, /does not have project/)
             end
           end
 
@@ -635,9 +671,16 @@ module Gitlab
             let(:include_content) do
               [
                 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml',
-                '/templates/.after-script-template.yml',
                 { template: 'Auto-DevOps.gitlab-ci.yml' }
               ]
+            end
+
+            before do
+              stub_full_request('https://gitlab.com/awesome-project/raw/master/.before-script-template.yml')
+                .to_return(
+                  status: 200,
+                  headers: { 'Content-Type' => 'application/json' },
+                  body: 'prepare: { script: ls -al }')
             end
 
             it "does not return any error" do
@@ -745,6 +788,28 @@ module Gitlab
                                  script: "rspec"
                                }
                              })
+
+          config_processor = Gitlab::Ci::YamlProcessor.new(config)
+
+          expect(config_processor.stage_builds_attributes("test").size).to eq(1)
+          expect(config_processor.stage_builds_attributes("test").first[:options][:cache]).to eq(
+            paths: ["logs/", "binaries/"],
+            untracked: true,
+            key: 'key',
+            policy: 'pull-push'
+          )
+        end
+
+        it "returns cache when defined in default context" do
+          config = YAML.dump(
+            {
+              default: {
+                cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' }
+              },
+              rspec: {
+                script: "rspec"
+              }
+            })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
@@ -1254,7 +1319,7 @@ module Gitlab
           config = YAML.dump({ extra: "bundle update" })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:extra config should be a hash")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "root config contains unknown keys: extra")
         end
 
         it "returns errors if services configuration is not correct" do
@@ -1453,7 +1518,7 @@ module Gitlab
 
           expect { Gitlab::Ci::YamlProcessor.new(config) }
             .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
-                            'rspec: unknown key in `extends`')
+                            'rspec: unknown keys in `extends` (something)')
         end
       end
 

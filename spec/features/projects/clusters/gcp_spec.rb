@@ -79,10 +79,6 @@ describe 'Gcp Cluster', :js do
 
           expect(page).to have_content('Something wrong!')
         end
-
-        it 'user sees RBAC is enabled by default' do
-          expect(page).to have_checked_field('RBAC-enabled cluster')
-        end
       end
 
       context 'when user filled form with invalid parameters' do
@@ -92,7 +88,7 @@ describe 'Gcp Cluster', :js do
         end
 
         it 'user sees a validation error' do
-          expect(page).to have_css('#error_explanation')
+          expect(page).to have_css('.gl-field-error')
         end
       end
     end

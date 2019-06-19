@@ -1,8 +1,3 @@
-// Limit MR description for side-by-side diff view
-.fixed-width-container {
-  @include fixed-width-container;
-}
-
 .issuable-warning-icon {
   background-color: $orange-100;
   border-radius: $border-radius-default;
@@ -27,7 +22,7 @@
   .files-changed-inner,
   .limited-header-width,
   .limited-width-notes {
-    @extend .fixed-width-container;
+    @include fixed-width-container;
   }
 
   .issuable-details {
@@ -35,13 +30,13 @@
     .mr-source-target,
     .mr-state-widget,
     .merge-manually {
-      @extend .fixed-width-container;
+      @include fixed-width-container;
     }
   }
 
   .merge-request-details {
     .emoji-list-container {
-      @extend .fixed-width-container;
+      @include fixed-width-container;
     }
   }
 }
@@ -65,6 +60,7 @@
     overflow-wrap: break-word;
     min-width: 0;
     width: 100%;
+    text-align: initial;
   }
 
   .btn-edit {
@@ -73,7 +69,11 @@
   }
 
   .emoji-block {
-    padding: 10px 0;
+    padding: $gl-padding-4 0;
+
+    @include media-breakpoint-down(md) {
+      padding: $gl-padding-8 0;
+    }
   }
 }
 
@@ -110,6 +110,20 @@
     font-size: 0;
     margin-bottom: -5px;
   }
+
+  .scoped-label-wrapper {
+    > a {
+      max-width: 100%;
+    }
+
+    .color-label {
+      padding-right: $gl-padding-24;
+    }
+
+    .scoped-label {
+      right: 12px;
+    }
+  }
 }
 
 .right-sidebar {
@@ -121,6 +135,10 @@
   background: $gray-light;
   z-index: 200;
   overflow: hidden;
+
+  @include media-breakpoint-down(sm) {
+    z-index: 251;
+  }
 
   a:not(.btn) {
     color: inherit;
@@ -208,7 +226,7 @@
 
   .title {
     color: $gl-text-color;
-    margin-bottom: 10px;
+    margin-bottom: $gl-padding-8;
     line-height: 1;
 
     .avatar {
@@ -594,7 +612,6 @@
 .participants-list {
   display: flex;
   flex-wrap: wrap;
-  margin: -7px;
 }
 
 .user-list {
@@ -604,7 +621,7 @@
 
 .participants-author {
   display: inline-block;
-  padding: 7px;
+  padding: 0 $gl-padding-8 $gl-padding-8 0;
 
   &:nth-of-type(7n) {
     padding-right: 0;
@@ -631,7 +648,6 @@
 
 .participants-more,
 .user-list-more {
-  margin-top: 5px;
   margin-left: 5px;
 
   a,
@@ -666,8 +682,7 @@
   justify-content: center;
   align-items: center;
   margin-top: 0;
-  padding-left: 9px;
-  padding-right: 9px;
+  padding: 0 $gl-padding-8;
 
   @include media-breakpoint-up(sm) {
     display: inline-block;

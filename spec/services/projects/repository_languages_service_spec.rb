@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::RepositoryLanguagesService do
@@ -8,7 +10,7 @@ describe Projects::RepositoryLanguagesService do
 
     context 'when a project is without detected programming languages' do
       it 'schedules a worker and returns the empty result' do
-        expect(::DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id, project.owner.id)
+        expect(::DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
         expect(service.execute).to eq([])
       end
     end
@@ -17,7 +19,7 @@ describe Projects::RepositoryLanguagesService do
       let!(:repository_language) { create(:repository_language, project: project) }
 
       it 'does not schedule a worker and returns the detected languages' do
-        expect(::DetectRepositoryLanguagesWorker).not_to receive(:perform_async).with(project.id, project.owner.id)
+        expect(::DetectRepositoryLanguagesWorker).not_to receive(:perform_async).with(project.id)
 
         languages = service.execute
 

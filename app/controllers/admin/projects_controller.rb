@@ -3,7 +3,7 @@
 class Admin::ProjectsController < Admin::ApplicationController
   include MembersPresentation
 
-  before_action :project, only: [:show, :transfer, :repository_check]
+  before_action :project, only: [:show, :transfer, :repository_check, :destroy]
   before_action :group, only: [:show, :transfer]
 
   def index
@@ -35,12 +35,21 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def destroy
+    ::Projects::DestroyService.new(@project, current_user, {}).async_execute
+    flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.full_name }
+
+    redirect_to admin_projects_path, status: :found
+  rescue Projects::DestroyService::DestroyError => ex
+    redirect_to admin_projects_path, status: 302, alert: ex.message
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def transfer
     namespace = Namespace.find_by(id: params[:new_namespace_id])
     ::Projects::TransferService.new(@project, current_user, params.dup).execute(namespace)
 
-    @project.reload
+    @project.reset
     redirect_to admin_project_path(@project)
   end
   # rubocop: enable CodeReuse/ActiveRecord

@@ -26,7 +26,7 @@ module Gitlab
       end
     end
 
-    PEM_REGEX = /\-+BEGIN CERTIFICATE\-+.+?\-+END CERTIFICATE\-+/m
+    PEM_REGEX = /\-+BEGIN CERTIFICATE\-+.+?\-+END CERTIFICATE\-+/m.freeze
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
     MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
@@ -52,9 +52,9 @@ module Gitlab
     end
 
     def self.interceptors
-      return [] unless Gitlab::Tracing.enabled?
+      return [] unless Labkit::Tracing.enabled?
 
-      [Gitlab::Tracing::GRPCInterceptor.instance]
+      [Labkit::Tracing::GRPCInterceptor.instance]
     end
     private_class_method :interceptors
 
@@ -165,7 +165,10 @@ module Gitlab
         current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
         duration)
 
-      add_call_details(feature: "#{service}##{rpc}", duration: duration, request: request_hash, rpc: rpc)
+      if peek_enabled?
+        add_call_details(feature: "#{service}##{rpc}", duration: duration, request: request_hash, rpc: rpc,
+                         backtrace: Gitlab::Profiler.clean_backtrace(caller))
+      end
     end
 
     def self.query_time
@@ -215,9 +218,10 @@ module Gitlab
       feature = feature_stack && feature_stack[0]
       metadata['call_site'] = feature.to_s if feature
       metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
-      metadata['x-gitlab-correlation-id'] = Gitlab::CorrelationId.current_id if Gitlab::CorrelationId.current_id
+      metadata['x-gitlab-correlation-id'] = Labkit::Correlation::CorrelationId.current_id if Labkit::Correlation::CorrelationId.current_id
+      metadata['gitaly-session-id'] = session_id if Feature::Gitaly.enabled?(Feature::Gitaly::CATFILE_CACHE)
 
-      metadata.merge!(server_feature_flags)
+      metadata.merge!(Feature::Gitaly.server_feature_flags)
 
       result = { metadata: metadata }
 
@@ -232,12 +236,8 @@ module Gitlab
       result
     end
 
-    SERVER_FEATURE_FLAGS = %w[].freeze
-
-    def self.server_feature_flags
-      SERVER_FEATURE_FLAGS.map do |f|
-        ["gitaly-feature-#{f.tr('_', '-')}", feature_enabled?(f).to_s]
-      end.to_h
+    def self.session_id
+      Gitlab::SafeRequestStore[:gitaly_session_id] ||= SecureRandom.uuid
     end
 
     def self.token(storage)
@@ -245,12 +245,6 @@ module Gitlab
       raise "storage not found: #{storage.inspect}" if params.nil?
 
       params['gitaly_token'].presence || Gitlab.config.gitaly['token']
-    end
-
-    def self.feature_enabled?(feature_name)
-      Feature::FlipperFeature.table_exists? && Feature.enabled?("gitaly_#{feature_name}")
-    rescue ActiveRecord::NoDatabaseError
-      false
     end
 
     # Ensures that Gitaly is not being abuse through n+1 misuse etc
@@ -285,7 +279,7 @@ module Gitlab
       # check if the limit is being exceeded while testing in those environments
       # In that case we can use a feature flag to indicate that we do want to
       # enforce request limits.
-      return true if feature_enabled?('enforce_requests_limits')
+      return true if Feature::Gitaly.enabled?('enforce_requests_limits')
 
       !(Rails.env.production? || ENV["GITALY_DISABLE_REQUEST_LIMITS"])
     end
@@ -350,15 +344,17 @@ module Gitlab
       Gitlab::SafeRequestStore["gitaly_call_permitted"] = 0
     end
 
-    def self.add_call_details(details)
-      return unless Gitlab::SafeRequestStore[:peek_enabled]
+    def self.peek_enabled?
+      Gitlab::SafeRequestStore[:peek_enabled]
+    end
 
+    def self.add_call_details(details)
       Gitlab::SafeRequestStore['gitaly_call_details'] ||= []
       Gitlab::SafeRequestStore['gitaly_call_details'] << details
     end
 
     def self.list_call_details
-      return [] unless Gitlab::SafeRequestStore[:peek_enabled]
+      return [] unless peek_enabled?
 
       Gitlab::SafeRequestStore['gitaly_call_details'] || []
     end

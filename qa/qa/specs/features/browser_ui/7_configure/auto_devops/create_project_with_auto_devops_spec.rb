@@ -9,7 +9,7 @@ module QA
       Page::Main::Login.perform(&:sign_in_using_credentials)
     end
 
-    # Transient failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/68
+    # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/108
     describe 'Auto DevOps support', :orchestrated, :kubernetes, :quarantine do
       context 'when rbac is enabled' do
         before(:all) do
@@ -34,13 +34,15 @@ module QA
             resource.project = @project
             resource.key = 'CODE_QUALITY_DISABLED'
             resource.value = '1'
+            resource.masked = false
           end
 
           # Set an application secret CI variable (prefixed with K8S_SECRET_)
           Resource::CiVariable.fabricate! do |resource|
             resource.project = @project
             resource.key = 'K8S_SECRET_OPTIONAL_MESSAGE'
-            resource.value = 'You can see this application secret'
+            resource.value = 'you_can_see_this_variable'
+            resource.masked = false
           end
 
           # Connect K8s cluster
@@ -99,7 +101,7 @@ module QA
           Page::Project::Operations::Environments::Show.perform do |show|
             show.view_deployment do
               expect(page).to have_content('Hello World!')
-              expect(page).to have_content('You can see this application secret')
+              expect(page).to have_content('you_can_see_this_variable')
             end
           end
         end

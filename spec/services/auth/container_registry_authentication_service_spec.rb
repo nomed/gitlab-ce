@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Auth::ContainerRegistryAuthenticationService do
@@ -283,7 +285,7 @@ describe Auth::ContainerRegistryAuthenticationService do
         it_behaves_like 'not a container repository factory'
       end
 
-      context 'disallow guest to delete images since regsitry 2.7' do
+      context 'disallow guest to delete images since registry 2.7' do
         before do
           project.add_guest(current_user)
         end

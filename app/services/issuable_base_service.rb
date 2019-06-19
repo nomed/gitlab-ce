@@ -34,14 +34,20 @@ class IssuableBaseService < BaseService
   end
 
   def filter_assignee(issuable)
-    return unless params[:assignee_id].present?
+    return if params[:assignee_ids].blank?
 
-    assignee_id = params[:assignee_id]
+    unless issuable.allows_multiple_assignees?
+      params[:assignee_ids] = params[:assignee_ids].first(1)
+    end
 
-    if assignee_id.to_s == IssuableFinder::NONE
-      params[:assignee_id] = ""
+    assignee_ids = params[:assignee_ids].select { |assignee_id| assignee_can_read?(issuable, assignee_id) }
+
+    if params[:assignee_ids].map(&:to_s) == [IssuableFinder::NONE]
+      params[:assignee_ids] = []
+    elsif assignee_ids.any?
+      params[:assignee_ids] = assignee_ids
     else
-      params.delete(:assignee_id) unless assignee_can_read?(issuable, assignee_id)
+      params.delete(:assignee_ids)
     end
   end
 
@@ -107,12 +113,13 @@ class IssuableBaseService < BaseService
     @labels_service ||= ::Labels::AvailableLabelsService.new(current_user, parent, params)
   end
 
-  def process_label_ids(attributes, existing_label_ids: nil)
+  def process_label_ids(attributes, existing_label_ids: nil, extra_label_ids: [])
     label_ids = attributes.delete(:label_ids)
     add_label_ids = attributes.delete(:add_label_ids)
     remove_label_ids = attributes.delete(:remove_label_ids)
 
     new_label_ids = existing_label_ids || label_ids || []
+    new_label_ids |= extra_label_ids
 
     if add_label_ids.blank? && remove_label_ids.blank?
       new_label_ids = label_ids if label_ids
@@ -147,7 +154,7 @@ class IssuableBaseService < BaseService
 
     params.delete(:state_event)
     params[:author] ||= current_user
-    params[:label_ids] = issuable.label_ids.to_a + process_label_ids(params)
+    params[:label_ids] = process_label_ids(params, extra_label_ids: issuable.label_ids.to_a)
 
     issuable.assign_attributes(params)
 
@@ -351,7 +358,7 @@ class IssuableBaseService < BaseService
   end
 
   def has_changes?(issuable, old_labels: [], old_assignees: [])
-    valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
+    valid_attrs = [:title, :description, :assignee_ids, :milestone_id, :target_branch]
 
     attrs_changed = valid_attrs.any? do |attr|
       issuable.previous_changes.include?(attr.to_s)

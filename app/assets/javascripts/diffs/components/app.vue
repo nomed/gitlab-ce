@@ -20,6 +20,7 @@ import {
   MAX_TREE_WIDTH,
   TREE_HIDE_STATS_WIDTH,
   MR_TREE_SHOW_KEY,
+  CENTERED_LIMITED_CONTAINER_CLASSES,
 } from '../constants';
 
 export default {
@@ -62,6 +63,21 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    isFluidLayout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    dismissEndpoint: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    showSuggestPopover: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -114,6 +130,9 @@ export default {
     hideFileStats() {
       return this.treeWidth <= TREE_HIDE_STATS_WIDTH;
     },
+    isLimitedContainer() {
+      return !this.showTreeList && !this.isParallelView && !this.isFluidLayout;
+    },
   },
   watch: {
     diffViewType() {
@@ -132,7 +151,12 @@ export default {
     showTreeList: 'adjustView',
   },
   mounted() {
-    this.setBaseConfig({ endpoint: this.endpoint, projectPath: this.projectPath });
+    this.setBaseConfig({
+      endpoint: this.endpoint,
+      projectPath: this.projectPath,
+      dismissEndpoint: this.dismissEndpoint,
+      showSuggestPopover: this.showSuggestPopover,
+    });
 
     if (this.shouldShow) {
       this.fetchData();
@@ -148,9 +172,12 @@ export default {
     this.adjustView();
     eventHub.$once('fetchedNotesData', this.setDiscussions);
     eventHub.$once('fetchDiffData', this.fetchData);
+    eventHub.$on('refetchDiffData', this.refetchDiffData);
+    this.CENTERED_LIMITED_CONTAINER_CLASSES = CENTERED_LIMITED_CONTAINER_CLASSES;
   },
   beforeDestroy() {
     eventHub.$off('fetchDiffData', this.fetchData);
+    eventHub.$off('refetchDiffData', this.refetchDiffData);
     this.removeEventListeners();
   },
   methods: {
@@ -165,10 +192,16 @@ export default {
       'scrollToFile',
       'toggleShowTreeList',
     ]),
-    fetchData() {
+    refetchDiffData() {
+      this.assignedDiscussions = false;
+      this.fetchData(false);
+    },
+    fetchData(toggleTree = true) {
       this.fetchDiffFiles()
         .then(() => {
-          this.hideTreeListIfJustOneFile();
+          if (toggleTree) {
+            this.hideTreeListIfJustOneFile();
+          }
 
           requestIdleCallback(
             () => {
@@ -202,8 +235,6 @@ export default {
     adjustView() {
       if (this.shouldShow) {
         this.$nextTick(() => {
-          window.mrTabs.resetViewContainer();
-          window.mrTabs.expandViewContainer(this.showTreeList);
           this.setEventListeners();
         });
       } else {
@@ -256,6 +287,7 @@ export default {
         :merge-request-diffs="mergeRequestDiffs"
         :merge-request-diff="mergeRequestDiff"
         :target-branch="targetBranch"
+        :is-limited-container="isLimitedContainer"
       />
 
       <hidden-files-warning
@@ -285,7 +317,12 @@ export default {
           />
           <tree-list :hide-file-stats="hideFileStats" />
         </div>
-        <div class="diff-files-holder">
+        <div
+          class="diff-files-holder"
+          :class="{
+            [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
+          }"
+        >
           <commit-widget v-if="commit" :commit="commit" />
           <template v-if="renderDiffFiles">
             <diff-file

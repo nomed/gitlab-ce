@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/31
   context 'Create' do
     describe 'Merge request squashing' do
       it 'user squashes commits while merging' do

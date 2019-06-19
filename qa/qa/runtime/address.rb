@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module QA
   module Runtime
     class Address
       attr_reader :address
 
-      def initialize(instance, page = nil)
+      def initialize(instance, page)
         @instance = instance
         @address  = host + (page.is_a?(String) ? page : page&.path)
       end

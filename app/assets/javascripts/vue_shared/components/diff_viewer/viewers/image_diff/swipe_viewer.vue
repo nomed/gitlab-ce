@@ -46,6 +46,8 @@ export default {
     window.removeEventListener('resize', this.resizeThrottled, false);
     document.body.removeEventListener('mouseup', this.stopDrag);
     document.body.removeEventListener('mousemove', this.dragMove);
+    document.body.removeEventListener('touchend', this.stopDrag);
+    document.body.removeEventListener('touchmove', this.dragMove);
   },
   mounted() {
     window.addEventListener('resize', this.resize, false);
@@ -54,13 +56,13 @@ export default {
     dragMove(e) {
       if (!this.dragging) return;
 
-      let leftValue = e.pageX - this.$refs.swipeFrame.getBoundingClientRect().left;
-      const spaceLeft = 20;
+      const moveX = e.pageX || e.touches[0].pageX;
+      let leftValue = moveX - this.$refs.swipeFrame.getBoundingClientRect().left;
       const { clientWidth } = this.$refs.swipeFrame;
       if (leftValue <= 0) {
         leftValue = 0;
-      } else if (leftValue > clientWidth - spaceLeft) {
-        leftValue = clientWidth - spaceLeft;
+      } else if (leftValue > clientWidth) {
+        leftValue = clientWidth;
       }
 
       this.swipeWrapWidth = (leftValue / clientWidth) * 100;
@@ -69,13 +71,15 @@ export default {
     startDrag() {
       this.dragging = true;
       document.body.addEventListener('mousemove', this.dragMove);
+      document.body.addEventListener('touchmove', this.dragMove);
     },
     stopDrag() {
       this.dragging = false;
       document.body.removeEventListener('mousemove', this.dragMove);
+      document.body.removeEventListener('touchmove', this.dragMove);
     },
     prepareSwipe() {
-      if (this.swipeOldImgInfo && this.swipeNewImgInfo) {
+      if (this.swipeOldImgInfo && this.swipeNewImgInfo && this.swipeOldImgInfo.renderedWidth > 0) {
         // Add 2 for border width
         this.swipeMaxWidth =
           Math.max(this.swipeOldImgInfo.renderedWidth, this.swipeNewImgInfo.renderedWidth) + 2;
@@ -83,6 +87,7 @@ export default {
           Math.max(this.swipeOldImgInfo.renderedHeight, this.swipeNewImgInfo.renderedHeight) + 2;
 
         document.body.addEventListener('mouseup', this.stopDrag);
+        document.body.addEventListener('touchend', this.stopDrag);
       }
     },
     swipeNewImgLoaded(imgInfo) {
@@ -95,6 +100,8 @@ export default {
     },
     resize: _.throttle(function throttledResize() {
       this.swipeBarPos = 0;
+      this.swipeWrapWidth = 0;
+      this.prepareSwipe();
     }, 400),
   },
 };
@@ -105,6 +112,8 @@ export default {
     <div
       ref="swipeFrame"
       :style="{
+        width: swipeMaxPixelWidth,
+        height: swipeMaxPixelHeight,
         'user-select': dragging ? 'none' : null,
       }"
       class="swipe-frame"
@@ -143,6 +152,8 @@ export default {
         class="swipe-bar"
         @mousedown="startDrag"
         @mouseup="stopDrag"
+        @touchstart="startDrag"
+        @touchend="stopDrag"
       >
         <span class="top-handle"></span> <span class="bottom-handle"></span>
       </span>

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airborne'
 
 module QA
@@ -25,11 +27,8 @@ module QA
         private
 
         def create_personal_access_token
-          if @is_new_session
-            Runtime::Browser.visit(@address, Page::Main::Login) { do_create_personal_access_token }
-          else
-            do_create_personal_access_token
-          end
+          Runtime::Browser.visit(@address, Page::Main::Login) if @is_new_session
+          do_create_personal_access_token
         end
 
         def do_create_personal_access_token

@@ -13,6 +13,14 @@ describe Clusters::Applications::Runner do
 
   it { is_expected.to belong_to(:runner) }
 
+  describe '#can_uninstall?' do
+    let(:gitlab_runner) { create(:clusters_applications_runner, runner: ci_runner) }
+
+    subject { gitlab_runner.can_uninstall? }
+
+    it { is_expected.to be_falsey }
+  end
+
   describe '#install_command' do
     let(:kubeclient) { double('kubernetes client') }
     let(:gitlab_runner) { create(:clusters_applications_runner, runner: ci_runner) }
@@ -21,10 +29,10 @@ describe Clusters::Applications::Runner do
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
 
-    it 'should be initialized with 4 arguments' do
+    it 'is initialized with 4 arguments' do
       expect(subject.name).to eq('runner')
       expect(subject.chart).to eq('runner/gitlab-runner')
-      expect(subject.version).to eq('0.3.0')
+      expect(subject.version).to eq(Clusters::Applications::Runner::VERSION)
       expect(subject).to be_rbac
       expect(subject.repository).to eq('https://charts.gitlab.io')
       expect(subject.files).to eq(gitlab_runner.files)
@@ -41,8 +49,8 @@ describe Clusters::Applications::Runner do
     context 'application failed to install previously' do
       let(:gitlab_runner) { create(:clusters_applications_runner, :errored, runner: ci_runner, version: '0.1.13') }
 
-      it 'should be initialized with the locked version' do
-        expect(subject.version).to eq('0.3.0')
+      it 'is initialized with the locked version' do
+        expect(subject.version).to eq(Clusters::Applications::Runner::VERSION)
       end
     end
   end
@@ -53,7 +61,7 @@ describe Clusters::Applications::Runner do
 
     subject { application.files }
 
-    it 'should include runner valid values' do
+    it 'includes runner valid values' do
       expect(values).to include('concurrent')
       expect(values).to include('checkInterval')
       expect(values).to include('rbac')
@@ -61,8 +69,8 @@ describe Clusters::Applications::Runner do
       expect(values).to include('privileged: true')
       expect(values).to include('image: ubuntu:16.04')
       expect(values).to include('resources')
-      expect(values).to match(/runnerToken: '?#{ci_runner.token}/)
-      expect(values).to match(/gitlabUrl: '?#{Gitlab::Routing.url_helpers.root_url}/)
+      expect(values).to match(/runnerToken: '?#{Regexp.escape(ci_runner.token)}/)
+      expect(values).to match(/gitlabUrl: '?#{Regexp.escape(Gitlab::Routing.url_helpers.root_url)}/)
     end
 
     context 'without a runner' do
@@ -75,7 +83,7 @@ describe Clusters::Applications::Runner do
         end
 
         it 'uses the new runner token' do
-          expect(values).to match(/runnerToken: '?#{runner.token}/)
+          expect(values).to match(/runnerToken: '?#{Regexp.escape(runner.token)}/)
         end
       end
 
@@ -106,6 +114,18 @@ describe Clusters::Applications::Runner do
           expect(runner.groups).to eq [group]
         end
       end
+
+      context 'instance cluster' do
+        let(:cluster) { create(:cluster, :with_installed_helm, :instance) }
+
+        include_examples 'runner creation'
+
+        it 'creates an instance runner' do
+          subject
+
+          expect(runner).to be_instance_type
+        end
+      end
     end
 
     context 'with duplicated values on vendor/runner/values.yaml' do
@@ -131,7 +151,7 @@ describe Clusters::Applications::Runner do
         allow(application).to receive(:chart_values).and_return(stub_values)
       end
 
-      it 'should overwrite values.yaml' do
+      it 'overwrites values.yaml' do
         expect(values).to match(/privileged: '?#{application.privileged}/)
       end
     end

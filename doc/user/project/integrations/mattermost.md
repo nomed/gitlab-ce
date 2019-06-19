@@ -1,5 +1,9 @@
 # Mattermost Notifications Service
 
+The Mattermost Notifications Service allows your GitLab project to send events (e.g., `issue created`) to your existing Mattermost team as notifications. This requires configurations in both Mattermost and GitLab.
+
+You can also use Mattermost slash commands to control GitLab inside Mattermost. This is the separately configured [Mattermost slash commands](mattermost_slash_commands.md).
+
 ## On Mattermost
 
 To enable Mattermost integration you must create an incoming webhook integration:
@@ -27,9 +31,11 @@ There, you will see a checkbox with the following events that can be triggered:
 - Confidential issue
 - Merge request
 - Note
+- Confidential note
 - Tag push
 - Pipeline
 - Wiki page
+- Deployment
 
 Below each of these event checkboxes, you have an input field to enter
 which Mattermost channel you want to send that event message. Enter your preferred channel handle (the hash sign `#` is optional).

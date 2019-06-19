@@ -23,14 +23,6 @@ describe('text_utility', () => {
     });
   });
 
-  describe('capitalizeFirstCharacter', () => {
-    it('returns string with first letter capitalized', () => {
-      expect(textUtils.capitalizeFirstCharacter('gitlab')).toEqual('Gitlab');
-      expect(textUtils.highCountTrim(105)).toBe('99+');
-      expect(textUtils.highCountTrim(100)).toBe('99+');
-    });
-  });
-
   describe('humanize', () => {
     it('should remove underscores and uppercase the first letter', () => {
       expect(textUtils.humanize('foo_bar')).toEqual('Foo bar');
@@ -57,9 +49,9 @@ describe('text_utility', () => {
     });
   });
 
-  describe('slugify', () => {
-    it('should remove accents and convert to lower case', () => {
-      expect(textUtils.slugify('João')).toEqual('joão');
+  describe('capitalizeFirstCharacter', () => {
+    it('returns string with first letter capitalized', () => {
+      expect(textUtils.capitalizeFirstCharacter('gitlab')).toEqual('Gitlab');
     });
   });
 
@@ -149,6 +141,39 @@ describe('text_utility', () => {
       expect(textUtils.truncatePathMiddleToLength('app/test/merge_request/diff', 13)).toEqual(
         'app/…/…/diff',
       );
+    });
+  });
+
+  describe('slugifyWithUnderscore', () => {
+    it('should replaces whitespaces with underscore and convert to lower case', () => {
+      expect(textUtils.slugifyWithUnderscore('My Input String')).toEqual('my_input_string');
+    });
+  });
+
+  describe('truncateNamespace', () => {
+    it(`should return the root namespace if the namespace only includes one level`, () => {
+      expect(textUtils.truncateNamespace('a / b')).toBe('a');
+    });
+
+    it(`should return the first 2 namespaces if the namespace includes exactly 2 levels`, () => {
+      expect(textUtils.truncateNamespace('a / b / c')).toBe('a / b');
+    });
+
+    it(`should return the first and last namespaces, separated by "...", if the namespace includes more than 2 levels`, () => {
+      expect(textUtils.truncateNamespace('a / b / c / d')).toBe('a / ... / c');
+      expect(textUtils.truncateNamespace('a / b / c / d / e / f / g / h / i')).toBe('a / ... / h');
+    });
+
+    it(`should return an empty string for invalid inputs`, () => {
+      [undefined, null, 4, {}, true, new Date()].forEach(input => {
+        expect(textUtils.truncateNamespace(input)).toBe('');
+      });
+    });
+
+    it(`should not alter strings that aren't formatted as namespaces`, () => {
+      ['', ' ', '\t', 'a', 'a \\ b'].forEach(input => {
+        expect(textUtils.truncateNamespace(input)).toBe(input);
+      });
     });
   });
 });

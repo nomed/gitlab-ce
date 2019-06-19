@@ -11,6 +11,14 @@ $default-transition-duration: 0.15s;
 $contextual-sidebar-width: 220px;
 $contextual-sidebar-collapsed-width: 50px;
 $toggle-sidebar-height: 48px;
+$spacing-scale: (
+  0: 0,
+  1: #{0.5 * $grid-size},
+  2: $grid-size,
+  3: #{2 * $grid-size},
+  4: #{3 * $grid-size},
+  5: #{4 * $grid-size}
+);
 
 /*
  * Color schema
@@ -109,6 +117,84 @@ $gray-700: #707070;
 $gray-800: #4f4f4f;
 $gray-900: #2e2e2e;
 $gray-950: #1f1f1f;
+
+$greens: (
+  '50': $green-50,
+  '100': $green-100,
+  '200': $green-200,
+  '300': $green-300,
+  '400': $green-400,
+  '500': $green-500,
+  '600': $green-600,
+  '700': $green-700,
+  '800': $green-800,
+  '900': $green-900,
+  '950': $green-950
+);
+
+$blues: (
+  '50': $blue-50,
+  '100': $blue-100,
+  '200': $blue-200,
+  '300': $blue-300,
+  '400': $blue-400,
+  '500': $blue-500,
+  '600': $blue-600,
+  '700': $blue-700,
+  '800': $blue-800,
+  '900': $blue-900,
+  '950': $blue-950
+);
+
+$oranges: (
+  '50': $orange-50,
+  '100': $orange-100,
+  '200': $orange-200,
+  '300': $orange-300,
+  '400': $orange-400,
+  '500': $orange-500,
+  '600': $orange-600,
+  '700': $orange-700,
+  '800': $orange-800,
+  '900': $orange-900,
+  '950': $orange-950
+);
+
+$reds: (
+  '50': $red-50,
+  '100': $red-100,
+  '200': $red-200,
+  '300': $red-300,
+  '400': $red-400,
+  '500': $red-500,
+  '600': $red-600,
+  '700': $red-700,
+  '800': $red-800,
+  '900': $red-900,
+  '950': $red-950
+);
+
+$grays: (
+  '50': $gray-50,
+  '100': $gray-100,
+  '200': $gray-200,
+  '300': $gray-300,
+  '400': $gray-400,
+  '500': $gray-500,
+  '600': $gray-600,
+  '700': $gray-700,
+  '800': $gray-800,
+  '900': $gray-900,
+  '950': $gray-950
+);
+
+$color-ranges: (
+  'primary': $blues,
+  'secondary': $grays,
+  'success': $greens,
+  'warning': $oranges,
+  'danger': $reds
+);
 
 // GitLab themes
 
@@ -219,6 +305,15 @@ $gl-gray-dark: #313236;
 $gl-gray-light: #5c5c5c;
 $gl-header-color: #4c4e54;
 
+$type-scale: (
+  1: 12px,
+  2: 14px,
+  3: 16px,
+  4: 20px,
+  5: 28px,
+  6: 42px
+);
+
 /*
  * Lists
  */
@@ -241,6 +336,7 @@ $tooltip-font-size: 12px;
  */
 $gl-padding-4: 4px;
 $gl-padding-8: 8px;
+$gl-padding-12: 12px;
 $gl-padding: 16px;
 $gl-padding-24: 24px;
 $gl-padding-32: 32px;
@@ -286,6 +382,7 @@ $breadcrumb-min-height: 48px;
 $home-panel-title-row-height: 64px;
 $home-panel-avatar-mobile-size: 24px;
 $gl-line-height: 16px;
+$gl-line-height-20: 20px;
 $gl-line-height-24: 24px;
 $gl-line-height-14: 14px;
 
@@ -337,7 +434,7 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
  */
 $monospace-font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono',
   'Courier New', 'andale mono', 'lucida console', monospace;
-$regular-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+$regular-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Ubuntu, Cantarell,
   'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
   'Noto Color Emoji';
 
@@ -401,6 +498,17 @@ $pagination-padding-y: 6px;
 $pagination-padding-x: 16px;
 $pagination-line-height: 20px;
 $pagination-disabled-color: #cdcdcd;
+
+/*
+* Toasts
+*/
+$toast-offset: 24px;
+$toast-height: 48px;
+$toast-max-width: 586px;
+$toast-padding-right: 42px;
+$toast-default-margin: 8px;
+$toast-action-margin-left: 16px;
+$toast-background-opacity: 0.95;
 
 /*
  *  Status icons
@@ -483,6 +591,7 @@ $issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards
 */
 $avatar-radius: 50%;
 $gl-avatar-size: 40px;
+$gl-avatar-border-opacity: 0.1;
 
 /*
 * Blame
@@ -533,6 +642,7 @@ $input-lg-width: 320px;
 */
 $document-index-color: #888;
 $help-shortcut-header-color: #333;
+$accepting-mr-label-color: #69d100;
 
 /*
 * Issues
@@ -573,6 +683,11 @@ $project-network-controls-color: #888;
 $feature-toggle-color: #fff;
 $feature-toggle-text-color: #fff;
 $feature-toggle-color-enabled: #4a8bee;
+
+/*
+ * Monitor Charts
+ */
+$chart-tooltip-max-width: 512px;
 
 /*
 Stat Graph
@@ -696,6 +811,11 @@ $modal-border-color: #e9ecef;
 $priority-label-empty-state-width: 114px;
 
 /*
+Popovers
+*/
+$popover-max-width: 384px;
+
+/*
 Issues Analytics
 */
 $issues-analytics-popover-boarder-color: rgba(0, 0, 0, 0.15);
@@ -703,7 +823,7 @@ $issues-analytics-popover-boarder-color: rgba(0, 0, 0, 0.15);
 /*
 Merge Requests
 */
-$mr-tabs-height: 51px;
+$mr-tabs-height: 48px;
 $mr-version-controls-height: 56px;
 
 /*
@@ -718,3 +838,8 @@ $compare-branches-sticky-header-height: 68px;
  - Issue: https://gitlab.com/gitlab-org/design.gitlab.com/issues/242
  */
 $enable-validation-icons: false;
+
+/*
+Licenses
+*/
+$license-header-cell-width: 150px;

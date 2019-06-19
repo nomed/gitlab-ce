@@ -15,7 +15,9 @@ See the documentation below for details on how to configure these services.
 - [CAS](cas.md) Configure GitLab to sign in using CAS
 - [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 - [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
+- [Jenkins](jenkins.md) Integrate with the Jenkins CI
 - [JIRA](../user/project/integrations/jira.md) Integrate with the JIRA issue tracker
+- [Kerberos](kerberos.md) Integrate with Kerberos
 - [LDAP](ldap.md) Set up sign in via LDAP
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
 - [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure and Authentiq ID
@@ -29,8 +31,8 @@ See the documentation below for details on how to configure these services.
 
 ## Project services
 
-Integration with services such as Campfire, Flowdock, Pivotal Tracker, and Slack
-are available in the form of a [Project Service][].
+Integration with services such as Campfire, Flowdock, HipChat,
+Pivotal Tracker, and Slack are available in the form of a [Project Service][].
 
 [Project Service]: ../user/project/integrations/project_services.md
 
@@ -53,7 +55,7 @@ at Super User also has relevant information.
 
 **Omnibus Trusted Chain**
 
-[Install the self signed certificate or custom certificate authorities](http://docs.gitlab.com/omnibus/common_installation_problems/README.html#using-self-signed-certificate-or-custom-certificate-authorities)
+[Install the self signed certificate or custom certificate authorities](https://docs.gitlab.com/omnibus/common_installation_problems/README.html#using-self-signed-certificate-or-custom-certificate-authorities)
 in to GitLab Omnibus.
 
 It is enough to concatenate the certificate to the main trusted certificate
@@ -69,4 +71,4 @@ After that restart GitLab with:
 sudo gitlab-ctl restart
 ```
 
-[jenkins]: http://docs.gitlab.com/ee/integration/jenkins.html
+[jenkins]: https://docs.gitlab.com/ee/integration/jenkins.html
