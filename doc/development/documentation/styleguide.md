@@ -467,6 +467,7 @@ can quickly and easily scan the page for videos before reading:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video tutorial, see [Video Title](link-to-video).
 ```
+
 ### Embedded videos
 
 GitLab docs (docs.gitlab.com) support embedded videos from
@@ -505,7 +506,7 @@ This is how it renders on docs.gitlab.com:
 </figure>
 
 <div class="video-fallback">
-  See video tutorial [Video title](https://www.youtube.com/watch?v=enMumwvLAug).
+  See the video tutorial [Video title](https://www.youtube.com/watch?v=enMumwvLAug).
 </div>
 
 > Notes:
