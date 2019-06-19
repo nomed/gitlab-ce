@@ -490,7 +490,7 @@ you have your MR reviewed and approved by a technical writer.
 ```html
 leave a blank line here
 <div class="video-fallback">
-  See the video tutorial [Video title](https://www.youtube.com/watch?v=MqL6BMOySIQ).
+  See the video: [Video title](https://www.youtube.com/watch?v=MqL6BMOySIQ).
 </div>
 
 <figure class="video-container">
