@@ -10,7 +10,7 @@ module BoardsHelper
       boards_endpoint: @boards_endpoint,
       lists_endpoint: board_lists_path(board),
       board_id: board.id,
-      disabled: "#{!can?(current_user, :admin_list, current_board_parent)}",
+      disabled: (!board.can_add_issues?(current_user)).to_s,
       issue_link_base: build_issue_link_base,
       root_path: root_path,
       bulk_update_path: @bulk_issues_path,

@@ -2,6 +2,7 @@
 
 class GroupPolicy < BasePolicy
   include ClusterableActions
+  include Gitlab::Utils::StrongMemoize
 
   desc "Group is public"
   with_options scope: :subject, score: 0
@@ -26,7 +27,13 @@ class GroupPolicy < BasePolicy
   condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }
 
   condition(:has_projects) do
-    GroupProjectsFinder.new(group: @subject, current_user: @user, options: { include_subgroups: true, only_owned: true }).execute.any?
+    group_projects.any?
+  end
+
+  condition(:reporter_of_projects) do
+    projects = group_projects
+
+    projects.visible_to_user_and_access_level(@user, ::Gitlab::Access::REPORTER).any?
   end
 
   condition(:has_clusters, scope: :subject) { clusterable_has_clusters? }
@@ -64,6 +71,10 @@ class GroupPolicy < BasePolicy
     enable :read_list
     enable :read_label
     enable :read_group
+  end
+
+  rule { reporter_of_projects }.policy do
+    enable :add_issues_from_boards
   end
 
   rule { has_access }.enable :read_namespace
@@ -134,5 +145,15 @@ class GroupPolicy < BasePolicy
 
   def lookup_access_level!
     @subject.max_member_access_for_user(@user)
+  end
+
+  def group_projects
+    strong_memoize(:group_projects) do
+      GroupProjectsFinder.new(
+        group: @subject,
+        current_user: @user,
+        options: { include_subgroups: true, only_owned: true }
+      ).execute
+    end
   end
 end

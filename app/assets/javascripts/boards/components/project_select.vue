@@ -55,6 +55,7 @@ export default {
             with_issues_enabled: true,
             with_shared: false,
             include_subgroups: true,
+            min_access_level: 20,
           },
           projects => {
             this.loading = false;

@@ -59,6 +59,30 @@ describe GroupPolicy do
     end
   end
 
+  context 'reporter of projects' do
+    let!(:current_user) { create(:user) }
+    let!(:project_1) { create(:project, namespace: group) }
+    let!(:project_2) { create(:project, namespace: group) }
+
+    context 'when user is at least reporter in one of the child projects' do
+      it 'allows to add issues from issue board' do
+        project_1.add_guest(current_user)
+        project_2.add_reporter(current_user)
+
+        expect_allowed(:add_issues_from_boards)
+      end
+    end
+
+    context 'when user is not a reporter from any child projects' do
+      it 'does not allow to add issues from issue board' do
+        project_1.add_guest(current_user)
+        project_2.add_guest(current_user)
+
+        expect_disallowed(:add_issues_from_boards)
+      end
+    end
+  end
+
   context 'guests' do
     let(:current_user) { guest }
 

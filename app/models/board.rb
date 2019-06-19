@@ -33,6 +33,12 @@ class Board < ApplicationRecord
     lists.merge(List.closed).take
   end
 
+  def can_add_issues?(user)
+    rule = group_board? ? :add_issues_from_boards : :admin_issue
+
+    Ability.allowed?(user, rule, parent)
+  end
+
   def scoped?
     false
   end
