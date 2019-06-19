@@ -43,7 +43,7 @@ This will replace the included Ruby indexer in the future but should be consider
 
 The Elasticsearch Go indexer is included in Omnibus for GitLab 11.8 and newer.
 
-To use the new Elasticsearch indexer included in Omnibus, check the box for `Use the new repository indexer (beta)`  when [enabling the Elasticsearch integration](https://docs.gitlab.com/ee/integration/elasticsearch.html#enabling-elasticsearch).
+To use the new Elasticsearch indexer included in Omnibus, check the box "Use the new repository indexer (beta)"  when [enabling the Elasticsearch integration](#enabling-elasticsearch).
 
 If you would like to use the Elasticsearch Go indexer with a source installation or an older version of GitLab, please follow the instructions below.
 
