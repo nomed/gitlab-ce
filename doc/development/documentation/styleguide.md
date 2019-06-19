@@ -498,7 +498,7 @@ leave a blank line here
 leave a blank line here
 ```
 
-This is how it's going to render on docs.gitlab.com:
+This is how it renders on docs.gitlab.com:
 
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
