@@ -103,6 +103,57 @@ describe Projects::BranchesController do
              }
       end
 
+      context 'issue_project_id is present' do
+        let(:issue_project) { create(:project) }
+
+        def create_branch_with_issue_project
+          post(
+            :create,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              branch_name: branch,
+              issue_project_id: issue_project.id,
+              issue_iid: issue.iid
+            }
+          )
+        end
+
+        context 'user cannot push code to issue project' do
+          let(:issue) { create(:issue, project: issue_project) }
+
+          it 'does not post a system note' do
+            expect(SystemNoteService).not_to receive(:new_issue_branch)
+
+            create_branch_with_issue_project
+          end
+        end
+
+        context 'user can push code to issue project' do
+          before do
+            issue_project.add_developer(user)
+          end
+
+          context 'issue is under the specified project' do
+            let(:issue) { create(:issue, project: issue_project) }
+
+            it 'posts a system note' do
+              expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, "1-feature-branch")
+
+              create_branch_with_issue_project
+            end
+          end
+
+          context 'issue is not under the specified project' do
+            it 'does not post a system note' do
+              expect(SystemNoteService).not_to receive(:new_issue_branch)
+
+              create_branch_with_issue_project
+            end
+          end
+        end
+      end
+
       context 'repository-less project' do
         let(:project) { create :project }
 
