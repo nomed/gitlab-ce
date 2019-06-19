@@ -61,8 +61,12 @@ class MembersFinder
     # We prefer project members over group members, project members should go first.
     if Gitlab::Database.postgresql?
       <<~SQL
-          SELECT DISTINCT ON (user_id, invite_email) member_union.*
+          SELECT DISTINCT ON (user_id, invite_email) #{member_columns}
           FROM (#{union.to_sql}) AS member_union
+          JOIN users on users.id = member_union.user_id
+          JOIN project_authorizations on project_authorizations.user_id = users.id
+               AND
+               project_authorizations.project_id = #{project.id}
           ORDER BY user_id,
             invite_email,
             CASE
@@ -89,5 +93,13 @@ class MembersFinder
                  AND CASE WHEN t1.type = 'ProjectMember' THEN 1 WHEN t1.type = 'GroupMember' THEN 2 ELSE 3 END = t2.type_number
       SQL
     end
+  end
+
+  def member_columns
+    Member.column_names.map do |column_name|
+      next 'project_authorizations.access_level' if column_name == 'access_level'
+
+      "member_union.#{column_name}"
+    end.join(',')
   end
 end
