@@ -216,8 +216,9 @@ class IssuableBaseService < BaseService
       # We have to perform this check before saving the issuable as Rails resets
       # the changed fields upon calling #save.
       update_project_counters = issuable.project && update_project_counter_caches?(issuable)
+      should_touch = !changes_position_only?(issuable)
 
-      if issuable.with_transaction_returning_status { issuable.save(touch: false) }
+      if issuable.with_transaction_returning_status { issuable.save(touch: should_touch) }
         # We do not touch as it will affect a update on updated_at field
         ActiveRecord::Base.no_touching do
           Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
@@ -401,5 +402,9 @@ class IssuableBaseService < BaseService
   # where private project milestone could leak without this check
   def ensure_milestone_available(issuable)
     issuable.milestone_id = nil unless issuable.milestone_available?
+  end
+
+  def changes_position_only?(issuable)
+    issuable.changes.keys == %w[updated_by_id relative_position]
   end
 end
