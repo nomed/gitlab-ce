@@ -31,7 +31,10 @@ describe 'Environment > Metrics' do
       expect(page).to have_css('div.js-environments-dropdown')
 
       within('div.js-environments-dropdown') do
+        # Click on the dropdown
         click_on(environment.name)
+
+        # Select the staging environment
         click_on(staging.name)
       end
 
