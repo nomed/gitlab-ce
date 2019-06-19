@@ -332,6 +332,31 @@ describe 'GFM autocomplete', :js do
         expect(find('.atwho-view-ul').text).to have_content('Accepting merge requests')
       end
     end
+
+    it 'only autocompletes the latest label' do
+      create(:label, project: project, title: 'Accepting merge requests')
+      create(:label, project: project, title: 'Accepting job applicants')
+
+      note = find('#note-body')
+      type(note, '~Accepting merge requests foo bar ~Accepting job')
+
+      wait_for_requests
+
+      page.within '.atwho-container #at-view-labels' do
+        expect(find('.atwho-view-ul').text).to have_content('Accepting job applicants')
+      end
+    end
+
+    it 'does not autocomplete labels if no tilde is typed' do
+      create(:label, project: project, title: 'Accepting merge requests')
+
+      note = find('#note-body')
+      type(note, 'Accepting merge')
+
+      wait_for_requests
+
+      expect(page).not_to have_css('.atwho-container #at-view-labels')
+    end
   end
 
   shared_examples 'autocomplete suggestions' do

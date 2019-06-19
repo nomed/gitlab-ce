@@ -373,12 +373,19 @@ class GfmAutoComplete {
           // This allows matching labels like "Accepting merge requests".
           const labels = instance.cachedData[flag];
           if (labels) {
+            if (!subtext.includes(flag)) {
+              // Do not match if there is no `~` before the cursor
+              return null;
+            }
             const candidateMatches = subtext.split(flag);
             const lastCandidate = candidateMatches[candidateMatches.length - 1];
             if (labels.find(label => label.title.startsWith(lastCandidate))) {
               return lastCandidate;
             }
           } else {
+            // Load all labels into the autocompleter.
+            // This needs to happen if e.g. editing a label in an existing comment, because normally
+            // label data would only be loaded only once you type `~`.
             fetchData(this.$inputor, this.at);
           }
 
