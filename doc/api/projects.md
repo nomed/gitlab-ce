@@ -1680,7 +1680,7 @@ PUT /projects/:id/push_rule
 
 ### Delete project push rule
 
-> Introduced in GitLab 9.0.
+> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 9.0.
 
 Removes a push rule from a project. This is an idempotent method and can be called multiple times.
 Either the push rule is available or not.
