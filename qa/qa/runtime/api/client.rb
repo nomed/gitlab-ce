@@ -36,7 +36,7 @@ module QA
             Page::Main::Menu.perform(&:sign_out)
           end
 
-          Page::Main::Login.perform(&:sign_in_using_credentials(@user))
+          Page::Main::Login.perform { |login| login.sign_in_using_credentials(@user) }
           Resource::PersonalAccessToken.fabricate!.access_token
         end
       end
