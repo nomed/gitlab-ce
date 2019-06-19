@@ -492,7 +492,6 @@ leave a blank line here
 <div class="video-fallback">
   See the video: [Video title](https://www.youtube.com/watch?v=MqL6BMOySIQ).
 </div>
-
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
@@ -501,13 +500,12 @@ leave a blank line here
 
 This is how it renders on docs.gitlab.com:
 
+<div class="video-fallback">
+  See the video: [Video title](https://www.youtube.com/watch?v=enMumwvLAug).
+</div>
 <figure class="video-container">
   <iframe src="https://www.youtube.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
-
-<div class="video-fallback">
-  See the video tutorial [Video title](https://www.youtube.com/watch?v=enMumwvLAug).
-</div>
 
 > Notes:
 >
