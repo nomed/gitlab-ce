@@ -1,4 +1,5 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import { GlAreaChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 import { debounceByAnimationFrame, roundOffFloat } from '~/lib/utils/common_utils';
@@ -13,6 +14,7 @@ export default {
   components: {
     GlAreaChart,
     GlChartSeriesLabel,
+    GlLink,
     Icon,
   },
   inheritAttrs: false,
@@ -43,6 +45,10 @@ export default {
       required: false,
       default: () => [],
     },
+    projectPath: {
+      type: String,
+      required: true,
+    },
     thresholds: {
       type: Array,
       required: false,
@@ -54,6 +60,7 @@ export default {
       tooltip: {
         title: '',
         content: [],
+        commitUrl: '',
         isDeployment: false,
         sha: '',
       },
@@ -194,12 +201,14 @@ export default {
       this.tooltip.title = dateFormat(params.value, 'dd mmm yyyy, h:MMTT');
       this.tooltip.content = [];
       params.seriesData.forEach(seriesData => {
-        if (seriesData.componentSubType === graphTypes.deploymentData) {
-          this.tooltip.isDeployment = true;
+        const isDeployment = seriesData.componentSubType === graphTypes.deploymentData;
+        this.tooltip.isDeployment = isDeployment;
+        if (isDeployment) {
           const [deploy] = this.recentDeployments.filter(
             deployment => deployment.createdAt === seriesData.value[0],
           );
           this.tooltip.sha = deploy.sha.substring(0, 8);
+          this.tooltip.commitUrl = deploy.commitUrl;
         } else {
           const { seriesName, color } = seriesData;
           // seriesData.value contains the chart's [x, y] value pair
@@ -258,7 +267,7 @@ export default {
         </template>
         <div slot="tooltipContent" class="d-flex align-items-center">
           <icon name="commit" class="mr-2" />
-          {{ tooltip.sha }}
+          <gl-link :href="tooltip.commitUrl" target="_blank">{{ tooltip.sha }}</gl-link>
         </div>
       </template>
       <template v-else>

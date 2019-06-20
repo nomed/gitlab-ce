@@ -327,6 +327,7 @@ export default {
         v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
         :key="graphIndex"
         :graph-data="graphData"
+        :project-path="projectPath"
         :deployment-data="deploymentData"
         :thresholds="getGraphAlertValues(graphData.queries)"
         :container-width="elWidth"
