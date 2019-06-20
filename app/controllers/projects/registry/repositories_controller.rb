@@ -39,17 +39,15 @@ module Projects
       # Needed to maintain a backwards compatibility.
       #
       def ensure_root_container_repository!
-        begin
         ::ContainerRegistry::Path.new(@project.full_path).tap do |path|
           break if path.has_repository?
 
           ::ContainerRepository.build_from_path(path).tap do |repository|
             repository.save! if repository.has_tags?
           end
-        rescue
-          @character_error = true
         end
-        end
+      rescue
+        @character_error = true
       end
     end
   end

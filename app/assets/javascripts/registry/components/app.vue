@@ -3,6 +3,7 @@ import { mapGetters, mapActions } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import store from '../stores';
 import CollapsibleContainer from './collapsible_container.vue';
+import SvgMessage from './svg_message.vue';
 import { s__ } from '../../locale';
 
 const I18NKeys = {
@@ -26,6 +27,7 @@ export default {
   components: {
     CollapsibleContainer,
     GlLoadingIcon,
+    SvgMessage,
   },
   props: {
     endpoint: {
@@ -68,37 +70,36 @@ export default {
 </script>
 <template>
   <div>
-    <gl-loading-icon v-if="isLoading" :size="3"/>
-
-    <div v-else-if="!isLoading && characterError" id="invalid-characters" class="container-message">
-      <img :src="containersErrorImage">
-      <h4>{{I18NKeys.CharacterErrorHeading}}</h4>
+    <svg-message v-if="characterError" id="invalid-characters" :svg-path="containersErrorImage">
+      <h4 class="text-center">{{ I18NKeys.CharacterErrorHeading }}</h4>
       <p>
-        {{I18NKeys.CharacterErrorMessage}}
-        <a :href="helpPagePath">{{I18NKeys.CharacterErrorDocLink}}</a>.
+        {{ I18NKeys.CharacterErrorMessage }}
+        <a :href="helpPagePath">{{ I18NKeys.CharacterErrorDocLink }}</a
+        >.
       </p>
-    </div>
+    </svg-message>
+
+    <gl-loading-icon v-else-if="isLoading" size="sm" class="loading-icon" />
 
     <div v-else-if="!isLoading && !characterError && repos.length">
-      <h4>{{I18NKeys.MainHeading}}</h4>
+      <h4>{{ I18NKeys.MainHeading }}</h4>
       <p>
-        {{I18NKeys.MainMessage}}
+        {{ I18NKeys.MainMessage }}
         <a :href="helpPagePath">Container Registry</a>.
       </p>
-      <collapsible-container v-for="item in repos" :key="item.id" :repo="item"/>
+      <collapsible-container v-for="item in repos" :key="item.id" :repo="item" />
     </div>
 
-    <div
+    <svg-message
       v-else-if="!isLoading && !characterError && !repos.length"
       id="no-container-images"
-      class="container-message"
+      :svg-path="noContainersImage"
     >
-      <img :src="noContainersImage">
-      <h4>{{I18NKeys.NoImagesHeading}}</h4>
+      <h4>{{ I18NKeys.NoImagesHeading }}</h4>
       <p>
-        {{I18NKeys.DefaultMessage}}
+        {{ I18NKeys.DefaultMessage }}
         <a :href="helpPagePath">Container Registry</a>.
       </p>
-    </div>
+    </svg-message>
   </div>
 </template>
