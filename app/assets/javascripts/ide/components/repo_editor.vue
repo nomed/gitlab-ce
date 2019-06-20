@@ -8,6 +8,7 @@ import { activityBarViews, viewerTypes } from '../constants';
 import Editor from '../lib/editor';
 import ExternalLink from './external_link.vue';
 import FileTemplatesBar from './file_templates/bar.vue';
+import { __ } from '~/locale';
 
 export default {
   components: {
@@ -145,7 +146,14 @@ export default {
           this.createEditorInstance();
         })
         .catch(err => {
-          flash('Error setting up editor. Please try again.', 'alert', document, null, false, true);
+          flash(
+            __('Error setting up editor. Please try again.'),
+            'alert',
+            document,
+            null,
+            false,
+            true,
+          );
           throw err;
         });
     },
@@ -227,12 +235,8 @@ export default {
             role="button"
             @click.prevent="setFileViewMode({ file, viewMode: 'editor' })"
           >
-            <template v-if="viewer === $options.viewerTypes.edit">
-              {{ __('Edit') }}
-            </template>
-            <template v-else>
-              {{ __('Review') }}
-            </template>
+            <template v-if="viewer === $options.viewerTypes.edit">{{ __('Edit') }}</template>
+            <template v-else>{{ __('Review') }}</template>
           </a>
         </li>
         <li v-if="file.previewMode" :class="previewTabCSS">
@@ -240,14 +244,12 @@ export default {
             href="javascript:void(0);"
             role="button"
             @click.prevent="setFileViewMode({ file, viewMode: 'preview' })"
-          >
-            {{ file.previewMode.previewTitle }}
-          </a>
+          >{{ file.previewMode.previewTitle }}</a>
         </li>
       </ul>
-      <external-link :file="file" />
+      <external-link :file="file"/>
     </div>
-    <file-templates-bar v-if="showFileTemplatesBar(file.name)" />
+    <file-templates-bar v-if="showFileTemplatesBar(file.name)"/>
     <div
       v-show="!shouldHideEditor && file.viewMode === 'editor'"
       ref="editor"

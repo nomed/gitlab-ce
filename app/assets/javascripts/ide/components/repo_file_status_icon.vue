@@ -1,4 +1,5 @@
 <script>
+import { __ } from "~/locale";
 import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import '~/lib/utils/datetime_utility';
@@ -18,7 +19,7 @@ export default {
   },
   computed: {
     lockTooltip() {
-      return `Locked by ${this.file.file_lock.user.name}`;
+      return __(`Locked by ${this.file.file_lock.user.name}`);
     },
   },
 };

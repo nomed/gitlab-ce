@@ -94,9 +94,7 @@ export default {
         tabindex="0"
         class="js-pipeline-url-autodevops badge badge-info autodevops-badge"
         role="button"
-      >
-        Auto DevOps
-      </gl-link>
+      >{{ __("Auto DevOps") }}</gl-link>
       <span v-if="pipeline.flags.stuck" class="js-pipeline-url-stuck badge badge-warning">
         {{ __('stuck') }}
       </span>

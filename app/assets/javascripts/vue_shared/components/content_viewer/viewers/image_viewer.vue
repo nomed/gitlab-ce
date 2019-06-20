@@ -91,7 +91,7 @@ export default {
         |
       </template>
       <template v-if="hasDimensions">
-        <strong>W</strong>: {{ width }} | <strong>H</strong>: {{ height }}
+        <strong>{{ __("W") }}</strong>: {{ width }} | <strong>{{ __("H") }}</strong>: {{ height }}
       </template>
     </p>
   </div>

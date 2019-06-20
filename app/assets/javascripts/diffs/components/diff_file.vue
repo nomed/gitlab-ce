@@ -151,22 +151,20 @@ export default {
 
     <div v-if="forkMessageVisible" class="js-file-fork-suggestion-section file-fork-suggestion">
       <span class="file-fork-suggestion-note">
-        You're not allowed to <span class="js-file-fork-suggestion-section-action">edit</span> files
+        You're not allowed to <span class="js-file-fork-suggestion-section-action">{{ __("edit") }}</span> files
         in this project directly. Please fork this project, make your changes there, and submit a
         merge request.
       </span>
       <a
         :href="file.fork_path"
         class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
-        >Fork</a
+        >{{ __("Fork") }}</a
       >
       <button
         class="js-cancel-fork-suggestion-button btn btn-grouped"
         type="button"
         @click="hideForkMessage"
-      >
-        Cancel
-      </button>
+      >{{ __("Cancel") }}</button>
     </div>
     <gl-loading-icon v-if="showLoadingIcon" class="diff-content loading" />
     <template v-else>

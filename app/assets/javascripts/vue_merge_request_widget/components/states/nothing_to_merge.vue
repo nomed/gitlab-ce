@@ -22,19 +22,11 @@ export default {
         <span v-html="emptyStateSVG"></span>
       </div>
       <div class="text col-md-7 order-md-first col-12">
-        <span>
-          Merge requests are a place to propose changes you have made to a project and discuss those
-          changes with others.
-        </span>
-        <p>Interested parties can even contribute by pushing commits if they want to.</p>
-        <p>
-          Currently there are no changes in this merge request's source branch. Please push new
-          commits or use a different branch.
-        </p>
+        <span>{{ __("Merge requests are a place to propose changes you have made to a project and discuss those changes with others.") }}</span>
+        <p>{{ __("Interested parties can even contribute by pushing commits if they want to.") }}</p>
+        <p>{{ __("Currently there are no changes in this merge request's source branch. Please push new commits or use a different branch.") }}</p>
         <div>
-          <a v-if="mr.newBlobPath" :href="mr.newBlobPath" class="btn btn-inverted btn-success">
-            Create file
-          </a>
+          <a v-if="mr.newBlobPath" :href="mr.newBlobPath" class="btn btn-inverted btn-success">{{ __("Create file") }}</a>
         </div>
       </div>
     </div>

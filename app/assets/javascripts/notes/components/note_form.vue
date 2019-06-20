@@ -230,7 +230,7 @@ export default {
   <div ref="editNoteForm" class="note-edit-form current-note-edit-form js-discussion-note-form">
     <div v-if="conflictWhileEditing" class="js-conflict-edit-warning alert alert-danger">
       This comment has changed since you started editing, please review the
-      <a :href="noteHash" target="_blank" rel="noopener noreferrer">updated comment</a> to ensure
+      <a :href="noteHash" target="_blank" rel="noopener noreferrer">{{ __("updated comment") }}</a> to ensure
       information is not lost.
     </div>
     <div class="flash-container timeline-content"></div>
@@ -264,8 +264,8 @@ export default {
           name="note[note]"
           class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
           dir="auto"
-          aria-label="Description"
-          placeholder="Write a comment or drag your files here…"
+          :aria-label="__(`Description`)"
+          :placeholder="__(`Write a comment or drag your files here…`)"
           @keydown.meta.enter="handleKeySubmit()"
           @keydown.ctrl.enter="handleKeySubmit()"
           @keydown.exact.up="editMyLastNote()"
@@ -338,9 +338,7 @@ export default {
             class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
             type="button"
             @click="cancelHandler()"
-          >
-            Cancel
-          </button>
+          >{{ __("Cancel") }}</button>
         </template>
       </div>
     </form>

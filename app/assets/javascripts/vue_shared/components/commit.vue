@@ -4,6 +4,7 @@ import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import UserAvatarLink from './user_avatar/user_avatar_link.vue';
 import Icon from '../../vue_shared/components/icon.vue';
+import { __, sprintf } from '~/locale';
 
 export default {
   directives: {
@@ -129,7 +130,9 @@ export default {
      * @returns {String}
      */
     userImageAltDescription() {
-      return this.author && this.author.username ? `${this.author.username}'s avatar` : null;
+      return this.author && this.author.username
+        ? sprintf(__(`%{username}'s avatar`), { username: this.author.username })
+        : null;
     },
   },
 };
@@ -138,9 +141,9 @@ export default {
   <div class="branch-commit cgray">
     <template v-if="shouldShowRefInfo">
       <div class="icon-container">
-        <icon v-if="tag" name="tag" />
-        <icon v-else-if="mergeRequestRef" name="git-merge" />
-        <icon v-else name="branch" />
+        <icon v-if="tag" name="tag"/>
+        <icon v-else-if="mergeRequestRef" name="git-merge"/>
+        <icon v-else name="branch"/>
       </div>
 
       <gl-link
@@ -149,22 +152,18 @@ export default {
         :href="mergeRequestRef.path"
         :title="mergeRequestRef.title"
         class="ref-name"
-      >
-        {{ mergeRequestRef.iid }}
-      </gl-link>
+      >{{ mergeRequestRef.iid }}</gl-link>
       <gl-link
         v-else
         v-gl-tooltip
         :href="commitRef.ref_url"
         :title="commitRef.name"
         class="ref-name"
-      >
-        {{ commitRef.name }}
-      </gl-link>
+      >{{ commitRef.name }}</gl-link>
     </template>
-    <icon name="commit" class="commit-icon js-commit-icon" />
+    <icon name="commit" class="commit-icon js-commit-icon"/>
 
-    <gl-link :href="commitUrl" class="commit-sha mr-0"> {{ shortSha }} </gl-link>
+    <gl-link :href="commitUrl" class="commit-sha mr-0">{{ shortSha }}</gl-link>
 
     <div class="commit-title flex-truncate-parent">
       <tooltip-on-truncate v-if="title" class="flex-truncate-child" :title="title">
@@ -176,11 +175,9 @@ export default {
           :tooltip-text="author.username"
           class="avatar-image-container"
         />
-        <gl-link :href="commitUrl" class="commit-row-message cgray">
-          {{ title }}
-        </gl-link>
+        <gl-link :href="commitUrl" class="commit-row-message cgray">{{ title }}</gl-link>
       </tooltip-on-truncate>
-      <span v-else> Can't find HEAD commit for this branch </span>
+      <span v-else>{{ __("Can't find HEAD commit for this branch") }}</span>
     </div>
   </div>
 </template>

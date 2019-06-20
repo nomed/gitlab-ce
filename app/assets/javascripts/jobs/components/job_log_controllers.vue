@@ -3,7 +3,7 @@ import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import Icon from '~/vue_shared/components/icon.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 import scrollDown from '../svg/scroll_down.svg';
 
 export default {
@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     jobLogSize() {
-      return sprintf('Showing last %{size} of log -', {
+      return sprintf(__('Showing last %{size} of log -'), {
         size: numberToHumanSize(this.size),
       });
     },
@@ -74,14 +74,11 @@ export default {
     <div class="js-truncated-info truncated-info d-none d-sm-block float-left">
       <template v-if="isTraceSizeVisible">
         {{ jobLogSize }}
-
         <gl-link
           v-if="rawPath"
           :href="rawPath"
           class="js-raw-link text-plain text-underline prepend-left-5"
-        >
-          {{ s__('Job|Complete Raw') }}
-        </gl-link>
+        >{{ s__('Job|Complete Raw') }}</gl-link>
       </template>
     </div>
     <!-- eo truncate information -->
@@ -95,7 +92,7 @@ export default {
         :href="rawPath"
         class="js-raw-link-controller controllers-buttons"
       >
-        <icon name="doc-text" />
+        <icon name="doc-text"/>
       </gl-link>
 
       <gl-link
@@ -107,7 +104,7 @@ export default {
         class="js-erase-link controllers-buttons"
         data-method="post"
       >
-        <icon name="remove" />
+        <icon name="remove"/>
       </gl-link>
       <!-- eo links -->
 
@@ -119,7 +116,7 @@ export default {
           class="js-scroll-top btn-scroll btn-transparent btn-blank"
           @click="handleScrollToTop"
         >
-          <icon name="scroll_up" />
+          <icon name="scroll_up"/>
         </gl-button>
       </div>
 

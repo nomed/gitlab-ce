@@ -94,9 +94,7 @@ export default {
             <button
               class="btn-link btn-link-retry btn-no-padding js-toggle-lazy-diff-retry-button"
               @click="fetchDiff"
-            >
-              Try again
-            </button>
+            >{{ __("Try again") }}</button>
           </td>
           <td v-else class="line_content js-success-lazy-load">
             <span></span>

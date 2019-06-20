@@ -1,5 +1,6 @@
 <script>
 import { getTimeago } from '../../lib/utils/datetime_utility';
+import { __, sprintf } from '~/locale';
 
 export default {
   name: 'MemoryGraph',
@@ -20,7 +21,7 @@ export default {
   computed: {
     getFormattedMedian() {
       const deployedSince = getTimeago().format(this.deploymentTime * 1000);
-      return `Deployed ${deployedSince}`;
+      return sprintf(__(`Deployed %{deployedSince}`), { deployedSince });
     },
   },
   mounted() {
@@ -120,8 +121,8 @@ export default {
       class="has-tooltip"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path :d="pathD" :viewBox="pathViewBox" />
-      <circle :cx="dotX" :cy="dotY" r="1.5" transform="translate(0 -1)" />
+      <path :d="pathD" :viewBox="pathViewBox"></path>
+      <circle :cx="dotX" :cy="dotY" r="1.5" transform="translate(0 -1)"></circle>
     </svg>
   </div>
 </template>

@@ -172,7 +172,7 @@ export default {
 
     renderMarkdown(data = {}) {
       this.markdownPreviewLoading = false;
-      this.markdownPreview = data.body || 'Nothing to preview.';
+      this.markdownPreview = data.body || __('Nothing to preview.');
 
       if (data.references) {
         this.referencedCommands = data.references.commands;
@@ -207,7 +207,7 @@ export default {
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
-        <a class="zen-control zen-control-leave js-zen-leave" href="#" aria-label="Enter zen mode">
+        <a class="zen-control zen-control-leave js-zen-leave" href="#" :aria-label="__(`Enter zen mode`)">
           <icon :size="32" name="screen-normal" />
         </a>
         <markdown-toolbar

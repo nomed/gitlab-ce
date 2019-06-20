@@ -49,6 +49,7 @@ export default {
       return this.author.id ? this.author.id : '';
     },
     authorUrl() {
+      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
       return this.author.web_url || `mailto:${this.commit.author_email}`;
     },
     authorAvatar() {
@@ -80,7 +81,7 @@ export default {
           v-html="commit.title_html"
         ></a>
 
-        <span class="commit-row-message d-block d-sm-none"> &middot; {{ commit.short_id }} </span>
+        <span class="commit-row-message d-block d-sm-none">&middot; {{ commit.short_id }}</span>
 
         <button
           v-if="commit.description_html"
@@ -88,18 +89,13 @@ export default {
           type="button"
           :aria-label="__('Toggle commit description')"
         >
-          <icon :size="12" name="ellipsis_h" />
+          <icon :size="12" name="ellipsis_h"/>
         </button>
 
         <div class="committer">
-          <a
-            :href="authorUrl"
-            :class="authorClass"
-            :data-user-id="authorId"
-            v-text="authorName"
-          ></a>
+          <a :href="authorUrl" :class="authorClass" :data-user-id="authorId" v-text="authorName"></a>
           {{ s__('CommitWidget|authored') }}
-          <time-ago-tooltip :time="commit.authored_date" />
+          <time-ago-tooltip :time="commit.authored_date"/>
         </div>
 
         <pre

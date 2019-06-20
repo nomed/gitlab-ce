@@ -2,6 +2,7 @@
 import { parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import { GlProgressBar } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 export default {
   name: 'TimeTrackingComparisonPane',
@@ -38,7 +39,7 @@ export default {
       return stringifyTime(this.parsedTimeRemaining);
     },
     timeRemainingTooltip() {
-      const prefix = this.timeRemainingMinutes < 0 ? 'Over by' : 'Time remaining:';
+      const prefix = this.timeRemainingMinutes < 0 ? __('Over by') : __('Time remaining:');
       return `${prefix} ${this.timeRemainingHumanReadable}`;
     },
     /* Diff values for comparison meter */
@@ -69,15 +70,15 @@ export default {
       data-placement="top"
       role="timeRemainingDisplay"
     >
-      <gl-progress-bar :value="timeRemainingPercent" :variant="progressBarVariant" />
+      <gl-progress-bar :value="timeRemainingPercent" :variant="progressBarVariant"/>
       <div class="compare-display-container">
         <div class="compare-display float-left">
-          <span class="compare-label"> {{ s__('TimeTracking|Spent') }} </span>
-          <span class="compare-value spent"> {{ timeSpentHumanReadable }} </span>
+          <span class="compare-label">{{ s__('TimeTracking|Spent') }}</span>
+          <span class="compare-value spent">{{ timeSpentHumanReadable }}</span>
         </div>
         <div class="compare-display estimated float-right">
-          <span class="compare-label"> {{ s__('TimeTrackingEstimated|Est') }} </span>
-          <span class="compare-value"> {{ timeEstimateHumanReadable }} </span>
+          <span class="compare-label">{{ s__('TimeTrackingEstimated|Est') }}</span>
+          <span class="compare-value">{{ timeEstimateHumanReadable }}</span>
         </div>
       </div>
     </div>

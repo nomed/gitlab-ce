@@ -4,7 +4,7 @@ import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { sprintf } from '../../locale';
+import { __, sprintf } from '../../locale';
 
 export default {
   name: 'ReleaseBlock',
@@ -26,13 +26,13 @@ export default {
   },
   computed: {
     releasedTimeAgo() {
-      return sprintf('released %{time}', {
+      return sprintf(__('released %{time}'), {
         time: this.timeFormated(this.release.created_at),
       });
     },
     userImageAltDescription() {
       return this.author && this.author.username
-        ? sprintf("%{username}'s avatar", { username: this.author.username })
+        ? sprintf(__("%{username}'s avatar"), { username: this.author.username })
         : null;
     },
     commit() {
@@ -57,20 +57,22 @@ export default {
 
       <div class="card-subtitle d-flex flex-wrap text-secondary">
         <div class="append-right-8">
-          <icon name="commit" class="align-middle" />
+          <icon name="commit" class="align-middle"/>
           <span v-gl-tooltip.bottom :title="commit.title">{{ commit.short_id }}</span>
         </div>
 
         <div class="append-right-8">
-          <icon name="tag" class="align-middle" />
+          <icon name="tag" class="align-middle"/>
           <span v-gl-tooltip.bottom :title="__('Tag')">{{ release.tag_name }}</span>
         </div>
 
         <div class="append-right-4">
           &bull;
-          <span v-gl-tooltip.bottom :title="tooltipTitle(release.created_at)">{{
+          <span v-gl-tooltip.bottom :title="tooltipTitle(release.created_at)">
+            {{
             releasedTimeAgo
-          }}</span>
+            }}
+          </span>
         </div>
 
         <div v-if="hasAuthor" class="d-flex">
@@ -97,8 +99,9 @@ export default {
         <ul v-if="assets.links.length" class="pl-0 mb-0 prepend-top-8 list-unstyled js-assets-list">
           <li v-for="link in assets.links" :key="link.name" class="append-bottom-8">
             <gl-link v-gl-tooltip.bottom :title="__('Download asset')" :href="link.url">
-              <icon name="package" class="align-middle append-right-4 align-text-bottom" />
-              {{ link.name }} <span v-if="link.external"> {{ __('(external source)') }}</span>
+              <icon name="package" class="align-middle append-right-4 align-text-bottom"/>
+              {{ link.name }}
+              <span v-if="link.external">{{ __('(external source)') }}</span>
             </gl-link>
           </li>
         </ul>
@@ -111,8 +114,9 @@ export default {
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <icon name="doc-code" class="align-top append-right-4" /> {{ __('Source code') }}
-            <icon name="arrow-down" />
+            <icon name="doc-code" class="align-top append-right-4"/>
+            {{ __('Source code') }}
+            <icon name="arrow-down"/>
           </button>
 
           <div class="js-sources-dropdown dropdown-menu">
@@ -123,7 +127,9 @@ export default {
         </div>
       </div>
 
-      <div class="card-text prepend-top-default"><div v-html="release.description_html"></div></div>
+      <div class="card-text prepend-top-default">
+        <div v-html="release.description_html"></div>
+      </div>
     </div>
   </div>
 </template>

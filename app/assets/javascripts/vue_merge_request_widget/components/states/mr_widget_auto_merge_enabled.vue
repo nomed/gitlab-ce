@@ -6,6 +6,7 @@ import statusIcon from '../mr_widget_status_icon.vue';
 import MrWidgetAuthor from '../../components/mr_widget_author.vue';
 import eventHub from '../../event_hub';
 import { AUTO_MERGE_STRATEGIES } from '../../constants';
+import { __ } from '~/locale';
 
 export default {
   name: 'MRWidgetAutoMergeEnabled',
@@ -55,7 +56,7 @@ export default {
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;
-          Flash('Something went wrong. Please try again.');
+          Flash(__('Something went wrong. Please try again.'));
         });
     },
     removeSourceBranch() {
@@ -76,7 +77,7 @@ export default {
         })
         .catch(() => {
           this.isRemovingSourceBranch = false;
-          Flash('Something went wrong. Please try again.');
+          Flash(__('Something went wrong. Please try again.'));
         });
     },
   },
@@ -84,12 +85,12 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon status="success" />
+    <status-icon status="success"/>
     <div class="media-body">
       <h4 class="d-flex align-items-start">
         <span class="append-right-10">
           <span class="js-status-text-before-author">{{ statusTextBeforeAuthor }}</span>
-          <mr-widget-author :author="mr.setToAutoMergeBy" />
+          <mr-widget-author :author="mr.setToAutoMergeBy"/>
           <span class="js-status-text-after-author">{{ statusTextAfterAuthor }}</span>
         </span>
         <a
@@ -100,22 +101,23 @@ export default {
           class="btn btn-sm btn-default js-cancel-auto-merge"
           @click.prevent="cancelAutomaticMerge"
         >
-          <i v-if="isCancellingAutoMerge" class="fa fa-spinner fa-spin" aria-hidden="true"> </i>
+          <i v-if="isCancellingAutoMerge" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
           {{ cancelButtonText }}
         </a>
       </h4>
       <section class="mr-info-list">
         <p>
           {{ s__('mrWidget|The changes will be merged into') }}
-          <a :href="mr.targetBranchPath" class="label-branch"> {{ mr.targetBranch }} </a>
+          <a
+            :href="mr.targetBranchPath"
+            class="label-branch"
+          >{{ mr.targetBranch }}</a>
         </p>
-        <p v-if="mr.shouldRemoveSourceBranch">
-          {{ s__('mrWidget|The source branch will be deleted') }}
-        </p>
+        <p
+          v-if="mr.shouldRemoveSourceBranch"
+        >{{ s__('mrWidget|The source branch will be deleted') }}</p>
         <p v-else class="d-flex align-items-start">
-          <span class="append-right-10">
-            {{ s__('mrWidget|The source branch will not be deleted') }}
-          </span>
+          <span class="append-right-10">{{ s__('mrWidget|The source branch will not be deleted') }}</span>
           <a
             v-if="canRemoveSourceBranch"
             :disabled="isRemovingSourceBranch"
@@ -124,7 +126,7 @@ export default {
             href="#"
             @click.prevent="removeSourceBranch"
           >
-            <i v-if="isRemovingSourceBranch" class="fa fa-spinner fa-spin" aria-hidden="true"> </i>
+            <i v-if="isRemovingSourceBranch" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
             {{ s__('mrWidget|Delete source branch') }}
           </a>
         </p>

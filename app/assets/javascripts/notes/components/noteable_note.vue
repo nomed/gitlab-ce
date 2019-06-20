@@ -5,7 +5,7 @@ import { escape } from 'underscore';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import draftMixin from 'ee_else_ce/notes/mixins/draft';
-import { s__, sprintf } from '../../locale';
+import { __, s__, sprintf } from '../../locale';
 import Flash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteHeader from './note_header.vue';
@@ -128,7 +128,7 @@ export default {
       this.$emit('handleEdit');
     },
     deleteHandler() {
-      const typeOfComment = this.note.isDraft ? 'pending comment' : 'comment';
+      const typeOfComment = this.note.isDraft ? __('pending comment') : 'comment';
       // eslint-disable-next-line no-alert
       if (window.confirm(`Are you sure you want to delete this ${typeOfComment}?`)) {
         this.isDeleting = true;
@@ -141,7 +141,7 @@ export default {
             this.isDeleting = false;
           })
           .catch(() => {
-            Flash('Something went wrong while deleting your note. Please try again.');
+            Flash(__('Something went wrong while deleting your note. Please try again.'));
             this.isDeleting = false;
           });
       }
@@ -185,7 +185,7 @@ export default {
           this.isRequesting = false;
           this.isEditing = true;
           this.$nextTick(() => {
-            const msg = 'Something went wrong while editing your comment. Please try again.';
+            const msg = __('Something went wrong while editing your comment. Please try again.');
             Flash(msg, 'alert', this.$el);
             this.recoverNoteContent(noteText);
             callback();
@@ -195,7 +195,7 @@ export default {
     formCancelHandler(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
         // eslint-disable-next-line no-alert
-        if (!window.confirm('Are you sure you want to cancel editing this comment?')) return;
+        if (!window.confirm(__('Are you sure you want to cancel editing this comment?'))) return;
       }
       this.$refs.noteBody.resetAutoSave();
       if (this.oldContent) {

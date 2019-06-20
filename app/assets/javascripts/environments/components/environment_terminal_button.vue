@@ -5,6 +5,7 @@
  */
 import { GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
+import { __ } from '~/locale';
 
 export default {
   components: {
@@ -27,7 +28,7 @@ export default {
   },
   computed: {
     title() {
-      return 'Terminal';
+      return __('Terminal');
     },
   },
 };
@@ -41,6 +42,6 @@ export default {
     :class="{ disabled: disabled }"
     class="btn terminal-button d-none d-sm-none d-md-block text-secondary"
   >
-    <icon name="terminal" />
+    <icon name="terminal"/>
   </a>
 </template>

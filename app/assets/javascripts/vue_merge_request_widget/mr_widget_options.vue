@@ -40,7 +40,7 @@ import { setFaviconOverlay } from '../lib/utils/common_utils';
 
 export default {
   el: '#js-vue-mr-widget',
-  name: 'MRWidget',
+  name: __('MRWidget'),
   components: {
     'mr-widget-header': WidgetHeader,
     'mr-widget-merge-help': WidgetMergeHelp,
@@ -262,8 +262,8 @@ export default {
       if (!data.pipeline) return;
 
       const { label } = data.pipeline.details.status;
-      const title = `Pipeline ${label}`;
-      const message = `Pipeline ${label} for "${data.title}"`;
+      const title = __(`Pipeline ${label}`);
+      const message = __(`Pipeline ${label} for "${data.title}"`);
 
       notify.notifyMe(title, message, this.mr.gitlabLogo);
     },

@@ -18,6 +18,7 @@
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { placeholderImage } from '../../../lazy_loader';
 import tooltip from '../../directives/tooltip';
+import { __ } from '~/locale';
 
 export default {
   name: 'ProjectAvatarImage',
@@ -43,7 +44,7 @@ export default {
     imgAlt: {
       type: String,
       required: false,
-      default: 'project avatar',
+      default: __('project avatar'),
     },
     size: {
       type: Number,
@@ -98,5 +99,5 @@ export default {
     :data-placement="tooltipPlacement"
     :title="tooltipText"
     class="avatar"
-  />
+  >
 </template>

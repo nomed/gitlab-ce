@@ -1,4 +1,5 @@
 <script>
+import { __ } from "~/locale";
 import _ from 'underscore';
 import { mapActions, mapState } from 'vuex';
 import { GlLink, GlButton } from '@gitlab/ui';
@@ -63,7 +64,7 @@ export default {
 
       let t = this.job.metadata.timeout_human_readable;
       if (this.job.metadata.timeout_source !== '') {
-        t += ` (from ${this.job.metadata.timeout_source})`;
+        t += __(` (from ${this.job.metadata.timeout_source})`);
       }
 
       return t;

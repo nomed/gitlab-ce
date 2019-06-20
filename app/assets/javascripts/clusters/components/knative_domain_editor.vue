@@ -2,7 +2,7 @@
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 import { APPLICATION_STATUS } from '~/clusters/constants';
 
@@ -32,7 +32,7 @@ export default {
       return [UPDATING].includes(this.knative.status);
     },
     saveButtonLabel() {
-      return this.saving ? this.__('Saving') : this.__('Save changes');
+      return this.saving ? __('Saving') : __('Save changes');
     },
     knativeInstalled() {
       return this.knative.installed;
@@ -67,9 +67,7 @@ export default {
     <div
       v-if="knative.updateFailed"
       class="bs-callout bs-callout-danger cluster-application-banner col-12 mt-2 mb-2 js-cluster-knative-domain-name-failure-message"
-    >
-      {{ s__('ClusterIntegration|Something went wrong while updating Knative domain name.') }}
-    </div>
+    >{{ s__('ClusterIntegration|Something went wrong while updating Knative domain name.') }}</div>
 
     <template>
       <div
@@ -84,7 +82,7 @@ export default {
           v-model="knativeHostname"
           type="text"
           class="form-control js-knative-domainname"
-        />
+        >
       </div>
     </template>
     <template v-if="knativeInstalled">
@@ -99,7 +97,7 @@ export default {
             type="text"
             class="form-control js-knative-endpoint"
             readonly
-          />
+          >
           <span class="input-group-append">
             <clipboard-button
               :text="knativeExternalEndpoint"
@@ -109,7 +107,7 @@ export default {
           </span>
         </div>
         <div v-else class="input-group">
-          <input type="text" class="form-control js-endpoint" readonly />
+          <input type="text" class="form-control js-endpoint" readonly>
           <gl-loading-icon
             class="position-absolute align-self-center ml-2 js-knative-ip-loading-icon"
           />
@@ -118,13 +116,15 @@ export default {
 
       <p class="form-text text-muted col-12">
         {{
-          s__(
-            `ClusterIntegration|To access your application after deployment, point a wildcard DNS to the Knative Endpoint.`,
-          )
+        s__(
+        `ClusterIntegration|To access your application after deployment, point a wildcard DNS to the Knative Endpoint.`,
+        )
         }}
-        <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
-          {{ __('More information') }}
-        </a>
+        <a
+          :href="ingressDnsHelpPath"
+          target="_blank"
+          rel="noopener noreferrer"
+        >{{ __('More information') }}</a>
       </p>
 
       <p
@@ -132,7 +132,7 @@ export default {
         class="settings-message js-no-knative-endpoint-message mt-2 mr-3 mb-0 ml-3"
       >
         {{
-          s__(`ClusterIntegration|The endpoint is in
+        s__(`ClusterIntegration|The endpoint is in
         the process of being assigned. Please check your Kubernetes
         cluster or Quotas on Google Kubernetes Engine if it takes a long time.`)
         }}

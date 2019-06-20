@@ -1,4 +1,5 @@
 <script>
+import { __ } from "~/locale";
 import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
 import CiIconBadge from './ci_badge_link.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
@@ -65,7 +66,7 @@ export default {
 
   computed: {
     userAvatarAltText() {
-      return `${this.user.name}'s avatar`;
+      return __(`${this.user.name}'s avatar`);
     },
   },
 
@@ -81,85 +82,81 @@ export default {
 </script>
 
 <template>
-  <header class="page-content-header ci-header-container">
-    <section class="header-main-content">
-      <ci-icon-badge :status="status" />
+    <header class="page-content-header ci-header-container">
+      <section class="header-main-content">
+        <ci-icon-badge :status="status" />
 
-      <strong> {{ itemName }} #{{ itemId }} </strong>
+        <strong> {{ itemName }} #{{ itemId }} </strong>
 
-      <template v-if="shouldRenderTriggeredLabel">
-        triggered
-      </template>
-      <template v-else>
-        created
-      </template>
+        <template v-if="shouldRenderTriggeredLabel">{{ __("triggered") }}</template>
+        <template v-else>{{ __("created") }}</template>
 
-      <timeago-tooltip :time="time" />
+        <timeago-tooltip :time="time" />
 
-      by
+        by
 
-      <template v-if="user">
-        <gl-link
-          v-gl-tooltip
-          :href="user.path"
-          :title="user.email"
-          class="js-user-link commit-committer-link"
-        >
-          <user-avatar-image
-            :img-src="user.avatar_url"
-            :img-alt="userAvatarAltText"
-            :tooltip-text="user.name"
-            :img-size="24"
+        <template v-if="user">
+          <gl-link
+            v-gl-tooltip
+            :href="user.path"
+            :title="user.email"
+            class="js-user-link commit-committer-link"
+          >
+            <user-avatar-image
+              :img-src="user.avatar_url"
+              :img-alt="userAvatarAltText"
+              :tooltip-text="user.name"
+              :img-size="24"
+            />
+
+            {{ user.name }}
+          </gl-link>
+          <span v-if="user.status_tooltip_html" v-html="user.status_tooltip_html"></span>
+        </template>
+      </section>
+
+      <section v-if="actions.length" class="header-action-buttons">
+        <template v-for="(action, i) in actions">
+          <gl-link
+            v-if="action.type === 'link'"
+            :key="i"
+            :href="action.path"
+            :class="action.cssClass"
+          >
+            {{ action.label }}
+          </gl-link>
+
+          <gl-link
+            v-else-if="action.type === 'ujs-link'"
+            :key="i"
+            :href="action.path"
+            :class="action.cssClass"
+            data-method="post"
+            rel="nofollow"
+          >
+            {{ action.label }}
+          </gl-link>
+
+          <loading-button
+            v-else-if="action.type === 'button'"
+            :key="i"
+            :loading="action.isLoading"
+            :disabled="action.isLoading"
+            :class="action.cssClass"
+            container-class="d-inline"
+            :label="action.label"
+            @click="onClickAction(action)"
           />
-
-          {{ user.name }}
-        </gl-link>
-        <span v-if="user.status_tooltip_html" v-html="user.status_tooltip_html"></span>
-      </template>
-    </section>
-
-    <section v-if="actions.length" class="header-action-buttons">
-      <template v-for="(action, i) in actions">
-        <gl-link
-          v-if="action.type === 'link'"
-          :key="i"
-          :href="action.path"
-          :class="action.cssClass"
-        >
-          {{ action.label }}
-        </gl-link>
-
-        <gl-link
-          v-else-if="action.type === 'ujs-link'"
-          :key="i"
-          :href="action.path"
-          :class="action.cssClass"
-          data-method="post"
-          rel="nofollow"
-        >
-          {{ action.label }}
-        </gl-link>
-
-        <loading-button
-          v-else-if="action.type === 'button'"
-          :key="i"
-          :loading="action.isLoading"
-          :disabled="action.isLoading"
-          :class="action.cssClass"
-          container-class="d-inline"
-          :label="action.label"
-          @click="onClickAction(action)"
-        />
-      </template>
-    </section>
-    <gl-button
-      v-if="hasSidebarButton"
-      id="toggleSidebar"
-      class="d-block d-sm-none
-sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
-      @click="onClickSidebarButton"
-    >
-      <i class="fa fa-angle-double-left" aria-hidden="true" aria-labelledby="toggleSidebar"> </i>
-    </gl-button>
-  </header>
+        </template>
+      </section>
+      <gl-button
+        v-if="hasSidebarButton"
+        id="toggleSidebar"
+        class="d-block d-sm-none
+  sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
+        @click="onClickSidebarButton"
+      >
+        <i class="fa fa-angle-double-left" aria-hidden="true" aria-labelledby="toggleSidebar"> </i>
+      </gl-button>
+    </header>
 </template>

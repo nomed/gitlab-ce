@@ -76,7 +76,7 @@ export default {
       if (this.targetBranch && (this.isBase(version) || !version)) {
         return this.targetBranch.branchName;
       }
-      return `version ${version.version_index}`;
+      return __(`version ${version.version_index}`);
     },
     isActive(version) {
       if (!version) {
@@ -125,9 +125,7 @@ export default {
               <div>
                 <strong>
                   {{ versionName(version) }}
-                  <template v-if="isBase(version)">
-                    (base)
-                  </template>
+                  <template v-if="isBase(version)">{{ __("(base)") }}</template>
                 </strong>
               </div>
               <div>

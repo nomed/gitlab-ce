@@ -75,8 +75,6 @@ export default Vue.extend({
 </script>
 <template>
   <div class="block list">
-    <button class="btn btn-default btn-block" type="button" @click="removeIssue">
-      Remove from board
-    </button>
+    <button class="btn btn-default btn-block" type="button" @click="removeIssue">{{ __("Remove from board") }}</button>
   </div>
 </template>

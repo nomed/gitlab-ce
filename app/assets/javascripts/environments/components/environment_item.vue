@@ -1,4 +1,5 @@
 <script>
+import { __ } from "~/locale";
 import Timeago from 'timeago.js';
 import _ from 'underscore';
 import { GlTooltipDirective } from '@gitlab/ui';
@@ -172,7 +173,7 @@ export default {
         this.model.last_deployment.user &&
         this.model.last_deployment.user.username
       ) {
-        return `${this.model.last_deployment.user.username}'s avatar'`;
+        return __(`${this.model.last_deployment.user.username}'s avatar'`);
       }
       return '';
     },
@@ -293,7 +294,7 @@ export default {
      * @returns {Boolean|Undefined}
      */
     isLastDeployment() {
-      return this.model && this.model.last_deployment && this.model.last_deployment['last?'];
+      return this.model && this.model.last_deployment && this.model.last_deployment[__('last?')];
     },
 
     /**

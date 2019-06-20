@@ -25,7 +25,7 @@ export default {
     submitText() {
       const count = ModalStore.selectedCount();
 
-      return `Add ${count > 0 ? count : ''} ${pluralize('issue', count)}`;
+      return __(`Add ${count > 0 ? count : ''} ${pluralize('issue', count)}`);
     },
   },
   methods: {
@@ -68,11 +68,9 @@ export default {
       <button :disabled="submitDisabled" class="btn btn-success" type="button" @click="addIssues">
         {{ submitText }}
       </button>
-      <span class="inline add-issues-footer-to-list"> to list </span>
+      <span class="inline add-issues-footer-to-list">{{ __("to list") }}</span>
       <lists-dropdown />
     </div>
-    <button class="btn btn-default float-right" type="button" @click="toggleModal(false)">
-      Cancel
-    </button>
+    <button class="btn btn-default float-right" type="button" @click="toggleModal(false)">{{ __("Cancel") }}</button>
   </footer>
 </template>

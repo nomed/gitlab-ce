@@ -3,7 +3,7 @@ import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
-  name: 'Assignees',
+  name: __('Assignees'),
   directives: {
     tooltip,
   },
@@ -62,7 +62,7 @@ export default {
       return this.numberOfHiddenAssignees > 0;
     },
     hiddenAssigneesLabel() {
-      return `+ ${this.numberOfHiddenAssignees} more`;
+      return __(`+ ${this.numberOfHiddenAssignees} more`);
     },
     collapsedTooltipTitle() {
       const maxRender = Math.min(this.defaultRenderCount, this.users.length);
@@ -103,9 +103,9 @@ export default {
         // Everyone can merge
         return null;
       } else if (cannotMergeCount === assigneesCount && assigneesCount > 1) {
-        return 'No one can merge';
+        return __('No one can merge');
       } else if (assigneesCount === 1) {
-        return 'Cannot merge';
+        return __('Cannot merge');
       }
 
       return `${canMergeCount}/${assigneesCount} can merge`;
@@ -128,7 +128,7 @@ export default {
       return `${this.rootPath}${user.username}`;
     },
     assigneeAlt(user) {
-      return `${user.name}'s avatar`;
+      return __(`${user.name}'s avatar`);
     },
     assigneeUsername(user) {
       return `@${user.username}`;
@@ -153,7 +153,7 @@ export default {
       data-placement="left"
       data-boundary="viewport"
     >
-      <i v-if="hasNoUsers" aria-label="None" class="fa fa-user"> </i>
+      <i v-if="hasNoUsers" :aria-label="__(`None`)" class="fa fa-user"> </i>
       <button
         v-for="(user, index) in users"
         v-if="shouldRenderCollapsedAssignee(index)"
@@ -187,7 +187,7 @@ export default {
         <span class="assign-yourself no-value qa-assign-yourself">
           None
           <template v-if="editable">
-            - <button type="button" class="btn-link" @click="assignSelf">assign yourself</button>
+            - <button type="button" class="btn-link" @click="assignSelf">{{ __("assign yourself") }}</button>
           </template>
         </span>
       </template>
@@ -232,9 +232,7 @@ export default {
             <template v-if="showLess">
               {{ hiddenAssigneesLabel }}
             </template>
-            <template v-else>
-              - show less
-            </template>
+            <template v-else>{{ __("- show less") }}</template>
           </button>
         </div>
       </template>

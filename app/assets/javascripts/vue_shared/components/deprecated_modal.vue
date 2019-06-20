@@ -1,4 +1,5 @@
 <script>
+import { __ } from "~/locale";
 /* eslint-disable vue/require-default-prop */
 export default {
   name: 'DeprecatedModal', // use GlModal instead
@@ -39,7 +40,7 @@ export default {
     closeButtonLabel: {
       type: String,
       required: false,
-      default: 'Cancel',
+      default: __('Cancel'),
     },
     primaryButtonLabel: {
       type: String,
@@ -94,7 +95,7 @@ export default {
                 type="button"
                 class="close float-right"
                 data-dismiss="modal"
-                aria-label="Close"
+                :aria-label="__(`Close`)"
                 @click="emitCancel($event)"
               >
                 <span aria-hidden="true">&times;</span>

@@ -45,6 +45,7 @@ export default {
   },
   computed: {
     iconName() {
+      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
       const suffix = this.stagedList ? '-solid' : '';
 
       return `${getCommitIconMap(this.file).icon}${suffix}`;
@@ -107,11 +108,12 @@ export default {
       @click="openFileInEditor"
     >
       <span class="multi-file-commit-list-file-path d-flex align-items-center">
-        <file-icon :file-name="file.name" class="append-right-8" />{{ file.name }}
+        <file-icon :file-name="file.name" class="append-right-8"/>
+        {{ file.name }}
       </span>
       <div class="ml-auto d-flex align-items-center">
         <div class="d-flex align-items-center ide-commit-list-changed-icon">
-          <icon :name="iconName" :size="16" :css-classes="iconClass" />
+          <icon :name="iconName" :size="16" :css-classes="iconClass"/>
         </div>
       </div>
     </div>

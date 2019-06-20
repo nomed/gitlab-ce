@@ -45,7 +45,7 @@ export default {
   },
   computed: {
     changedIcon() {
-      const suffix = !this.file.changed && this.file.staged && !this.showStagedIcon ? '-solid' : '';
+      const suffix = !this.file.changed && this.file.staged && !this.showStagedIcon ? __('-solid') : '';
 
       if (this.forceModifiedIcon) return `file-modified${suffix}`;
 

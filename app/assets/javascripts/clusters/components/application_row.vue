@@ -331,7 +331,7 @@ export default {
             class="form-text text-muted label p-0 js-cluster-application-update-details"
           >
             {{ versionLabel }}
-            <span v-if="updateSuccessful">to</span>
+            <span v-if="updateSuccessful">{{ __("to") }}</span>
 
             <gl-link
               v-if="updateSuccessful"
