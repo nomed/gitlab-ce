@@ -81,7 +81,7 @@ export default {
             />
             <reply-placeholder
               class="qa-discussion-reply"
-              button-text="Start a new discussion..."
+              :button-text="__('Start a new discussion...')"
               @onClick="showNewDiscussionForm"
             />
           </template>
