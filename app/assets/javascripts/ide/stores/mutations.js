@@ -216,7 +216,7 @@ export default {
     Vue.set(state.entries, newPath, {
       ...oldEntry,
       id: newPath,
-      key: `${newPath}-${oldEntry.type}-${oldEntry.id}`,
+      key: `${newPath}-${oldEntry.type}-${oldEntry.path}`,
       path: newPath,
       name: entryPath ? oldEntry.name : name,
       tempFile: true,
