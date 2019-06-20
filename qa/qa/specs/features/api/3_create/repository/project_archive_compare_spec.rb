@@ -17,7 +17,6 @@ module QA
         }
 
         @users.each do |_, user_info|
-          Runtime::Browser.visit(:gitlab, Page::Main::Login)
           user_info[:user] = Resource::User.fabricate_or_use(user_info[:username], user_info[:password])
           user_info[:api_client] = Runtime::API::Client.new(:gitlab, user: user_info[:user])
           user_info[:api_client].personal_access_token
