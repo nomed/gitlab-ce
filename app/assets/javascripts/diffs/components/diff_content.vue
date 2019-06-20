@@ -148,6 +148,7 @@ export default {
             class="d-none d-sm-block new-comment"
           />
           <diff-discussions
+            v-if="diffFile.discussions.length"
             class="diff-file-discussions"
             :discussions="diffFile.discussions"
             :should-collapse-discussions="true"
