@@ -1,5 +1,5 @@
 <script>
-import { __ } from "~/locale";
+import { __ } from '~/locale';
 import $ from 'jquery';
 import _ from 'underscore';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -82,7 +82,7 @@ export default {
 
 <template>
   <div>
-    <label class="label-bold prepend-top-10">{{ __("Project") }}</label>
+    <label class="label-bold prepend-top-10">{{ __('Project') }}</label>
     <div ref="projectsDropdown" class="dropdown dropdown-projects">
       <button
         class="dropdown-menu-toggle wide"
@@ -93,7 +93,7 @@ export default {
         {{ selectedProjectName }} <icon name="chevron-down" />
       </button>
       <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
-        <div class="dropdown-title">{{ __("Projects") }}</div>
+        <div class="dropdown-title">{{ __('Projects') }}</div>
         <div class="dropdown-input">
           <input class="dropdown-input-field" type="search" :placeholder="__(`Search projects`)" />
           <icon name="search" class="dropdown-input-search" data-hidden="true" />

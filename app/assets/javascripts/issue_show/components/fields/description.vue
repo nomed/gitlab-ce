@@ -39,7 +39,7 @@ export default {
 
 <template>
   <div class="common-note-form">
-    <label class="sr-only" for="issue-description">{{ __("Description") }}</label>
+    <label class="sr-only" for="issue-description">{{ __('Description') }}</label>
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"

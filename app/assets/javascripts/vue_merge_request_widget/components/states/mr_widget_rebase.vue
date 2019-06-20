@@ -88,18 +88,16 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon :status="status" :show-disabled-button="showDisabledButton"/>
+    <status-icon :status="status" :show-disabled-button="showDisabledButton" />
 
     <div class="rebase-state-find-class-convention media media-body space-children">
       <template v-if="mr.rebaseInProgress || isMakingRequest">
-        <span class="bold">{{ __("Rebase in progress") }}</span>
+        <span class="bold">{{ __('Rebase in progress') }}</span>
       </template>
       <template v-if="!mr.rebaseInProgress && !mr.canPushToSourceBranch">
         <span class="bold">
           Fast-forward merge is not possible. Rebase the source branch onto
-          <span
-            class="label-branch"
-          >{{ mr.targetBranch }}</span> to allow this merge request to be
+          <span class="label-branch">{{ mr.targetBranch }}</span> to allow this merge request to be
           merged.
         </span>
       </template>
@@ -113,12 +111,13 @@ export default {
             class="btn btn-sm btn-reopen btn-success qa-mr-rebase-button"
             @click="rebase"
           >
-            <gl-loading-icon v-if="isMakingRequest"/>Rebase
+            <gl-loading-icon v-if="isMakingRequest" />Rebase
           </button>
-          <span
-            v-if="!rebasingError"
-            class="bold"
-          >{{ __("Fast-forward merge is not possible. Rebase the source branch onto the target branch or merge target branch into source branch to allow this merge request to be merged.") }}</span>
+          <span v-if="!rebasingError" class="bold">{{
+            __(
+              'Fast-forward merge is not possible. Rebase the source branch onto the target branch or merge target branch into source branch to allow this merge request to be merged.',
+            )
+          }}</span>
           <span v-else class="bold danger">{{ rebasingError }}</span>
         </div>
       </template>

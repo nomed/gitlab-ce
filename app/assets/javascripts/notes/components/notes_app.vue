@@ -1,5 +1,5 @@
 <script>
-import { __ } from "~/locale";
+import { __ } from '~/locale';
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash } from '../../lib/utils/url_utility';
 import Flash from '../../flash';

@@ -187,7 +187,10 @@ export default {
         <span class="assign-yourself no-value qa-assign-yourself">
           None
           <template v-if="editable">
-            - <button type="button" class="btn-link" @click="assignSelf">{{ __("assign yourself") }}</button>
+            -
+            <button type="button" class="btn-link" @click="assignSelf">
+              {{ __('assign yourself') }}
+            </button>
           </template>
         </span>
       </template>
@@ -232,7 +235,7 @@ export default {
             <template v-if="showLess">
               {{ hiddenAssigneesLabel }}
             </template>
-            <template v-else>{{ __("- show less") }}</template>
+            <template v-else>{{ __('- show less') }}</template>
           </button>
         </div>
       </template>

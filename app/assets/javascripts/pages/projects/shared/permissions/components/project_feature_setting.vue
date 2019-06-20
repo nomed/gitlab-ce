@@ -1,5 +1,5 @@
 <script>
-import { __ } from "~/locale";
+import { __ } from '~/locale';
 import projectFeatureToggle from '../../../../../vue_shared/components/toggle_button.vue';
 
 export default {

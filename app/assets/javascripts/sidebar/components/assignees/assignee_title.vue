@@ -26,7 +26,7 @@ export default {
   computed: {
     assigneeTitle() {
       const assignees = this.numberOfAssignees;
-      return n__(`%d Assignee`, `%d Assignees`, assignees);
+      return n__(`Assignee`, `%d Assignees`, assignees);
     },
   },
 };
@@ -39,11 +39,11 @@ export default {
       aria-hidden="true"
       class="fa fa-spinner fa-spin block-loading"
     ></i>
-    <a
-      v-if="editable"
-      class="js-sidebar-dropdown-toggle edit-link float-right"
-      href="#"
-    >{{ __('Edit') }}</a>
+    <a v-if="editable" class="js-sidebar-dropdown-toggle edit-link float-right" href="#">
+      {{
+      __('Edit')
+      }}
+    </a>
     <a
       v-if="showToggle"
       :aria-label="__(`Toggle sidebar`)"

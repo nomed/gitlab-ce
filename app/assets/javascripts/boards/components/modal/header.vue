@@ -1,5 +1,5 @@
 <script>
-import { __ } from "~/locale";
+import { __ } from '~/locale';
 import ModalFilters from './filters';
 import ModalTabs from './tabs.vue';
 import ModalStore from '../../stores/modal_store';

@@ -207,7 +207,11 @@ export default {
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
-        <a class="zen-control zen-control-leave js-zen-leave" href="#" :aria-label="__(`Enter zen mode`)">
+        <a
+          class="zen-control zen-control-leave js-zen-leave"
+          href="#"
+          :aria-label="__(`Enter zen mode`)"
+        >
           <icon :size="32" name="screen-normal" />
         </a>
         <markdown-toolbar

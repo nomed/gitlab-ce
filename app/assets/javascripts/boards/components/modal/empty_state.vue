@@ -1,5 +1,5 @@
 <script>
-import { __ } from "~/locale";
+import { __ } from '~/locale';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 
@@ -52,13 +52,17 @@ export default {
         <div class="text-content">
           <h4>{{ contents.title }}</h4>
           <p v-html="contents.content"></p>
-          <a v-if="activeTab === 'all'" :href="newIssuePath" class="btn btn-success btn-inverted">{{ __("New issue") }}</a>
+          <a v-if="activeTab === 'all'" :href="newIssuePath" class="btn btn-success btn-inverted">{{
+            __('New issue')
+          }}</a>
           <button
             v-if="activeTab === 'selected'"
             class="btn btn-default"
             type="button"
             @click="changeTab('all')"
-          >{{ __("Open issues") }}</button>
+          >
+            {{ __('Open issues') }}
+          </button>
         </div>
       </div>
     </div>

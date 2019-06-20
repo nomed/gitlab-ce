@@ -404,7 +404,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     >
                       <i aria-hidden="true" class="fa fa-check icon"> </i>
                       <div class="description">
-                        <strong>{{ __("Comment") }}</strong>
+                        <strong>{{ __('Comment') }}</strong>
                         <p>Add a general comment to this {{ noteableDisplayName }}.</p>
                       </div>
                     </button>
@@ -418,7 +418,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     >
                       <i aria-hidden="true" class="fa fa-check icon"> </i>
                       <div class="description">
-                        <strong>{{ __("Start discussion") }}</strong>
+                        <strong>{{ __('Start discussion') }}</strong>
                         <p>{{ startDiscussionDescription }}</p>
                       </div>
                     </button>

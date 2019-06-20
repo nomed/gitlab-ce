@@ -244,12 +244,13 @@ export default {
             href="javascript:void(0);"
             role="button"
             @click.prevent="setFileViewMode({ file, viewMode: 'preview' })"
-          >{{ file.previewMode.previewTitle }}</a>
+            >{{ file.previewMode.previewTitle }}</a
+          >
         </li>
       </ul>
-      <external-link :file="file"/>
+      <external-link :file="file" />
     </div>
-    <file-templates-bar v-if="showFileTemplatesBar(file.name)"/>
+    <file-templates-bar v-if="showFileTemplatesBar(file.name)" />
     <div
       v-show="!shouldHideEditor && file.viewMode === 'editor'"
       ref="editor"

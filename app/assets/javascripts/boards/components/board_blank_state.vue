@@ -1,5 +1,5 @@
 <script>
-import { __ } from "~/locale";
+import { __ } from '~/locale';
 /* global ListLabel */
 import Cookies from 'js-cookie';
 import boardsStore from '../stores/boards_store';
@@ -59,7 +59,7 @@ export default {
 
 <template>
   <div class="board-blank-state p-3">
-    <p>{{ __("Add the following default lists to your Issue Board with one click:") }}</p>
+    <p>{{ __('Add the following default lists to your Issue Board with one click:') }}</p>
     <ul class="list-unstyled board-blank-state-list">
       <li v-for="(label, index) in predefinedLabels" :key="index">
         <span
@@ -70,12 +70,22 @@ export default {
         {{ label.title }}
       </li>
     </ul>
-    <p>{{ __("Starting out with the default set of lists will get you right on the way to making the most of your board.") }}</p>
+    <p>
+      {{
+        __(
+          'Starting out with the default set of lists will get you right on the way to making the most of your board.',
+        )
+      }}
+    </p>
     <button
       class="btn btn-success btn-inverted btn-block"
       type="button"
       @click.stop="addDefaultLists"
-    >{{ __("Add default lists") }}</button>
-    <button class="btn btn-default btn-block" type="button" @click.stop="clearBlankState">{{ __("Nevermind, I'll use my own") }}</button>
+    >
+      {{ __('Add default lists') }}
+    </button>
+    <button class="btn btn-default btn-block" type="button" @click.stop="clearBlankState">
+      {{ __("Nevermind, I'll use my own") }}
+    </button>
   </div>
 </template>

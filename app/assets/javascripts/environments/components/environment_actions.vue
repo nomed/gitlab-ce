@@ -80,9 +80,9 @@ export default {
       data-toggle="dropdown"
     >
       <span>
-        <icon name="play"/>
-        <icon name="chevron-down"/>
-        <gl-loading-icon v-if="isLoading"/>
+        <icon name="play" />
+        <icon name="chevron-down" />
+        <gl-loading-icon v-if="isLoading" />
       </span>
     </button>
 
@@ -97,7 +97,7 @@ export default {
         >
           <span class="flex-fill">{{ action.name }}</span>
           <span v-if="action.scheduledAt" class="text-secondary">
-            <icon name="clock"/>
+            <icon name="clock" />
             {{ remainingTime(action) }}
           </span>
         </button>

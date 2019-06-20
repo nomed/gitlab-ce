@@ -89,13 +89,18 @@ export default {
           type="button"
           :aria-label="__('Toggle commit description')"
         >
-          <icon :size="12" name="ellipsis_h"/>
+          <icon :size="12" name="ellipsis_h" />
         </button>
 
         <div class="committer">
-          <a :href="authorUrl" :class="authorClass" :data-user-id="authorId" v-text="authorName"></a>
+          <a
+            :href="authorUrl"
+            :class="authorClass"
+            :data-user-id="authorId"
+            v-text="authorName"
+          ></a>
           {{ s__('CommitWidget|authored') }}
-          <time-ago-tooltip :time="commit.authored_date"/>
+          <time-ago-tooltip :time="commit.authored_date" />
         </div>
 
         <pre

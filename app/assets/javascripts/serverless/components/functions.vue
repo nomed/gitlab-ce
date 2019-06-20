@@ -87,13 +87,18 @@ export default {
             }}
           </p>
           <ul>
-            <li>Your repository does not have a corresponding <code>{{ __("serverless.yml") }}</code> file.</li>
-            <li>Your <code>{{ __(".gitlab-ci.yml") }}</code> file is not properly configured.</li>
             <li>
-              The functions listed in the <code>{{ __("serverless.yml") }}</code> file don't match the namespace
-              of your cluster.
+              Your repository does not have a corresponding
+              <code>{{ __('serverless.yml') }}</code> file.
             </li>
-            <li>{{ __("The deploy job has not finished.") }}</li>
+            <li>
+              Your <code>{{ __('.gitlab-ci.yml') }}</code> file is not properly configured.
+            </li>
+            <li>
+              The functions listed in the <code>{{ __('serverless.yml') }}</code> file don't match
+              the namespace of your cluster.
+            </li>
+            <li>{{ __('The deploy job has not finished.') }}</li>
           </ul>
 
           <p>

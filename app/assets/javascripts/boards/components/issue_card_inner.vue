@@ -230,7 +230,7 @@ export default {
           tooltip-placement="bottom"
         >
           <span class="js-assignee-tooltip">
-            <span class="bold d-block">{{ __("Assignee") }}</span> {{ assignee.name }}
+            <span class="bold d-block">{{ __('Assignee') }}</span> {{ assignee.name }}
             <span class="text-white-50">@{{ assignee.username }}</span>
           </span>
         </user-avatar-link>

@@ -14,7 +14,7 @@ export default {
 
 <template>
   <fieldset>
-    <label class="sr-only" for="issuable-title">{{ __("Title") }}</label>
+    <label class="sr-only" for="issuable-title">{{ __('Title') }}</label>
     <input
       id="issuable-title"
       ref="input"

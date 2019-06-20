@@ -85,12 +85,12 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon status="success"/>
+    <status-icon status="success" />
     <div class="media-body">
       <h4 class="d-flex align-items-start">
         <span class="append-right-10">
           <span class="js-status-text-before-author">{{ statusTextBeforeAuthor }}</span>
-          <mr-widget-author :author="mr.setToAutoMergeBy"/>
+          <mr-widget-author :author="mr.setToAutoMergeBy" />
           <span class="js-status-text-after-author">{{ statusTextAfterAuthor }}</span>
         </span>
         <a
@@ -108,16 +108,15 @@ export default {
       <section class="mr-info-list">
         <p>
           {{ s__('mrWidget|The changes will be merged into') }}
-          <a
-            :href="mr.targetBranchPath"
-            class="label-branch"
-          >{{ mr.targetBranch }}</a>
+          <a :href="mr.targetBranchPath" class="label-branch">{{ mr.targetBranch }}</a>
         </p>
-        <p
-          v-if="mr.shouldRemoveSourceBranch"
-        >{{ s__('mrWidget|The source branch will be deleted') }}</p>
+        <p v-if="mr.shouldRemoveSourceBranch">
+          {{ s__('mrWidget|The source branch will be deleted') }}
+        </p>
         <p v-else class="d-flex align-items-start">
-          <span class="append-right-10">{{ s__('mrWidget|The source branch will not be deleted') }}</span>
+          <span class="append-right-10">{{
+            s__('mrWidget|The source branch will not be deleted')
+          }}</span>
           <a
             v-if="canRemoveSourceBranch"
             :disabled="isRemovingSourceBranch"

@@ -93,7 +93,7 @@ export default {
   <div class="row empty-state js-empty-state">
     <div class="col-12">
       <div class="state-svg svg-content">
-        <img :src="currentState.svgUrl">
+        <img :src="currentState.svgUrl" />
       </div>
     </div>
 
@@ -102,10 +102,7 @@ export default {
         <h4 class="state-title text-center">{{ currentState.title }}</h4>
         <p class="state-description">
           {{ currentState.description }}
-          <a
-            v-if="showButtonDescription"
-            :href="settingsPath"
-          >{{ __("Prometheus server") }}</a>
+          <a v-if="showButtonDescription" :href="settingsPath">{{ __('Prometheus server') }}</a>
         </p>
 
         <div class="text-center">
@@ -113,12 +110,14 @@ export default {
             v-if="currentState.buttonPath"
             :href="currentState.buttonPath"
             class="btn btn-success"
-          >{{ currentState.buttonText }}</a>
+            >{{ currentState.buttonText }}</a
+          >
           <a
             v-if="currentState.secondaryButtonPath"
             :href="currentState.secondaryButtonPath"
             class="btn"
-          >{{ currentState.secondaryButtonText }}</a>
+            >{{ currentState.secondaryButtonText }}</a
+          >
         </div>
       </div>
     </div>

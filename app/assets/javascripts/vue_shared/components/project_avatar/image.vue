@@ -99,5 +99,5 @@ export default {
     :data-placement="tooltipPlacement"
     :title="tooltipText"
     class="avatar"
-  >
+  />
 </template>

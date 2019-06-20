@@ -1,5 +1,5 @@
 <script>
-import { __ } from "~/locale";
+import { __ } from '~/locale';
 import projectFeatureSetting from './project_feature_setting.vue';
 import projectFeatureToggle from '../../../../../vue_shared/components/toggle_button.vue';
 import projectSettingRow from './project_setting_row.vue';
@@ -208,15 +208,18 @@ export default {
               <option
                 :value="visibilityOptions.PRIVATE"
                 :disabled="!visibilityAllowed(visibilityOptions.PRIVATE)"
-              >{{ __("Private") }}</option>
+                >{{ __('Private') }}</option
+              >
               <option
                 :value="visibilityOptions.INTERNAL"
                 :disabled="!visibilityAllowed(visibilityOptions.INTERNAL)"
-              >{{ __("Internal") }}</option>
+                >{{ __('Internal') }}</option
+              >
               <option
                 :value="visibilityOptions.PUBLIC"
                 :disabled="!visibilityAllowed(visibilityOptions.PUBLIC)"
-              >{{ __("Public") }}</option>
+                >{{ __('Public') }}</option
+              >
             </select>
             <i aria-hidden="true" data-hidden="true" class="fa fa-chevron-down"> </i>
           </div>

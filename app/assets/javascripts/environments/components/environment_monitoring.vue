@@ -1,5 +1,5 @@
 <script>
-import { __ } from "~/locale";
+import { __ } from '~/locale';
 /**
  * Renders the Monitoring (Metrics) link in environments table.
  */

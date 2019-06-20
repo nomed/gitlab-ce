@@ -193,13 +193,13 @@ export default {
           type="button"
         >
           <span class="award-control-icon award-control-icon-neutral">
-            <icon name="slight-smile"/>
+            <icon name="slight-smile" />
           </span>
           <span class="award-control-icon award-control-icon-positive">
-            <icon name="smiley"/>
+            <icon name="smiley" />
           </span>
           <span class="award-control-icon award-control-icon-super-positive">
-            <icon name="smiley"/>
+            <icon name="smiley" />
           </span>
           <i
             aria-hidden="true"

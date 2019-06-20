@@ -1,5 +1,5 @@
 <script>
-import { __ } from "~/locale";
+import { __ } from '~/locale';
 /* eslint-disable vue/require-default-prop */
 export default {
   name: 'DeprecatedModal', // use GlModal instead

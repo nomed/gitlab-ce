@@ -70,7 +70,7 @@ export default {
       data-placement="top"
       role="timeRemainingDisplay"
     >
-      <gl-progress-bar :value="timeRemainingPercent" :variant="progressBarVariant"/>
+      <gl-progress-bar :value="timeRemainingPercent" :variant="progressBarVariant" />
       <div class="compare-display-container">
         <div class="compare-display float-left">
           <span class="compare-label">{{ s__('TimeTracking|Spent') }}</span>

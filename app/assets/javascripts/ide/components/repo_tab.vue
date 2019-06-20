@@ -1,5 +1,5 @@
 <script>
-import { __ } from "~/locale";
+import { __ } from '~/locale';
 import { mapActions } from 'vuex';
 
 import FileIcon from '~/vue_shared/components/file_icon.vue';

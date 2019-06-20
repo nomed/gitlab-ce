@@ -119,8 +119,10 @@ export default {
           class="btn-link btn-blank"
           data-toggle="modal"
           data-target="#modal-peek-line-profile"
-        >{{ __("profile") }}</button>
-        <a v-else :href="profileUrl">{{ __("profile") }}</a>
+        >
+          {{ __('profile') }}
+        </button>
+        <a v-else :href="profileUrl">{{ __('profile') }}</a>
       </div>
       <simple-metric
         v-for="metric in $options.simpleMetrics"
@@ -130,8 +132,8 @@ export default {
       />
       <div id="peek-view-gc" class="view">
         <span v-if="currentRequest.details" class="bold">
-          <span title="Invoke Time">{{ currentRequest.details.gc.gc_time }}</span>ms /
-          <span title="Invoke Count">{{ currentRequest.details.gc.invokes }}</span> gc
+          <span title="Invoke Time">{{ currentRequest.details.gc.gc_time }}</span
+          >ms / <span title="Invoke Count">{{ currentRequest.details.gc.invokes }}</span> gc
         </span>
       </div>
       <div
@@ -139,7 +141,7 @@ export default {
         id="peek-view-trace"
         class="view"
       >
-        <a :href="currentRequest.details.tracing.tracing_url">{{ __("trace") }}</a>
+        <a :href="currentRequest.details.tracing.tracing_url">{{ __('trace') }}</a>
       </div>
       <request-selector
         v-if="currentRequest"

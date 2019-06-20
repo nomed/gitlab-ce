@@ -125,7 +125,7 @@ export default {
               <div>
                 <strong>
                   {{ versionName(version) }}
-                  <template v-if="isBase(version)">{{ __("(base)") }}</template>
+                  <template v-if="isBase(version)">{{ __('(base)') }}</template>
                 </strong>
               </div>
               <div>

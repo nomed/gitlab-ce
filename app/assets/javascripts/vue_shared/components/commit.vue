@@ -141,9 +141,9 @@ export default {
   <div class="branch-commit cgray">
     <template v-if="shouldShowRefInfo">
       <div class="icon-container">
-        <icon v-if="tag" name="tag"/>
-        <icon v-else-if="mergeRequestRef" name="git-merge"/>
-        <icon v-else name="branch"/>
+        <icon v-if="tag" name="tag" />
+        <icon v-else-if="mergeRequestRef" name="git-merge" />
+        <icon v-else name="branch" />
       </div>
 
       <gl-link
@@ -152,16 +152,18 @@ export default {
         :href="mergeRequestRef.path"
         :title="mergeRequestRef.title"
         class="ref-name"
-      >{{ mergeRequestRef.iid }}</gl-link>
+        >{{ mergeRequestRef.iid }}</gl-link
+      >
       <gl-link
         v-else
         v-gl-tooltip
         :href="commitRef.ref_url"
         :title="commitRef.name"
         class="ref-name"
-      >{{ commitRef.name }}</gl-link>
+        >{{ commitRef.name }}</gl-link
+      >
     </template>
-    <icon name="commit" class="commit-icon js-commit-icon"/>
+    <icon name="commit" class="commit-icon js-commit-icon" />
 
     <gl-link :href="commitUrl" class="commit-sha mr-0">{{ shortSha }}</gl-link>
 

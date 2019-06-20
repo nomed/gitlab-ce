@@ -111,7 +111,9 @@ export default {
           type="button"
           class="btn-blank btn-link btn-primary-hover-link btn-sidebar-action"
           @click="toggleDatePicker"
-        >{{ __("Edit") }}</button>
+        >
+          {{ __('Edit') }}
+        </button>
         <toggle-sidebar v-if="showToggleSidebar" :collapsed="collapsed" @toggle="toggleSidebar" />
       </div>
     </div>
@@ -134,10 +136,12 @@ export default {
               type="button"
               class="btn-blank btn-link btn-secondary-hover-link"
               @click="newDateSelected(null)"
-            >{{ __("remove") }}</button>
+            >
+              {{ __('remove') }}
+            </button>
           </span>
         </template>
-        <span v-else class="no-value">{{ __("None") }}</span>
+        <span v-else class="no-value">{{ __('None') }}</span>
       </span>
     </div>
   </div>

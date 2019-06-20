@@ -1,5 +1,5 @@
 <script>
-import { __ } from "~/locale";
+import { __ } from '~/locale';
 import _ from 'underscore';
 import { mapActions, mapState } from 'vuex';
 import { GlLink, GlButton } from '@gitlab/ui';

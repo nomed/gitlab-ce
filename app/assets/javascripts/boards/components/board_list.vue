@@ -257,7 +257,7 @@ export default {
       />
       <li v-if="showCount" class="board-list-count text-center" data-issue-id="-1">
         <gl-loading-icon v-show="list.loadingMore" label="Loading more issues" />
-        <span v-if="list.issues.length === list.issuesSize">{{ __("Showing all issues") }}</span>
+        <span v-if="list.issues.length === list.issuesSize">{{ __('Showing all issues') }}</span>
         <span v-else> Showing {{ list.issues.length }} of {{ list.issuesSize }} issues </span>
       </li>
     </ul>
