@@ -216,8 +216,8 @@ class IssuableBaseService < BaseService
       # We have to perform this check before saving the issuable as Rails resets
       # the changed fields upon calling #save.
       update_project_counters = issuable.project && update_project_counter_caches?(issuable)
-      should_touch = !changes_position_only?(issuable)
-
+      # Do not touch when saving the issuable if only changes position within a list
+      should_touch = !changes_position_only?(issuable, params)
       if issuable.with_transaction_returning_status { issuable.save(touch: should_touch) }
         # We do not touch as it will affect a update on updated_at field
         ActiveRecord::Base.no_touching do
@@ -404,7 +404,9 @@ class IssuableBaseService < BaseService
     issuable.milestone_id = nil unless issuable.milestone_available?
   end
 
-  def changes_position_only?(issuable)
-    issuable.changes.keys == %w[updated_by_id relative_position]
+  def changes_position_only?(issuable, params)
+    return unless issuable.is_a?(Issue) && issuable.changes.key?(:relative_position)
+
+    return true unless params.present?
   end
 end
