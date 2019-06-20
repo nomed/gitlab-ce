@@ -10,11 +10,6 @@
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:alpine
 
-.use-mysql: &use-mysql
-  services:
-    - mysql:5.7
-    - redis:alpine
-
 .only-schedules-master: &only-schedules-master
   only:
     - schedules@gitlab-org/gitlab-ce
@@ -94,10 +89,6 @@
   <<: *use-pg-10
   image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.21-chrome-73.0-node-12.x-yarn-1.16-postgresql-10-graphicsmagick-1.3.29"
 
-.rspec-metadata-mysql: &rspec-metadata-mysql
-  <<: *rspec-metadata
-  <<: *use-mysql
-
 # DB migration, rollback, and seed jobs
 .db-migrate-reset: &db-migrate-reset
   extends: .dedicated-no-docs-and-no-qa-pull-cache-job
@@ -111,7 +102,7 @@
   variables:
     SETUP_DB: "false"
   script:
-    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v9.3.0
+    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v11.11.0
     - git checkout -f FETCH_HEAD
     - sed -i "s/gem 'oj', '~> 2.17.4'//" Gemfile
     - sed -i "s/gem 'bootsnap', '~> 1.0.0'/gem 'bootsnap'/" Gemfile
@@ -173,42 +164,6 @@ rspec system pg-10:
   <<: *only-schedules-master
   parallel: 24
 
-rspec unit mysql:
-  <<: *rspec-metadata-mysql
-  <<: *only-schedules-master
-  parallel: 20
-
-rspec integration mysql:
-  <<: *rspec-metadata-mysql
-  <<: *only-schedules-master
-  parallel: 6
-
-rspec system mysql:
-  <<: *rspec-metadata-mysql
-  <<: *only-schedules-master
-  parallel: 24
-
-.rspec-mysql-on-demand: &rspec-mysql-on-demand
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /\[run mysql\]/i
-      - $CI_COMMIT_REF_NAME =~ /mysql/
-
-rspec unit mysql on-demand:
-  <<: *rspec-metadata-mysql
-  <<: *rspec-mysql-on-demand
-  parallel: 20
-
-rspec integration mysql on-demand:
-  <<: *rspec-metadata-mysql
-  <<: *rspec-mysql-on-demand
-  parallel: 6
-
-rspec system mysql on-demand:
-  <<: *rspec-metadata-mysql
-  <<: *rspec-mysql-on-demand
-  parallel: 24
-
 rspec-fast-spec-helper:
   <<: *rspec-metadata-pg
   script:
@@ -226,16 +181,11 @@ rspec quarantine pg:
   <<: *rspec-quarantine
   allow_failure: true
 
-rspec quarantine mysql:
-  <<: *rspec-metadata-mysql
-  <<: *rspec-quarantine
-  <<: *only-schedules-master
-  allow_failure: true
-
 static-analysis:
   extends: .dedicated-no-docs-no-db-pull-cache-job
   dependencies:
     - compile-assets
+    - compile-assets pull-cache
     - setup-test-env
   script:
     - scripts/static-analysis
@@ -280,10 +230,6 @@ db:migrate:reset-pg:
   <<: *db-migrate-reset
   <<: *use-pg
 
-db:migrate:reset-mysql:
-  <<: *db-migrate-reset
-  <<: *use-mysql
-
 db:check-schema-pg:
   <<: *db-migrate-reset
   <<: *use-pg
@@ -293,10 +239,6 @@ db:check-schema-pg:
 migration:path-pg:
   <<: *migration-paths
   <<: *use-pg
-
-migration:path-mysql:
-  <<: *migration-paths
-  <<: *use-mysql
 
 .db-rollback: &db-rollback
   extends: .dedicated-no-docs-and-no-qa-pull-cache-job
@@ -310,19 +252,9 @@ db:rollback-pg:
   <<: *db-rollback
   <<: *use-pg
 
-db:rollback-mysql:
-  <<: *db-rollback
-  <<: *use-mysql
-
 gitlab:setup-pg:
   <<: *gitlab-setup
   <<: *use-pg
-  dependencies:
-    - setup-test-env
-
-gitlab:setup-mysql:
-  <<: *gitlab-setup
-  <<: *use-mysql
   dependencies:
     - setup-test-env
 
