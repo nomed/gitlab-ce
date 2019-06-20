@@ -6,6 +6,7 @@ class SessionsController < Devise::SessionsController
   include Devise::Controllers::Rememberable
   include Recaptcha::ClientHelper
   include Recaptcha::Verify
+  include RecaptchaExperimentHelper
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
   # replaced with :require_no_authentication_without_flash
@@ -68,7 +69,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def captcha_enabled?
-    request.headers[CAPTCHA_HEADER] && Gitlab::Recaptcha.enabled?
+    request.headers[CAPTCHA_HEADER] && show_recaptcha_sign_up?
   end
 
   # From https://github.com/plataformatec/devise/wiki/How-To:-Use-Recaptcha-with-Devise#devisepasswordscontroller
