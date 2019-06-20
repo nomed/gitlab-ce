@@ -2831,13 +2831,10 @@ msgstr ""
 msgid "ContainerRegistry|Container Registry documentation"
 msgstr ""
 
-msgid "ContainerRegistry|Created"
+msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
 msgid "ContainerRegistry|Last Updated"
-msgstr ""
-
-msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
 msgid "ContainerRegistry|No tags in Container Registry for this container image."
