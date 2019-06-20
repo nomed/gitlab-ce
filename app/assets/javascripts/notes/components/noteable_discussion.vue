@@ -135,7 +135,7 @@ export default {
       return this.discussion.diff_discussion && this.renderDiffFile;
     },
     shouldGroupReplies() {
-      return !this.shouldRenderDiffs && !this.discussion.diff_discussion;
+      return !this.shouldRenderDiffs;
     },
     wrapperComponent() {
       return this.shouldRenderDiffs ? diffWithNote : 'div';

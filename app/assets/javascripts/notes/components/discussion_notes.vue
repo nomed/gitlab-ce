@@ -45,11 +45,6 @@ export default {
       required: false,
       default: '',
     },
-    shouldRenderDiffs: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -80,8 +75,8 @@ export default {
         url: this.discussion.discussion_path,
       };
     },
-    repliesLength() {
-      return n__(__('%d reply'), __('%d replies'), this.replies.length);
+    isReallyExpanded() {
+      return this.discussion.diff_discussion ? this.repliesExpanded : this.isExpanded;
     },
   },
   methods: {
@@ -104,7 +99,11 @@ export default {
       return note.isPlaceholderNote ? note.notes[0] : note;
     },
     toggleReplies() {
-      this.repliesExpanded = !this.repliesExpanded;
+      if (this.discussion.diff_discussion) {
+        this.repliesExpanded = !this.repliesExpanded;
+      } else {
+        this.$emit('toggleDiscussion');
+      }
     },
   },
 };
@@ -117,7 +116,7 @@ export default {
         <component
           :is="componentName(firstNote)"
           :note="componentData(firstNote)"
-          :line="line"
+          :line="line || diffLine"
           :commit="commit"
           :help-page-path="helpPagePath"
           :show-reply-button="userCanReply"
@@ -134,79 +133,43 @@ export default {
           />
           <slot slot="avatar-badge" name="avatar-badge"></slot>
         </component>
-        <toggle-replies-widget
-          v-if="hasReplies"
-          :collapsed="!isExpanded"
-          :replies="replies"
-          @toggle="$emit('toggleDiscussion')"
-        />
-        <template v-if="isExpanded">
-          <component
-            :is="componentName(note)"
-            v-for="note in replies"
-            :key="note.id"
-            :note="componentData(note)"
-            :help-page-path="helpPagePath"
-            :line="line"
-            @handle-delete-note="$emit('deleteNote')"
+        <div
+          :class="discussion.diff_discussion ? 'discussion-collapsible bordered-box clearfix' : ''"
+        >
+          <toggle-replies-widget
+            v-if="hasReplies"
+            :collapsed="!isReallyExpanded"
+            :replies="replies"
+            :class="discussion.diff_discussion ? 'discussion-toggle-replies' : ''"
+            @toggle="toggleReplies"
           />
-        </template>
-        <slot :show-replies="isExpanded || !hasReplies" name="footer"></slot>
+          <template v-if="isReallyExpanded">
+            <component
+              :is="componentName(note)"
+              v-for="note in replies"
+              :key="note.id"
+              :note="componentData(note)"
+              :help-page-path="helpPagePath"
+              :line="line"
+              @handle-delete-note="$emit('deleteNote')"
+            />
+          </template>
+          <slot :show-replies="isReallyExpanded || !hasReplies" name="footer"></slot>
+        </div>
       </template>
       <template v-else>
-        <template v-if="shouldRenderDiffs">
-          <component
-            :is="componentName(note)"
-            v-for="(note, index) in discussion.notes"
-            :key="note.id"
-            :note="componentData(note)"
-            :help-page-path="helpPagePath"
-            :line="diffLine"
-            @handle-delete-note="$emit('deleteNote')"
-          >
-            <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"></slot>
-          </component>
-          <slot :show-replies="isExpanded || !hasReplies" name="footer"></slot>
-        </template>
-        <template v-else>
-          <component
-            :is="componentName(firstNote)"
-            :key="firstNote.id"
-            :note="componentData(firstNote)"
-            :help-page-path="helpPagePath"
-            :line="diffLine"
-            @handle-delete-note="$emit('deleteNote')"
-          >
-            <slot slot="avatar-badge" name="avatar-badge"></slot>
-          </component>
-          <div class="discussion-collapsible bordered-box clearfix">
-            <toggle-replies-widget
-              v-if="hasReplies"
-              :collapsed="!repliesExpanded"
-              :replies="replies"
-              class="discussion-toggle-replies"
-              @toggle="toggleReplies"
-            />
-            <div v-show="repliesExpanded">
-              <component
-                :is="componentName(note)"
-                v-for="(note, index) in replies"
-                :key="note.id"
-                :note="componentData(note)"
-                :help-page-path="helpPagePath"
-                :line="diffLine"
-                @handle-delete-note="$emit('deleteNote')"
-              >
-                <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"></slot>
-              </component>
-              <slot
-                v-if="repliesExpanded || !hasReplies"
-                :show-replies="isExpanded || !hasReplies"
-                name="footer"
-              ></slot>
-            </div>
-          </div>
-        </template>
+        <component
+          :is="componentName(note)"
+          v-for="(note, index) in discussion.notes"
+          :key="note.id"
+          :note="componentData(note)"
+          :help-page-path="helpPagePath"
+          :line="diffLine"
+          @handle-delete-note="$emit('deleteNote')"
+        >
+          <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"></slot>
+        </component>
+        <slot :show-replies="isReallyExpanded || !hasReplies" name="footer"></slot>
       </template>
     </ul>
   </div>
