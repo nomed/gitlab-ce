@@ -28,7 +28,8 @@ module DashboardHelper
   end
 
   def feature_entry(title, href, enabled = true)
-    output = content_tag(:p, 'aria-label' => "#{title}: status " + (enabled ? 'on' : 'off')) do
+    label = "#{title}: status #{enabled ? 'on' : 'off'}"
+    output = content_tag(:p, 'aria-label' => label) do
       concat(enabled && href ? content_tag(:a, title, href: href) : title)
       concat(content_tag(:span, '', class: ['light', 'float-right']) do
         concat(boolean_to_icon enabled)
