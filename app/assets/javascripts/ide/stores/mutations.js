@@ -223,8 +223,8 @@ export default {
       prevPath: oldEntry.tempFile ? null : oldEntry.path,
       url: oldEntry.url.replace(new RegExp(`${oldEntry.path}/?$`), newPath),
       tree: [],
-      parentPath,
       raw: '',
+      parentPath,
     });
 
     oldEntry.moved = true;
@@ -239,10 +239,6 @@ export default {
 
     if (newEntry.type === 'blob') {
       state.changedFiles = state.changedFiles.concat(newEntry);
-    }
-
-    if (state.entries[newPath].opened) {
-      state.openFiles.push(state.entries[newPath]);
     }
 
     if (oldEntry.tempFile) {

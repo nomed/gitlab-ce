@@ -8,6 +8,7 @@ import * as types from './mutation_types';
 import { decorateFiles } from '../lib/files';
 import { stageKeys } from '../constants';
 import service from '../services';
+import { historyPushState } from '~/lib/utils/common_utils';
 
 export const redirectToUrl = (self, url) => visitUrl(url);
 
@@ -238,10 +239,23 @@ export const renameEntry = (
         parentPath: newParentPath,
       });
     });
-  }
+  } else if (entry.type === 'blob') {
+    const newPath = parentPath ? `${parentPath}/${name}` : name;
+    const newEntry = state.entries[newPath];
+    commit(types.TOGGLE_FILE_CHANGED, { file: newEntry, changed: true });
 
-  if (!entryPath && !entry.tempFile) {
-    dispatch('deleteEntry', path);
+    if (entry.opened) {
+      const newURL = window.location.href.replace(path, newPath);
+      historyPushState(newURL);
+
+      commit(types.TOGGLE_FILE_OPEN, newEntry.path);
+      dispatch('getFileData', {
+        path: newEntry.path,
+        makeFileActive: true,
+        openFile: true,
+      });
+      commit(types.TOGGLE_FILE_OPEN, entry.path);
+    }
   }
 
   dispatch('triggerFilesChange');
