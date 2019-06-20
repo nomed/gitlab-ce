@@ -1,0 +1,5 @@
+---
+title: Migrate NULL values for users.private_profile column
+merge_request: 29888
+author:
+type: changed

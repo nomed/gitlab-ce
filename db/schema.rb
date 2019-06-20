@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190619175843) do
+ActiveRecord::Schema.define(version: 20190620105427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -3359,7 +3359,7 @@ ActiveRecord::Schema.define(version: 20190619175843) do
     t.integer "theme_id", limit: 2
     t.integer "accepted_term_id"
     t.string "feed_token"
-    t.boolean "private_profile"
+    t.boolean "private_profile", default: false
     t.boolean "include_private_contributions"
     t.string "commit_email"
     t.boolean "auditor", default: false, null: false
