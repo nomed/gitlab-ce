@@ -17,7 +17,7 @@ describe Namespaces::PruneAggregationSchedulesWorker, '#perform' do
 
     it 'schedules a worker per pending aggregation' do
       expect(Namespaces::RootStatisticsWorker)
-        .to receive(:perform_in).exactly(5).times
+        .to receive(:perform_async).exactly(5).times
 
       worker.perform
     end
@@ -26,7 +26,7 @@ describe Namespaces::PruneAggregationSchedulesWorker, '#perform' do
   context 'without pending aggregation schedules' do
     it 'does not schedules a worker' do
       expect(Namespaces::RootStatisticsWorker)
-        .not_to receive(:perform)
+        .not_to receive(:perform_async)
 
       worker.perform
     end

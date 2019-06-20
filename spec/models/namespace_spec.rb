@@ -847,10 +847,26 @@ describe Namespace do
       let(:namespace) { create(:namespace, :with_aggregation_schedule) }
 
       it { is_expected.to be_truthy }
+
+      context 'with a feature flag disabled' do
+        before do
+          stub_feature_flags(update_statistics_namespace: false, namespace: namespace)
+        end
+
+        it { is_expected.to be_falsy }
+      end
     end
 
     context 'without an aggregation scheduled association' do
       it { is_expected.to be_falsy }
+
+      context 'with a feature flag disabled' do
+        before do
+          stub_feature_flags(update_statistics_namespace: false, namespace: namespace)
+        end
+
+        it { is_expected.to be_falsy }
+      end
     end
   end
 end

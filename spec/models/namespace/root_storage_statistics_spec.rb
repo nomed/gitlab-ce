@@ -23,12 +23,20 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
         root_storage_statistics.recalculate!
 
         root_storage_statistics.reload
-        expect(root_storage_statistics.repository_size).to eq(stat1.repository_size + stat2.repository_size)
-        expect(root_storage_statistics.wiki_size).to eq(stat1.wiki_size + stat2.wiki_size)
-        expect(root_storage_statistics.lfs_objects_size).to eq(stat1.lfs_objects_size + stat2.lfs_objects_size)
-        expect(root_storage_statistics.build_artifacts_size).to eq(stat1.build_artifacts_size + stat2.build_artifacts_size)
-        expect(root_storage_statistics.packages_size).to eq(stat1.packages_size + stat2.packages_size)
-        expect(root_storage_statistics.storage_size).to eq(stat1.storage_size + stat2.storage_size)
+
+        total_repository_size = stat1.repository_size + stat2.repository_size
+        total_wiki_size = stat1.wiki_size + stat2.wiki_size
+        total_lfs_objects_size = stat1.lfs_objects_size + stat2.lfs_objects_size
+        total_build_artifacts_size = stat1.build_artifacts_size + stat2.build_artifacts_size
+        total_packages_size = stat1.packages_size + stat2.packages_size
+        total_storage_size = stat1.storage_size + stat2.storage_size
+
+        expect(root_storage_statistics.repository_size).to eq(total_repository_size)
+        expect(root_storage_statistics.wiki_size).to eq(total_wiki_size)
+        expect(root_storage_statistics.lfs_objects_size).to eq(total_lfs_objects_size)
+        expect(root_storage_statistics.build_artifacts_size).to eq(total_build_artifacts_size)
+        expect(root_storage_statistics.packages_size).to eq(total_packages_size)
+        expect(root_storage_statistics.storage_size).to eq(total_storage_size)
       end
 
       it 'works when there are no projects' do
@@ -46,22 +54,22 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
       end
     end
 
-    include_examples 'data refresh'
+    it_behaves_like 'data refresh'
 
-    context 'with subgroups', :sub_groups do
+    context 'with subgroups', :nested_groups do
       let(:subgroup1) { create(:group, parent: namespace)}
       let(:subgroup2) { create(:group, parent: subgroup1)}
 
       let(:project1) { create(:project, namespace: subgroup1) }
       let(:project2) { create(:project, namespace: subgroup2) }
 
-      include_examples 'data refresh'
+      it_behaves_like 'data refresh'
     end
 
     context 'with a personal namespace' do
       let(:namespace) { create(:user).namespace }
 
-      include_examples 'data refresh'
+      it_behaves_like 'data refresh'
     end
   end
 end

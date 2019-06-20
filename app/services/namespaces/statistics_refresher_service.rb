@@ -6,6 +6,7 @@ module Namespaces
 
     def execute(root_namespace)
       root_storage_statistics(root_namespace).recalculate!
+
     rescue ActiveRecord::ActiveRecordError => e
       raise RefresherError.new(e.message)
     end

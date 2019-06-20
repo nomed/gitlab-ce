@@ -19,10 +19,9 @@
 #
 # - `statistic_attribute` must be an ActiveRecord attribute
 # - The model must implement `project` and `project_id`. i.e. direct Project relationship or delegation
-# - The model must include AfterCommitQueue module
 module UpdateProjectStatistics
   extend ActiveSupport::Concern
-  #include AfterCommitQueue
+  include AfterCommitQueue
 
   class_methods do
     attr_reader :project_statistics_name, :statistic_attribute
@@ -74,6 +73,7 @@ module UpdateProjectStatistics
 
     def schedule_namespace_aggregation_worker
       return if project.nil?
+      return unless Feature.enabled?(:update_statistics_namespace, project.namespace)
 
       run_after_commit do
         Namespaces::ScheduleAggregationWorker.perform_async(project.namespace_id)

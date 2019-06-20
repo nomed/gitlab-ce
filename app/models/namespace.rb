@@ -292,7 +292,8 @@ class Namespace < ApplicationRecord
   end
 
   def aggregation_scheduled?
-    aggregation_schedule.present?
+    aggregation_schedule.present? &&
+      Feature.enabled?(:update_statistics_namespace, self)
   end
 
   private

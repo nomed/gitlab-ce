@@ -4,7 +4,7 @@ module Namespaces
   class ScheduleAggregationWorker
     include ApplicationWorker
 
-    queue_namespace :namespace
+    queue_namespace :update_namespace_statistics
 
     def perform(namespace_id)
       return unless aggregation_schedules_table_exists?
@@ -12,7 +12,7 @@ module Namespaces
       namespace = Namespace.find(namespace_id)
       root_ancestor = namespace.root_ancestor
 
-      return if root_ancestor.aggregation_schedule.present?
+      return if root_ancestor.aggregation_scheduled?
 
       root_ancestor.create_aggregation_schedule!
     rescue ActiveRecord::RecordNotFound
@@ -32,7 +32,7 @@ module Namespaces
     end
 
     def log_error(namespace_id)
-      Gitlab::SidekiqLogger.error("Namespace: #{namespace_id}: does not exist")
+      Gitlab::SidekiqLogger.error("Namespace can't be scheduled for aggregation: #{namespace_id} does not exist")
     end
   end
 end

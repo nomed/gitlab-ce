@@ -62,9 +62,6 @@
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
 
-- namespace:namespaces_root_statistics
-- namespace:namespaces_schedule_aggregation
-
 - object_storage:object_storage_background_move
 - object_storage:object_storage_migrate_uploads
 
@@ -103,6 +100,9 @@
 - todos_destroyer:todos_destroyer_group_private
 - todos_destroyer:todos_destroyer_project_private
 - todos_destroyer:todos_destroyer_private_features
+
+- update_namespace_statistics:namespaces_schedule_aggregation
+- update_namespace_statistics:namespaces_root_statistics
 
 - object_pool:object_pool_create
 - object_pool:object_pool_schedule_join
