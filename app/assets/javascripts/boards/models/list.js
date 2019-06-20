@@ -38,7 +38,7 @@ class List {
 
     const typeInfo = this.getTypeInfo(this.type);
     this.preset = Boolean(typeInfo.isPreset);
-    this.isExpandable = Boolean(typeInfo.isExpandable);
+    this.isExpandable = true;
     this.isExpanded = true;
     this.page = 1;
     this.loading = true;

@@ -92,9 +92,19 @@
     width: 400px;
   }
 
-  &.is-expandable {
-    .board-header {
-      cursor: pointer;
+  .board-title-collapse {
+    margin-left: -10px;
+  }
+
+  .board-title-expand,
+  .board-title-collapse {
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 4px;
+
+    &:hover {
+      background-color: rgb(235, 235, 235);
+      transition: background-color 0.1s linear;
     }
   }
 
@@ -102,20 +112,36 @@
     width: 50px;
 
     .board-title {
+      flex-direction: column;
+      height: 100%;
+      padding: 10px 0;
+    }
+
+    .board-title-text {
+      flex-grow: 0;
+
       > span {
-        width: 100%;
-        margin-top: -12px;
         display: block;
-        transform: rotate(90deg) translate(35px, 0);
-        overflow: initial;
+        height: 16px;
+
+        // Force the height to be equal to the parent's width while centering the contents.
+        // The contents *should* be about 16 px.
+        margin: calc(50% - 8px) 0;
+
+        transform: rotate(90deg);
+        transform-origin: center;
       }
     }
 
-    .board-title-expandable-toggle {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin-left: -10px;
+    .issue-count-badge {
+      border: 0;
+
+      > span {
+        height: 16px;
+        margin: calc(50% - 8px) 0;
+        transform: rotate(90deg);
+        transform-origin: center;
+      }
     }
   }
 }
@@ -152,12 +178,15 @@
 }
 
 .board-title {
+  align-items: center;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
+  padding: 8px 16px;
 }
 
 .board-title-text {
-  margin: $gl-vert-padding auto $gl-vert-padding 0;
+  flex-grow: 1;
+  margin: $gl-vert-padding 0 $gl-vert-padding 0;
 }
 
 .board-delete {

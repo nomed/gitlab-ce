@@ -63,19 +63,30 @@ describe('Board component', () => {
     });
   });
 
-  it('board is not expandable when list type is label', done => {
+  it('board is expandable when list type is label', done => {
     vm.list.type = 'label';
-    vm.list.isExpandable = false;
+    // vm.list.isExpandable = true;
 
     Vue.nextTick(() => {
-      expect(vm.$el.classList.contains('is-expandable')).toBe(false);
+      expect(vm.$el.classList.contains('is-expandable')).toBe(true);
 
       done();
     });
   });
 
-  it('collapses when clicking header', done => {
+  it('does not collapse when clicking header', done => {
+    vm.list.isExpanded = true;
     vm.$el.querySelector('.board-header').click();
+
+    Vue.nextTick(() => {
+      expect(vm.$el.classList.contains('is-collapsed')).toBe(false);
+
+      done();
+    });
+  });
+
+  it('collapses when clicking the collapse icon', done => {
+    vm.$el.querySelector('.board-title-collapse').click();
 
     Vue.nextTick(() => {
       expect(vm.$el.classList.contains('is-collapsed')).toBe(true);
@@ -84,8 +95,19 @@ describe('Board component', () => {
     });
   });
 
+  it('expands when clicking the expand icon', done => {
+    vm.list.isExpanded = false;
+    vm.$el.querySelector('.board-title-expand').click();
+
+    Vue.nextTick(() => {
+      expect(vm.$el.classList.contains('is-collapsed')).toBe(false);
+
+      done();
+    });
+  });
+
   it('created sets isExpanded to true from localStorage', done => {
-    vm.$el.querySelector('.board-header').click();
+    vm.$el.querySelector('.board-title-collapse').click();
 
     return Vue.nextTick()
       .then(() => {
@@ -97,7 +119,7 @@ describe('Board component', () => {
         return Vue.nextTick();
       })
       .then(() => {
-        expect(vm.$el.classList.contains('is-collapsed')).toBe(true);
+        expect(vm.$el.classList.contains('is-collapsed')).toBe(false);
 
         done();
       })
