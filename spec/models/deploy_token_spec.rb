@@ -103,13 +103,13 @@ describe DeployToken do
 
     context 'new records' do
       it 'returns nil if no username is set' do
-        deploy_token = described_class.new
+        deploy_token = build(:deploy_token)
 
         expect(deploy_token.username).to be_nil
       end
 
       it 'returns the username provided if one is set' do
-        deploy_token = described_class.new(username: 'deployer')
+        deploy_token = build(:deploy_token, username: 'deployer')
 
         expect(deploy_token.username).to eq('deployer')
       end
@@ -118,7 +118,7 @@ describe DeployToken do
 
   describe 'before validation' do
     it 'converts empty username to nil' do
-      deploy_token = described_class.new(username: '')
+      deploy_token = build(:deploy_token, username: '')
 
       expect { deploy_token.valid? }.to change { deploy_token.read_attribute(:username) }.from('').to(nil)
     end
