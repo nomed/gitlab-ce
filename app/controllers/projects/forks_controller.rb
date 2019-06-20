@@ -50,7 +50,7 @@ class Projects::ForksController < Projects::ApplicationController
       if @forked_project.import_in_progress?
         redirect_to project_import_path(@forked_project, continue: continue_params)
       else
-        if continue_params
+        if continue_params[:to]
           redirect_to continue_params[:to], notice: continue_params[:notice]
         else
           redirect_to project_path(@forked_project), notice: "The project '#{@forked_project.name}' was successfully forked."
