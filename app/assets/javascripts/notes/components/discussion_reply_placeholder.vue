@@ -18,6 +18,6 @@ export default {
     :title="s__('MergeRequests|Add a reply')"
     @click="$emit('onClick')"
   >
-    {{ s__(buttonText) }}
+    {{ buttonText }}
   </button>
 </template>
