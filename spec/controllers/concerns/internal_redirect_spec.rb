@@ -15,21 +15,36 @@ describe InternalRedirect do
   subject(:controller) { controller_class.new }
 
   describe '#safe_redirect_path' do
-    it 'is `nil` for invalid uris' do
-      expect(controller.safe_redirect_path('Hello world')).to be_nil
+    where(:invalid_uri) do
+      [
+        'Hello world',
+        '//example.com/hello/world',
+        'https://example.com/hello/world'
+      ]
     end
 
-    it 'is `nil` for paths trying to include a host' do
-      expect(controller.safe_redirect_path('//example.com/hello/world')).to be_nil
+    with_them do
+      it 'returns nil for invalid URIs' do
+        expect(controller.safe_redirect_path(invalid_uri)).to be_nil
+      end
     end
 
-    it 'returns the path if it is valid' do
-      expect(controller.safe_redirect_path('/hello/world')).to eq('/hello/world')
+    where(:valid_uri) do
+      [
+        '/hello/world',
+        '/-/ide/project/path'
+      ]
     end
 
-    it 'returns the path with querystring if it is valid' do
-      expect(controller.safe_redirect_path('/hello/world?hello=world#L123'))
-        .to eq('/hello/world?hello=world#L123')
+    with_them do
+      it 'returns the path for valid URIs' do
+        expect(controller.safe_redirect_path(valid_uri)).to eq(valid_uri)
+      end
+
+      it 'returns the path with querystring and fragment for valid URIs' do
+        expect(controller.safe_redirect_path("#{valid_uri}?hello=world#L123"))
+          .to eq("#{valid_uri}?hello=world#L123")
+      end
     end
   end
 
