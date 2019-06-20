@@ -261,7 +261,8 @@ Example Responses:
   "two_factor_enabled": true,
   "external": false,
   "private_profile": false,
-  "highest_role":10
+  "shared_runners_minutes_limit": 133
+  "extra_shared_runners_minutes_limit": 133
 }
 ```
 
@@ -302,6 +303,7 @@ Parameters:
 - `projects_limit` (optional)    - Number of projects user can create
 - `extern_uid` (optional)        - External UID
 - `provider` (optional)          - External provider name
+- `group_id_for_saml` (optional) - ID of group where SAML has been configured
 - `bio` (optional)               - User's biography
 - `location` (optional)          - User's location
 - `public_email` (optional)      - The public email of the user
@@ -336,6 +338,7 @@ Parameters:
 - `projects_limit`                 - Limit projects each user can create
 - `extern_uid`                     - External UID
 - `provider`                       - External provider name
+- `group_id_for_saml` (optional)   - ID of group where SAML has been configured
 - `bio`                            - User's biography
 - `location` (optional)            - User's location
 - `public_email` (optional)        - The public email of the user
@@ -343,6 +346,8 @@ Parameters:
 - `can_create_group` (optional)    - User can create groups - true or false
 - `skip_reconfirmation` (optional) - Skip reconfirmation - true or false (default)
 - `external` (optional)            - Flags the user as external - true or false(default)
+- `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
+- `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user
 - `avatar` (optional)              - Image file for user's avatar
 - `private_profile` (optional)     - User's profile is private - true or false
 - `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **[STARTER]**
