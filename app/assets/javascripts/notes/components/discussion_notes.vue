@@ -174,9 +174,3 @@ export default {
     </ul>
   </div>
 </template>
-
-<style>
-.red {
-  border: 1px solid red;
-}
-</style>
