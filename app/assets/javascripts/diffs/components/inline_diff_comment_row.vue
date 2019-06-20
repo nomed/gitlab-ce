@@ -71,7 +71,7 @@ export default {
             :note-target-line="line"
             :help-page-path="helpPagePath"
           />
-          <template v-if="line.discussions.length && !line.hasForm">
+          <template v-else-if="line.discussions.length">
             <user-avatar-link
               :link-href="currentUser.path"
               :img-src="currentUser.avatar_url"
