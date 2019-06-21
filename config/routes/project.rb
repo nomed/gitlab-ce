@@ -217,6 +217,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :discussions, format: :json
           post :rebase
           get :test_reports
+          get :widget, to: 'merge_requests/widget#show'
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }
