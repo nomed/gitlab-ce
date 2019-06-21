@@ -113,10 +113,6 @@ describe Types::BaseField do
         it 'does not raise an error if calls_gitaly is false' do
           expect { no_gitaly_field.send(:calls_gitaly_check) }.not_to raise_error
         end
-
-        it 'raises an error if calls_gitaly: true appears' do
-          expect { gitaly_field.send(:calls_gitaly_check) }.to raise_error(/please add `calls_gitaly: true`/)
-        end
       end
 
       context 'if there is at least 1 Gitaly call' do
@@ -126,6 +122,10 @@ describe Types::BaseField do
 
         it 'does not raise an error if calls_gitaly is true' do
           expect { gitaly_field.send(:calls_gitaly_check) }.not_to raise_error
+        end
+
+        it 'raises an error if calls_gitaly: is false or not defined' do
+          expect { no_gitaly_field.send(:calls_gitaly_check) }.to raise_error(/please add `calls_gitaly: true`/)
         end
       end
     end
