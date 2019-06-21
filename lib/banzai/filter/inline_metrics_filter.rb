@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/image.js
 module Banzai
   module Filter
     # HTML filter that inserts a placeholder element for each
@@ -13,9 +12,8 @@ module Banzai
           'div',
           class: 'js-render-metrics',
           'data-dashboard-url': embedded_metrics_url(params),
-          'data-environment': params['environment'],
-          'data-project': params['project'],
           'data-namespace': params['namespace'],
+          'data-project': params['project']
         )
       end
 
