@@ -315,3 +315,159 @@ loading or is not available at this time._  It will appear upon the first access
 page, but should go away after a few seconds. If the message does not disappear, then it
 is possible that GitLab is unable to connect to the Prometheus instance running on the
 cluster.
+
+### Enabling TLS for Knative services
+
+By default, a GitLab serverless deployment will be served over `http`. In order to serve over `https` you
+must manually obtain and install TLS certificates. The simplest way to accomplish this is to 
+use [Certbot to manually obtain Let's Encrypt certificates](https://knative.dev/docs/serving/using-a-tls-cert/#using-certbot-to-manually-obtain-let-s-encrypt-certificates). Certbot is a free, open source software tool for automatically using Let’s Encrypt certificates on manually-administrated websites to enable HTTPS.
+
+NOTE: **Note:**
+*Certbot is meant to be run directly on a server*, normally by a system administrator. In most cases, running Certbot on your personal computer is not a useful option. The instructions below relate to installing and running Certbot on a linux server.
+
+1. **Install Certbot** by running the [certbot-auto wrapper script](https://certbot.eff.org/docs/install.html#certbot-auto). On
+the command line of your server, run the following commands
+
+  ```sh
+  wget https://dl.eff.org/certbot-auto
+  sudo mv certbot-auto /usr/local/bin/certbot-auto
+  sudo chown root /usr/local/bin/certbot-auto
+  chmod 0755 /usr/local/bin/certbot-auto
+  /usr/local/bin/certbot-auto --help
+  ```
+
+  To check the integrity of the certbot-auto script, you can use these steps:
+
+  ```sh
+  wget -N https://dl.eff.org/certbot-auto.asc
+  gpg2 --keyserver ipv4.pool.sks-keyservers.net --recv-key A2CFB51FA275A7286234E7B24D17C995CD9775F2
+  gpg2 --trusted-key 4D17C995CD9775F2 --verify certbot-auto.asc /usr/local/bin/certbot-auto
+  ```
+
+  The output of the last command should look something like:
+
+  ```sh
+  gpg: Signature made Mon 10 Jun 2019 06:24:40 PM EDT
+  gpg:                using RSA key A2CFB51FA275A7286234E7B24D17C995CD9775F2
+  gpg: key 4D17C995CD9775F2 marked as ultimately trusted
+  gpg: checking the trustdb
+  gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+  gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+  gpg: next trustdb check due at 2027-11-22
+  gpg: Good signature from "Let's Encrypt Client Team <letsencrypt-client@eff.org>" [ultimate]
+  ```
+
+2. **Run the following command** to use Certbot to request a certificate using DNS challenge during authorization:
+
+  ```sh
+  ./certbot-auto certonly --manual --preferred-challenges dns -d '*.<namespace>.example.com'
+  ```
+
+  Where `<namespace>` is the namespace created by GitLab for your serverless project (composed of `<projectname+id>`) and
+  `example.com` is the domain being used for your project. If you are unsure what the namespace of your project is, navigate
+  to the **Operations>>Serverless** page of your project and inspect the endpoint provided for your function/app
+
+  ![function_endpoint](img/function-endpoint.png)
+
+  In the above image, the namespace for the project is `node-function-11909507` and the domain is `knative.info`, thus
+  certificate request line would look like this:
+
+  ```sh
+  ./certbot-auto certonly --manual --preferred-challenges dns -d '*.node-function-11909507.knative.info'
+  ```
+
+  The Certbot tool walks you through the steps of validating that you own each domain that you specify by creating TXT records in those domains.
+  After this process is complete, the output should look something like this:
+
+  ```sh
+  IMPORTANT NOTES:
+  - Congratulations! Your certificate and chain have been saved at:
+    /etc/letsencrypt/live/namespace.example.com/fullchain.pem
+    Your key file has been saved at:
+    /etc/letsencrypt/live/namespace.example/privkey.pem
+    Your cert will expire on 2019-09-19. To obtain a new or tweaked
+    version of this certificate in the future, simply run certbot-auto
+    again. To non-interactively renew *all* of your certificates, run
+    "certbot-auto renew"
+  -----BEGIN PRIVATE KEY-----
+  - Your account credentials have been saved in your Certbot
+    configuration directory at /etc/letsencrypt. You should make a
+    secure backup of this folder now. This configuration directory will
+    also contain certificates and private keys obtained by Certbot so
+    making regular backups of this folder is ideal.
+  ```
+
+  3. **Create private key and certificiate files**. By default, Certbot will bundle your certificate and your chain into a single file. You'll need to
+  create a single file with the certificate info only. Additionally, we'll create a file with the contents of the private key provided by Certbot.
+
+      Run the following command to see the contents of `fullchain.pem`:
+
+      ```sh
+      sudo cat cat /etc/letsencrypt/live/node-function-11909507.knative.info/fullchain.pem
+      ```
+
+      Output should look like this:
+
+      ```sh
+      -----BEGIN CERTIFICATE-----
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b4ag==
+      -----END CERTIFICATE-----
+      -----BEGIN CERTIFICATE-----
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      K2fcb195768c39e9a94cec2c2e30Qg==
+      -----END CERTIFICATE-----
+      ```
+
+      
