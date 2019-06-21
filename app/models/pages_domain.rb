@@ -5,6 +5,7 @@ class PagesDomain < ApplicationRecord
   VERIFICATION_THRESHOLD = 3.days.freeze
 
   belongs_to :project
+  has_many :acme_orders, class_name: "PagesDomainAcmeOrder"
 
   validates :domain, hostname: { allow_numeric_hostname: true }
   validates :domain, uniqueness: { case_sensitive: false }
@@ -26,7 +27,7 @@ class PagesDomain < ApplicationRecord
 
   after_initialize :set_verification_code
   after_create :update_daemon
-  after_update :update_daemon, if: :pages_config_changed?
+  after_update :update_daemon, if: :saved_change_to_pages_config?
   after_destroy :update_daemon
 
   scope :enabled, -> { where('enabled_until >= ?', Time.now ) }
@@ -134,6 +135,14 @@ class PagesDomain < ApplicationRecord
     "#{VERIFICATION_KEY}=#{verification_code}"
   end
 
+  def certificate=(certificate)
+    super(certificate)
+
+    # set nil, if certificate is nil
+    self.certificate_valid_not_before = x509&.not_before
+    self.certificate_valid_not_after = x509&.not_after
+  end
+
   private
 
   def set_verification_code
@@ -148,7 +157,7 @@ class PagesDomain < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def pages_config_changed?
+  def saved_change_to_pages_config?
     saved_change_to_project_id? ||
       saved_change_to_domain? ||
       saved_change_to_certificate? ||
@@ -186,7 +195,7 @@ class PagesDomain < ApplicationRecord
   end
 
   def x509
-    return unless certificate
+    return unless certificate.present?
 
     @x509 ||= OpenSSL::X509::Certificate.new(certificate)
   rescue OpenSSL::X509::CertificateError

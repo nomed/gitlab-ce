@@ -235,6 +235,10 @@ module API
       authorize! :push_code, user_project
     end
 
+    def authorize_admin_tag
+      authorize! :admin_tag, user_project
+    end
+
     def authorize_admin_project
       authorize! :admin_project, user_project
     end
@@ -445,7 +449,7 @@ module API
     end
 
     def present_carrierwave_file!(file, supports_direct_download: true)
-      return not_found! unless file.exists?
+      return not_found! unless file&.exists?
 
       if file.file_storage?
         present_disk_file!(file.path, file.filename)

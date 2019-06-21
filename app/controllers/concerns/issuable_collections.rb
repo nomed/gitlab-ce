@@ -41,6 +41,7 @@ module IssuableCollections
     return if pagination_disabled?
 
     @issuables          = @issuables.page(params[:page])
+    @issuables          = per_page_for_relative_position if params[:sort] == 'relative_position'
     @issuable_meta_data = issuable_meta_data(@issuables, collection_type)
     @total_pages        = issuable_page_count
   end
@@ -80,6 +81,11 @@ module IssuableCollections
     (row_count.to_f / limit).ceil
   end
 
+  # manual / relative_position sorting allows for 100 items on the page
+  def per_page_for_relative_position
+    @issuables.per(100) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+
   def issuable_finder_for(finder_class)
     finder_class.new(current_user, finder_options)
   end
@@ -97,6 +103,12 @@ module IssuableCollections
 
     # Used by view to highlight active option
     @sort = options[:sort]
+
+    # When a user looks for an exact iid, we do not filter by search but only by iid
+    if params[:search] =~ /^#(?<iid>\d+)\z/
+      options[:iids] = Regexp.last_match[:iid]
+      params[:search] = nil
+    end
 
     if @project
       options[:project_id] = @project.id

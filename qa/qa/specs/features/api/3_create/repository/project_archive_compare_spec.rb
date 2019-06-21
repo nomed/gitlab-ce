@@ -17,7 +17,6 @@ module QA
         }
 
         @users.each do |_, user_info|
-          Runtime::Browser.visit(:gitlab, Page::Main::Login)
           user_info[:user] = Resource::User.fabricate_or_use(user_info[:username], user_info[:password])
           user_info[:api_client] = Runtime::API::Client.new(:gitlab, user: user_info[:user])
           user_info[:api_client].personal_access_token
@@ -65,7 +64,7 @@ module QA
 
       def download_project_archive_via_api(api_client, project, type = 'tar.gz')
         get_project_archive_zip = Runtime::API::Request.new(api_client, project.api_get_archive_path(type))
-        project_archive_download = get(get_project_archive_zip.url, true)
+        project_archive_download = get(get_project_archive_zip.url, raw_response: true)
         expect(project_archive_download.code).to eq(200)
 
         project_archive_download.file

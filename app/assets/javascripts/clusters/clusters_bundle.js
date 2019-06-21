@@ -1,5 +1,6 @@
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
+import AccessorUtilities from '~/lib/utils/accessor';
 import { GlToast } from '@gitlab/ui';
 import PersistentUserCallout from '../persistent_user_callout';
 import { s__, sprintf } from '../locale';
@@ -43,8 +44,10 @@ export default class Clusters {
       helpPath,
       ingressHelpPath,
       ingressDnsHelpPath,
+      clusterId,
     } = document.querySelector('.js-edit-cluster-form').dataset;
 
+    this.clusterId = clusterId;
     this.store = new ClustersStore();
     this.store.setHelpPaths(helpPath, ingressHelpPath, ingressDnsHelpPath);
     this.store.setManagePrometheusPath(managePrometheusPath);
@@ -69,6 +72,10 @@ export default class Clusters {
     this.errorContainer = document.querySelector('.js-cluster-error');
     this.successContainer = document.querySelector('.js-cluster-success');
     this.creatingContainer = document.querySelector('.js-cluster-creating');
+    this.unreachableContainer = document.querySelector('.js-cluster-api-unreachable');
+    this.authenticationFailureContainer = document.querySelector(
+      '.js-cluster-authentication-failure',
+    );
     this.errorReasonContainer = this.errorContainer.querySelector('.js-error-reason');
     this.successApplicationContainer = document.querySelector('.js-cluster-application-notice');
     this.showTokenButton = document.querySelector('.js-show-cluster-token');
@@ -125,22 +132,32 @@ export default class Clusters {
     PersistentUserCallout.factory(callout);
   }
 
+  addBannerCloseHandler(el, status) {
+    el.querySelector('.js-close-banner').addEventListener('click', () => {
+      el.classList.add('hidden');
+      this.setBannerDismissedState(status, true);
+    });
+  }
+
   addListeners() {
     if (this.showTokenButton) this.showTokenButton.addEventListener('click', this.showToken);
     eventHub.$on('installApplication', this.installApplication);
-    eventHub.$on('upgradeApplication', data => this.upgradeApplication(data));
-    eventHub.$on('dismissUpgradeSuccess', appId => this.dismissUpgradeSuccess(appId));
+    eventHub.$on('updateApplication', data => this.updateApplication(data));
     eventHub.$on('saveKnativeDomain', data => this.saveKnativeDomain(data));
     eventHub.$on('setKnativeHostname', data => this.setKnativeHostname(data));
+    eventHub.$on('uninstallApplication', data => this.uninstallApplication(data));
+    // Add event listener to all the banner close buttons
+    this.addBannerCloseHandler(this.unreachableContainer, 'unreachable');
+    this.addBannerCloseHandler(this.authenticationFailureContainer, 'authentication_failure');
   }
 
   removeListeners() {
     if (this.showTokenButton) this.showTokenButton.removeEventListener('click', this.showToken);
     eventHub.$off('installApplication', this.installApplication);
-    eventHub.$off('upgradeApplication', this.upgradeApplication);
-    eventHub.$off('dismissUpgradeSuccess', this.dismissUpgradeSuccess);
+    eventHub.$off('updateApplication', this.updateApplication);
     eventHub.$off('saveKnativeDomain');
     eventHub.$off('setKnativeHostname');
+    eventHub.$off('uninstallApplication');
   }
 
   initPolling() {
@@ -203,6 +220,8 @@ export default class Clusters {
     this.errorContainer.classList.add('hidden');
     this.successContainer.classList.add('hidden');
     this.creatingContainer.classList.add('hidden');
+    this.unreachableContainer.classList.add('hidden');
+    this.authenticationFailureContainer.classList.add('hidden');
   }
 
   checkForNewInstalls(prevApplicationMap, newApplicationMap) {
@@ -226,8 +245,31 @@ export default class Clusters {
     }
   }
 
+  setBannerDismissedState(status, isDismissed) {
+    if (AccessorUtilities.isLocalStorageAccessSafe()) {
+      window.localStorage.setItem(
+        `cluster_${this.clusterId}_banner_dismissed`,
+        `${status}_${isDismissed}`,
+      );
+    }
+  }
+
+  isBannerDismissed(status) {
+    let bannerState;
+    if (AccessorUtilities.isLocalStorageAccessSafe()) {
+      bannerState = window.localStorage.getItem(`cluster_${this.clusterId}_banner_dismissed`);
+    }
+
+    return bannerState === `${status}_true`;
+  }
+
   updateContainer(prevStatus, status, error) {
     this.hideAll();
+
+    if (this.isBannerDismissed(status)) {
+      return;
+    }
+    this.setBannerDismissedState(status, false);
 
     // We poll all the time but only want the `created` banner to show when newly created
     if (this.store.state.status !== 'created' || prevStatus !== this.store.state.status) {
@@ -239,6 +281,12 @@ export default class Clusters {
           this.errorContainer.classList.remove('hidden');
           this.errorReasonContainer.textContent = error;
           break;
+        case 'unreachable':
+          this.unreachableContainer.classList.remove('hidden');
+          break;
+        case 'authentication_failure':
+          this.authenticationFailureContainer.classList.remove('hidden');
+          break;
         case 'scheduled':
         case 'creating':
           this.creatingContainer.classList.remove('hidden');
@@ -249,14 +297,13 @@ export default class Clusters {
     }
   }
 
-  installApplication(data) {
-    const appId = data.id;
+  installApplication({ id: appId, params }) {
     this.store.updateAppProperty(appId, 'requestReason', null);
     this.store.updateAppProperty(appId, 'statusReason', null);
 
     this.store.installApplication(appId);
 
-    return this.service.installApplication(appId, data.params).catch(() => {
+    return this.service.installApplication(appId, params).catch(() => {
       this.store.notifyInstallFailure(appId);
       this.store.updateAppProperty(
         appId,
@@ -266,17 +313,27 @@ export default class Clusters {
     });
   }
 
-  upgradeApplication(data) {
-    const appId = data.id;
+  uninstallApplication({ id: appId }) {
+    this.store.updateAppProperty(appId, 'requestReason', null);
+    this.store.updateAppProperty(appId, 'statusReason', null);
 
-    this.store.updateApplication(appId);
-    this.service.installApplication(appId, data.params).catch(() => {
-      this.store.notifyUpdateFailure(appId);
+    this.store.uninstallApplication(appId);
+
+    return this.service.uninstallApplication(appId).catch(() => {
+      this.store.notifyUninstallFailure(appId);
+      this.store.updateAppProperty(
+        appId,
+        'requestReason',
+        s__('ClusterIntegration|Request to begin uninstalling failed'),
+      );
     });
   }
 
-  dismissUpgradeSuccess(appId) {
-    this.store.acknowledgeSuccessfulUpdate(appId);
+  updateApplication({ id: appId, params }) {
+    this.store.updateApplication(appId);
+    this.service.installApplication(appId, params).catch(() => {
+      this.store.notifyUpdateFailure(appId);
+    });
   }
 
   toggleIngressDomainHelpText({ externalIp }, { externalIp: newExternalIp }) {
@@ -288,8 +345,10 @@ export default class Clusters {
 
   saveKnativeDomain(data) {
     const appId = data.id;
-    this.store.updateAppProperty(appId, 'status', APPLICATION_STATUS.UPDATING);
-    this.service.updateApplication(appId, data.params);
+    this.store.updateApplication(appId);
+    this.service.updateApplication(appId, data.params).catch(() => {
+      this.store.notifyUpdateFailure(appId);
+    });
   }
 
   setKnativeHostname(data) {

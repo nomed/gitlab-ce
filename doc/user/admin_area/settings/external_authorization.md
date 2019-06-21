@@ -1,4 +1,8 @@
-# External authorization control
+---
+type: reference
+---
+
+# External authorization control **[CORE ONLY]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4216) in
 > [GitLab Premium](https://about.gitlab.com/pricing) 10.6.
@@ -72,12 +76,18 @@ service with this body:
 {
   "user_identifier": "jane@acme.org",
   "project_classification_label": "project-label",
-  "user_ldap_dn": "CN=Jane Doe,CN=admin,DC=acme"
+  "user_ldap_dn": "CN=Jane Doe,CN=admin,DC=acme",
+  "identities": [
+    { "provider": "ldap", "extern_uid": "CN=Jane Doe,CN=admin,DC=acme" },
+    { "provider": "bitbucket", "extern_uid": "2435223452345" }
+  ]
 }
 ```
 
 The `user_ldap_dn` is optional and is only sent when the user is logged in
 through LDAP.
+
+`identities` will contain the details of all the identities associated with the user. This will be an empty array if there are no identities associated with the user.
 
 When the external authorization service responds with a status code 200, the
 user is granted access. When the external service responds with a status code
@@ -107,6 +117,18 @@ label defined in the [global settings](#configuration) will be used.
 The label will be shown on all project pages in the upper right corner.
 
 ![classification label on project page](img/classification_label_on_project_page.png)
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
 
 [omnibus-ssl-docs]: https://docs.gitlab.com/omnibus/settings/ssl.html
 [omnibus-log-docs]: https://docs.gitlab.com/omnibus/settings/logs.html

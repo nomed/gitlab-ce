@@ -12,9 +12,6 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
   before_action :update_applications_status, only: [:cluster_status]
-  before_action only: [:show] do
-    push_frontend_feature_flag(:metrics_time_window)
-  end
 
   helper_method :token_in_session
 
@@ -131,6 +128,7 @@ class Clusters::ClustersController < Clusters::BaseController
         :enabled,
         :name,
         :environment_scope,
+        :managed,
         :base_domain,
         platform_kubernetes_attributes: [
           :api_url,
@@ -143,6 +141,7 @@ class Clusters::ClustersController < Clusters::BaseController
       params.require(:cluster).permit(
         :enabled,
         :environment_scope,
+        :managed,
         :base_domain,
         platform_kubernetes_attributes: [
           :namespace
@@ -156,6 +155,7 @@ class Clusters::ClustersController < Clusters::BaseController
       :enabled,
       :name,
       :environment_scope,
+      :managed,
       provider_gcp_attributes: [
         :gcp_project_id,
         :zone,
@@ -174,6 +174,7 @@ class Clusters::ClustersController < Clusters::BaseController
       :enabled,
       :name,
       :environment_scope,
+      :managed,
       platform_kubernetes_attributes: [
         :namespace,
         :api_url,

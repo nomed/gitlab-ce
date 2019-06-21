@@ -27,20 +27,16 @@ module QA
         private
 
         def create_personal_access_token
-          if @is_new_session
-            Runtime::Browser.visit(@address, Page::Main::Login) { do_create_personal_access_token }
-          else
-            do_create_personal_access_token
-          end
+          Page::Main::Menu.perform(&:sign_out) if @is_new_session && Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
+          Runtime::Browser.visit(@address, Page::Main::Login)
+          do_create_personal_access_token
         end
 
         def do_create_personal_access_token
-          if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
-            Page::Main::Menu.perform(&:sign_out)
-          end
-
           Page::Main::Login.perform { |login| login.sign_in_using_credentials(@user) }
-          Resource::PersonalAccessToken.fabricate!.access_token
+          access_token = Resource::PersonalAccessToken.fabricate!.access_token
+          Page::Main::Menu.perform(&:sign_out)
+          access_token
         end
       end
     end

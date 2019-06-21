@@ -24,7 +24,8 @@
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications'),
   ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-endpoint'),
   ingress_dns_help_path: help_page_path('user/project/clusters/index.md', anchor: 'manually-determining-the-external-endpoint'),
-  manage_prometheus_path: manage_prometheus_path } }
+  manage_prometheus_path: manage_prometheus_path,
+  cluster_id: @cluster.id } }
 
   .js-cluster-application-notice
     .flash-container
@@ -34,7 +35,7 @@
     = render 'banner'
     = render 'form'
 
-  = render_if_exists 'projects/clusters/prometheus_graphs' if show_cluster_health_graphs?(@cluster)
+  = render_if_exists 'projects/clusters/prometheus_graphs'
 
   .cluster-applications-table#js-cluster-applications
 

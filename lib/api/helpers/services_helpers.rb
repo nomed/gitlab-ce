@@ -563,6 +563,12 @@ module API
               name: :notify_only_broken_pipelines,
               type: Boolean,
               desc: 'Notify only broken pipelines'
+            },
+            {
+              required: false,
+              name: :notify_only_default_branch,
+              type: Boolean,
+              desc: 'Send notifications only for the default branch'
             }
           ],
           'pivotaltracker' => [
@@ -677,8 +683,9 @@ module API
               name: :webhook,
               type: String,
               desc: 'The Microsoft Teams webhook. e.g. https://outlook.office.com/webhook/…'
-            }
-          ],
+            },
+            chat_notification_flags
+          ].flatten,
           'mattermost' => [
             chat_notification_settings,
             chat_notification_flags,

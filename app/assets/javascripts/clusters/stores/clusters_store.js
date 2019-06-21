@@ -10,6 +10,7 @@ import {
   APPLICATION_STATUS,
   INSTALL_EVENT,
   UPDATE_EVENT,
+  UNINSTALL_EVENT,
 } from '../constants';
 import transitionApplicationState from '../services/application_state_machine';
 
@@ -21,6 +22,9 @@ const applicationInitialState = {
   requestReason: null,
   installed: false,
   installFailed: false,
+  uninstallable: false,
+  uninstallFailed: false,
+  uninstallSuccessful: false,
 };
 
 export default class ClusterStore {
@@ -52,8 +56,7 @@ export default class ClusterStore {
           title: s__('ClusterIntegration|GitLab Runner'),
           version: null,
           chartRepo: 'https://gitlab.com/charts/gitlab-runner',
-          upgradeAvailable: null,
-          updateAcknowledged: true,
+          updateAvailable: null,
           updateSuccessful: false,
           updateFailed: false,
         },
@@ -73,6 +76,8 @@ export default class ClusterStore {
           isEditingHostName: false,
           externalIp: null,
           externalHostname: null,
+          updateSuccessful: false,
+          updateFailed: false,
         },
       },
     };
@@ -116,14 +121,18 @@ export default class ClusterStore {
     this.handleApplicationEvent(appId, APPLICATION_STATUS.UPDATE_ERRORED);
   }
 
+  uninstallApplication(appId) {
+    this.handleApplicationEvent(appId, UNINSTALL_EVENT);
+  }
+
+  notifyUninstallFailure(appId) {
+    this.handleApplicationEvent(appId, APPLICATION_STATUS.UNINSTALL_ERRORED);
+  }
+
   handleApplicationEvent(appId, event) {
     const currentAppState = this.state.applications[appId];
 
     this.state.applications[appId] = transitionApplicationState(currentAppState, event);
-  }
-
-  acknowledgeSuccessfulUpdate(appId) {
-    this.state.applications[appId].updateAcknowledged = true;
   }
 
   updateAppProperty(appId, prop, value) {
@@ -140,7 +149,8 @@ export default class ClusterStore {
         status,
         status_reason: statusReason,
         version,
-        update_available: upgradeAvailable,
+        update_available: updateAvailable,
+        can_uninstall: uninstallable,
       } = serverAppEntry;
       const currentApplicationState = this.state.applications[appId] || {};
       const nextApplicationState = transitionApplicationState(currentApplicationState, status);
@@ -150,8 +160,7 @@ export default class ClusterStore {
         ...nextApplicationState,
         statusReason,
         installed: isApplicationInstalled(nextApplicationState.status),
-        // Make sure uninstallable is always false until this feature is unflagged
-        uninstallable: false,
+        uninstallable,
       };
 
       if (appId === INGRESS) {
@@ -177,7 +186,7 @@ export default class ClusterStore {
           serverAppEntry.external_hostname || this.state.applications.knative.externalHostname;
       } else if (appId === RUNNER) {
         this.state.applications.runner.version = version;
-        this.state.applications.runner.upgradeAvailable = upgradeAvailable;
+        this.state.applications.runner.updateAvailable = updateAvailable;
       }
     });
   }

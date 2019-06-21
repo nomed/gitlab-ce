@@ -36,6 +36,8 @@ import actions, {
   fetchFullDiff,
   toggleFullDiff,
   setFileCollapsed,
+  setExpandedDiffLines,
+  setSuggestPopoverDismissed,
 } from '~/diffs/store/actions';
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
@@ -67,12 +69,19 @@ describe('DiffsStoreActions', () => {
     it('should set given endpoint and project path', done => {
       const endpoint = '/diffs/set/endpoint';
       const projectPath = '/root/project';
+      const dismissEndpoint = '/-/user_callouts';
+      const showSuggestPopover = false;
 
       testAction(
         setBaseConfig,
-        { endpoint, projectPath },
-        { endpoint: '', projectPath: '' },
-        [{ type: types.SET_BASE_CONFIG, payload: { endpoint, projectPath } }],
+        { endpoint, projectPath, dismissEndpoint, showSuggestPopover },
+        { endpoint: '', projectPath: '', dismissEndpoint: '', showSuggestPopover: true },
+        [
+          {
+            type: types.SET_BASE_CONFIG,
+            payload: { endpoint, projectPath, dismissEndpoint, showSuggestPopover },
+          },
+        ],
         [],
         done,
       );
@@ -81,7 +90,7 @@ describe('DiffsStoreActions', () => {
 
   describe('fetchDiffFiles', () => {
     it('should fetch diff files', done => {
-      const endpoint = '/fetch/diff/files';
+      const endpoint = '/fetch/diff/files?w=1';
       const mock = new MockAdapter(axios);
       const res = { diff_files: 1, merge_request_diffs: [] };
       mock.onGet(endpoint).reply(200, res);
@@ -395,6 +404,7 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('loadCollapsedDiff', () => {
+    const state = { showWhitespace: true };
     it('should fetch data and call mutation with response and the give parameter', done => {
       const file = { hash: 123, load_collapsed_diff_url: '/load/collapsed/diff/url' };
       const data = { hash: 123, parallelDiffLines: [{ lineCode: 1 }] };
@@ -402,7 +412,7 @@ describe('DiffsStoreActions', () => {
       const commit = jasmine.createSpy('commit');
       mock.onGet(file.loadCollapsedDiffUrl).reply(200, data);
 
-      loadCollapsedDiff({ commit, getters: { commitId: null } }, file)
+      loadCollapsedDiff({ commit, getters: { commitId: null }, state }, file)
         .then(() => {
           expect(commit).toHaveBeenCalledWith(types.ADD_COLLAPSED_DIFFS, { file, data });
 
@@ -420,10 +430,10 @@ describe('DiffsStoreActions', () => {
 
       spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
 
-      loadCollapsedDiff({ commit() {}, getters }, file);
+      loadCollapsedDiff({ commit() {}, getters, state }, file);
 
       expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
-        params: { commit_id: null },
+        params: { commit_id: null, w: '0' },
       });
     });
 
@@ -435,10 +445,10 @@ describe('DiffsStoreActions', () => {
 
       spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
 
-      loadCollapsedDiff({ commit() {}, getters }, file);
+      loadCollapsedDiff({ commit() {}, getters, state }, file);
 
       expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
-        params: { commit_id: '123' },
+        params: { commit_id: '123', w: '0' },
       });
     });
   });
@@ -827,6 +837,10 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('setShowWhitespace', () => {
+    beforeEach(() => {
+      spyOn(eventHub, '$emit').and.stub();
+    });
+
     it('commits SET_SHOW_WHITESPACE', done => {
       testAction(
         setShowWhitespace,
@@ -854,6 +868,30 @@ describe('DiffsStoreActions', () => {
 
       expect(window.history.pushState).toHaveBeenCalled();
     });
+
+    it('calls history pushState with merged params', () => {
+      const originalPushState = window.history;
+
+      originalPushState.pushState({}, '', '?test=1');
+
+      spyOn(localStorage, 'setItem').and.stub();
+      spyOn(window.history, 'pushState').and.stub();
+
+      setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
+
+      expect(window.history.pushState.calls.mostRecent().args[2]).toMatch(/(.*)\?test=1&w=0/);
+
+      originalPushState.pushState({}, '', '?');
+    });
+
+    it('emits eventHub event', () => {
+      spyOn(localStorage, 'setItem').and.stub();
+      spyOn(window.history, 'pushState').and.stub();
+
+      setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('refetchDiffData');
+    });
   });
 
   describe('setRenderIt', () => {
@@ -879,9 +917,9 @@ describe('DiffsStoreActions', () => {
     it('commits REQUEST_FULL_DIFF', done => {
       testAction(
         receiveFullDiffSucess,
-        { filePath: 'test', data: 'test' },
+        { filePath: 'test' },
         {},
-        [{ type: types.RECEIVE_FULL_DIFF_SUCCESS, payload: { filePath: 'test', data: 'test' } }],
+        [{ type: types.RECEIVE_FULL_DIFF_SUCCESS, payload: { filePath: 'test' } }],
         [],
         done,
       );
@@ -903,11 +941,8 @@ describe('DiffsStoreActions', () => {
 
   describe('fetchFullDiff', () => {
     let mock;
-    let scrollToElementSpy;
 
     beforeEach(() => {
-      scrollToElementSpy = spyOnDependency(actions, 'scrollToElement').and.stub();
-
       mock = new MockAdapter(axios);
     });
 
@@ -921,27 +956,22 @@ describe('DiffsStoreActions', () => {
       });
 
       it('dispatches receiveFullDiffSucess', done => {
+        const file = {
+          context_lines_path: `${gl.TEST_HOST}/context`,
+          file_path: 'test',
+          file_hash: 'test',
+        };
         testAction(
           fetchFullDiff,
-          { context_lines_path: `${gl.TEST_HOST}/context`, file_path: 'test', file_hash: 'test' },
+          file,
           null,
           [],
-          [{ type: 'receiveFullDiffSucess', payload: { filePath: 'test', data: ['test'] } }],
+          [
+            { type: 'receiveFullDiffSucess', payload: { filePath: 'test' } },
+            { type: 'setExpandedDiffLines', payload: { file, data: ['test'] } },
+          ],
           done,
         );
-      });
-
-      it('scrolls to element', done => {
-        fetchFullDiff(
-          { dispatch() {} },
-          { context_lines_path: `${gl.TEST_HOST}/context`, file_path: 'test', file_hash: 'test' },
-        )
-          .then(() => {
-            expect(scrollToElementSpy).toHaveBeenCalledWith('#test');
-
-            done();
-          })
-          .catch(done.fail);
       });
     });
 
@@ -996,6 +1026,91 @@ describe('DiffsStoreActions', () => {
         [{ type: types.SET_FILE_COLLAPSED, payload: { filePath: 'test', collapsed: true } }],
         [],
         done,
+      );
+    });
+  });
+
+  describe('setExpandedDiffLines', () => {
+    beforeEach(() => {
+      spyOnDependency(actions, 'idleCallback').and.callFake(cb => {
+        cb({ timeRemaining: () => 50 });
+      });
+    });
+
+    it('commits SET_CURRENT_VIEW_DIFF_FILE_LINES when lines less than MAX_RENDERING_DIFF_LINES', done => {
+      spyOnDependency(actions, 'convertExpandLines').and.callFake(() => ['test']);
+
+      testAction(
+        setExpandedDiffLines,
+        { file: { file_path: 'path' }, data: [] },
+        { diffViewType: 'inline' },
+        [
+          {
+            type: 'SET_HIDDEN_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines: ['test'] },
+          },
+          {
+            type: 'SET_CURRENT_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines: ['test'] },
+          },
+        ],
+        [],
+        done,
+      );
+    });
+
+    it('commits ADD_CURRENT_VIEW_DIFF_FILE_LINES when lines more than MAX_RENDERING_DIFF_LINES', done => {
+      const lines = new Array(501).fill().map((_, i) => `line-${i}`);
+      spyOnDependency(actions, 'convertExpandLines').and.callFake(() => lines);
+
+      testAction(
+        setExpandedDiffLines,
+        { file: { file_path: 'path' }, data: [] },
+        { diffViewType: 'inline' },
+        [
+          {
+            type: 'SET_HIDDEN_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines },
+          },
+          {
+            type: 'SET_CURRENT_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', lines: lines.slice(0, 200) },
+          },
+          { type: 'TOGGLE_DIFF_FILE_RENDERING_MORE', payload: 'path' },
+          ...new Array(301).fill().map((_, i) => ({
+            type: 'ADD_CURRENT_VIEW_DIFF_FILE_LINES',
+            payload: { filePath: 'path', line: `line-${i + 200}` },
+          })),
+          { type: 'TOGGLE_DIFF_FILE_RENDERING_MORE', payload: 'path' },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setSuggestPopoverDismissed', () => {
+    it('commits SET_SHOW_SUGGEST_POPOVER', done => {
+      const state = { dismissEndpoint: `${gl.TEST_HOST}/-/user_callouts` };
+      const mock = new MockAdapter(axios);
+      mock.onPost(state.dismissEndpoint).reply(200, {});
+
+      spyOn(axios, 'post').and.callThrough();
+
+      testAction(
+        setSuggestPopoverDismissed,
+        null,
+        state,
+        [{ type: types.SET_SHOW_SUGGEST_POPOVER }],
+        [],
+        () => {
+          expect(axios.post).toHaveBeenCalledWith(state.dismissEndpoint, {
+            feature_name: 'suggest_popover_dismissed',
+          });
+
+          mock.restore();
+          done();
+        },
       );
     });
   });

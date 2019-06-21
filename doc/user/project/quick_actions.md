@@ -35,7 +35,7 @@ discussions, and descriptions:
 | `/label ~label1 ~label2`   | Add label(s). Label names can also start without ~ but mixed syntax is not supported.                   | ✓     | ✓             |
 | `/unlabel ~label1 ~label2` | Remove all or specific label(s)| ✓     | ✓             |
 | `/relabel ~label1 ~label2` | Replace label                  | ✓     | ✓             |
-| <code>/copy_metadata #issue &#124; !merge_request</code> | Copy labels and milestone from other issue or merge request | ✓     | ✓             |
+| <code>/copy_metadata #issue &#124; !merge_request</code> | Copy labels and milestone from other issue or merge request in the project | ✓     | ✓             |
 | <code>/estimate &lt;1w 3d 2h 14m&gt;</code> | Set time estimate | ✓     | ✓             |
 | `/remove_estimate`       | Remove time estimate             | ✓     | ✓             |
 | <code>/spend &lt;time(1h 30m &#124; -1h 5m)&gt; &lt;date(YYYY-MM-DD)&gt;</code> | Add or subtract spent time; optionally, specify the date that time was spent on | ✓     | ✓             |
@@ -46,13 +46,15 @@ discussions, and descriptions:
 | `/remove_due_date`         | Remove due date                | ✓     |               |
 | `/weight 0,1,2, ...`       | Set weight **[STARTER]**       | ✓     |               |
 | `/clear_weight`            | Clears weight **[STARTER]**    | ✓     |               |
-| `/epic <group&epic &#124; Epic URL>` | Add to epic **[ULTIMATE]** | ✓ |             |
+| `/epic <&epic &#124; group&epic &#124; Epic URL>` | Add to epic **[ULTIMATE]** | ✓ |             |
 | `/remove_epic`             | Removes from epic **[ULTIMATE]** | ✓   |               |
+| `/promote`                 | Promote issue to epic **[ULTIMATE]** | ✓   |               |
 | `/confidential`            | Make confidential              | ✓     |               |
 | `/duplicate #issue`        | Mark this issue as a duplicate of another issue | ✓    |
 | `/move path/to/project`    | Move this issue to another project | ✓ |               |
 | `/target_branch <Local branch Name>` | Set target branch    |       | ✓             |
 | `/wip`                     | Toggle the Work In Progress status |   | ✓             |
+| `/approve`                 | Approve the merge request      |       | ✓             |
 | `/merge`                   | Merge (when pipeline succeeds) |       | ✓             |
 | `/create_merge_request <branch name>` | Create a new merge request starting from the current issue | ✓ | |
 

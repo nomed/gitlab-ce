@@ -5,8 +5,11 @@ Custom Git hooks must be configured on the filesystem of the GitLab
 server. Only GitLab server administrators will be able to complete these tasks.
 Please explore [webhooks] and [CI] as an option if you do not
 have filesystem access. For a user configurable Git hook interface, see
-[Push Rules](https://docs.gitlab.com/ee/push_rules/push_rules.html),
+[Push Rules](../push_rules/push_rules.md),
 available in GitLab Enterprise Edition.
+
+NOTE: **Note:**
+Custom Git hooks won't be replicated to secondary nodes if you use [GitLab Geo](geo/replication/index.md)
 
 Git natively supports hooks that are executed on different actions.
 Examples of server-side git hooks include pre-receive, post-receive, and update.
@@ -48,7 +51,7 @@ To create a Git hook that applies to all of your repositories in
 your instance, set a global Git hook. Since all the repositories' `hooks`
 directories are symlinked to gitlab-shell's `hooks` directory, adding any hook
 to the gitlab-shell `hooks` directory will also apply it to all repositories. Follow
-the steps below to properly set up a custom hook all for repositories:
+the steps below to properly set up a custom hook for all repositories:
 
 1. On the GitLab server, navigate to the configured custom hook directory. The
    default is in the gitlab-shell directory. The gitlab-shell `hook` directory

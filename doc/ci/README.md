@@ -1,9 +1,10 @@
 ---
 comments: false
 description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Integration, Continuous Deployment, and Continuous Delivery toolset to build, test, and deploy your application."
+type: index
 ---
 
-# GitLab Continuous Integration (GitLab CI/CD)
+# GitLab CI/CD
 
 GitLab CI/CD is a tool built into GitLab for software development
 through the [continuous methodologies](introduction/index.md#introduction-to-cicd-methodologies):
@@ -30,6 +31,9 @@ your app.
 
 For a complete overview of these methodologies and GitLab CI/CD,
 read the [Introduction to CI/CD with GitLab](introduction/index.md).
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video demonstration of GitLab CI/CD, see [Demo: CI/CD with GitLab](https://www.youtube.com/watch?v=1iXFbchozdY).
 
 ## Getting started
 
@@ -59,14 +63,14 @@ Once you're familiar with how GitLab CI/CD works, see the
 for all the attributes you can set and use.
 
 NOTE: **Note:**
-GitLab CI/CD and [shared runners](runners/README.md#shared-specific-and-group-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#extra-shared-runners-pipeline-minutes-quota).
+GitLab CI/CD and [shared runners](runners/README.md#shared-specific-and-group-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](../user/admin_area/settings/continuous_integration.md#extra-shared-runners-pipeline-minutes-quota).
 
-## GitLab CI/CD configuration
+## Configuration
 
 GitLab CI/CD supports numerous configuration options:
 
-| Configuration | Description |
-|:--- |:--- |
+| Configuration | Description  |
+|:--------------|:-------------|
 | [Pipelines](pipelines.md) | Structure your CI/CD process through pipelines. |
 | [Environment variables](variables/README.md) | Reuse values based on a variable/value key pair. |
 | [Environments](environments.md) | Deploy your application to different environments (e.g., staging, production). |
@@ -74,7 +78,7 @@ GitLab CI/CD supports numerous configuration options:
 | [Cache dependencies](caching/index.md) | Cache your dependencies for a faster execution. |
 | [Schedule pipelines](../user/project/pipelines/schedules.md) | Schedule pipelines to run as often as you need. |
 | [Custom path for `.gitlab-ci.yml`](../user/project/pipelines/settings.md#custom-ci-config-path) | Define a custom path for the CI/CD configuration file. |
-| [Git submodules for CI/CD](git_submodules.md) | Configure jobs for using Git submodules. |
+| [Git submodules for CI/CD](git_submodules.md) | Configure jobs for using Git submodules.|
 | [SSH keys for CI/CD](ssh_keys/README.md) | Using SSH keys in your CI pipelines. |
 | [Pipelines triggers](triggers/README.md) | Trigger pipelines through the API. |
 | [Integrate with Kubernetes clusters](../user/project/clusters/index.md) | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
@@ -85,42 +89,50 @@ GitLab CI/CD supports numerous configuration options:
 Note that certain operations can only be performed according to the
 [user](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions.
 
-## GitLab CI/CD feature set
+## Feature set
 
-You can also use the vast GitLab CI/CD feature set to easily configure
-it for specific purposes:
+Use the vast GitLab CI/CD to easily configure it for specific purposes.
+Its feature set is listed on the table below according to DevOps stages.
 
 | Feature | Description |
-|:--- |:--- |
-| [Auto Deploy](../topics/autodevops/index.md#auto-deploy) | Deploy your application to a production environment in a Kubernetes cluster. |
+|:--------|:------------|
+| **Configure** ||
 | [Auto DevOps](../topics/autodevops/index.md) | Set up your app's entire lifecycle. |
-| [Building Docker images](docker/using_docker_build.md) | Maintain Docker-based projects using GitLab CI/CD. |
-| [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html) **[PREMIUM]** | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
 | [ChatOps](chatops/README.md) | Trigger CI jobs from chat, with results sent back to the channel. |
-| [CI services](services/README.md)| Link Docker containers with your base image. |
-| [Container Scanning](https://docs.gitlab.com/ee/ci/examples/container_scanning.html) **[ULTIMATE]**| Check your Docker containers for known vulnerabilities. |
-| [Dependency Scanning](https://docs.gitlab.com/ee/ci/examples/dependency_scanning.html) **[ULTIMATE]**| Analyze your dependencies for known vulnerabilities. |
-| [Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html) **[PREMIUM]** | Check the current health and status of each CI/CD environment running on Kubernetes. |
-| [Feature Flags](https://docs.gitlab.com/ee/user/project/operations/feature_flags.html) **[PREMIUM]** | Deploy your features behind Feature Flags. |
-| [GitLab CI/CD for external repositories](https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/) **[PREMIUM]** | Get the benefits of GitLab CI/CD combined with repositories in GitHub and BitBucket Cloud. |
+|---+---|
+| **Verify** ||
+| [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md) | Quickly determine the performance impact of pending code changes. |
+| [CI services](services/README.md) | Link Docker containers with your base image.|
+| [Code Quality](../user/project/merge_requests/code_quality.md) **[STARTER]** | Analyze your source code quality. |
+| [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **[PREMIUM]** | Get the benefits of GitLab CI/CD combined with repositories in GitHub and BitBucket Cloud. |
+| [Interactive Web Terminals](interactive_web_terminal/index.md) **[CORE ONLY]** | Open an interactive web terminal to debug the running jobs. |
+| [JUnit tests](junit_test_reports.md) | Identify script failures directly on merge requests. |
+| [Using Docker images](docker/using_docker_images.md) | Use GitLab and GitLab Runner with Docker to build and test applications. |
+|---+---|
+| **Release** ||
+| [Auto Deploy](../topics/autodevops/index.md#auto-deploy) | Deploy your application to a production environment in a Kubernetes cluster. |
+| [Building Docker images](docker/using_docker_build.md) | Maintain Docker-based projects using GitLab CI/CD. |
+| [Canary Deployments](../user/project/canary_deployments.md) **[PREMIUM]** | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
+| [Deploy Boards](../user/project/deploy_boards.md) **[PREMIUM]** | Check the current health and status of each CI/CD environment running on Kubernetes. |
+| [Feature Flags](../user/project/operations/feature_flags.md) **[PREMIUM]** | Deploy your features behind Feature Flags. |
 | [GitLab Pages](../user/project/pages/index.md) | Deploy static websites. |
 | [GitLab Releases](../user/project/releases/index.md) | Add release notes to Git tags. |
-| [Interactive Web Terminals](interactive_web_terminal/index.md) **[CORE ONLY]** | Open an interactive web terminal to debug the running jobs. |
-| [JUnit tests](junit_test_reports.md)| Identify script failures directly on merge requests. |
 | [Review Apps](review_apps/index.md) | Configure GitLab CI/CD to preview code changes. |
-| [Security Test reports](https://docs.gitlab.com/ee/user/project/merge_requests/#security-reports-ultimate) **[ULTIMATE]** | Check for app vulnerabilities. |
-| [Using Docker images](docker/using_docker_images.md) | Use GitLab and GitLab Runner with Docker to build and test applications. |
+|---+---|
+| **Secure** ||
+| [Container Scanning](../user/application_security/container_scanning/index.md) **[ULTIMATE]** | Check your Docker containers for known vulnerabilities.|
+| [Dependency Scanning](../user/application_security/dependency_scanning/index.md) **[ULTIMATE]** | Analyze your dependencies for known vulnerabilities. |
+| [License Management](../user/application_security/license_management/index.md) **[ULTIMATE]** | Search your project dependencies for their licenses. |
+| [Security Test reports](../user/project/merge_requests/index.md#security-reports-ultimate) **[ULTIMATE]** | Check for app vulnerabilities. |
 
-## GitLab CI/CD examples
+## Examples
 
-GitLab provides examples of configuring GitLab CI/CD in the form of:
+Find example project code and tutorials for using GitLab CI/CD with a variety of app frameworks, languages, and platforms
+on the [CI Examples](examples/README.md) page.
 
-- A collection of [examples and other resources](examples/README.md).
-- Example projects that are available at the [`gitlab-examples`](https://gitlab.com/gitlab-examples) group. For example, see:
-  - [`multi-project-pipelines`](https://gitlab.com/gitlab-examples/multi-project-pipelines) for examples of implementing multi-project pipelines.
-  - [`review-apps-nginx`](https://gitlab.com/gitlab-examples/review-apps-nginx/) provides an example of using Review Apps.
+GitLab also provides [example projects](https://gitlab.com/gitlab-examples) pre-configured to use GitLab CI/CD.
 
-## GitLab CI/CD administration **[CORE ONLY]**
+## Administration **[CORE ONLY]**
 
 As a GitLab administrator, you can change the default behavior
 of GitLab CI/CD for:
@@ -149,6 +161,33 @@ See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJ
 
 As GitLab CI/CD has evolved, certain breaking changes have
 been necessary. These are:
+
+#### 12.0
+
+- [Use refspec to clone/fetch git
+  repository](https://gitlab.com/gitlab-org/gitlab-runner/issues/4069).
+- [Old cache
+  configuration](https://gitlab.com/gitlab-org/gitlab-runner/issues/4070).
+- [Old metrics server
+  configuration](https://gitlab.com/gitlab-org/gitlab-runner/issues/4072).
+- [Remove
+  `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/issues/4073).
+- [Remove Linux distributions that reach
+  EOL](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1130).
+- [Update command line API for helper
+  images](https://gitlab.com/gitlab-org/gitlab-runner/issues/4013).
+- [Remove old `git clean`
+  flow](https://gitlab.com/gitlab-org/gitlab-runner/issues/4175).
+
+#### 11.0
+
+- No breaking changes.
+
+#### 10.0
+
+- No breaking changes.
+
+#### 9.0
 
 - [CI variables renaming for GitLab 9.0](variables/deprecated_variables.md#gitlab-90-renamed-variables). Read about the
   deprecated CI variables and what you should use for GitLab 9.0+.
