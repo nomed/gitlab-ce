@@ -36,6 +36,22 @@ module Gitlab
         def authorized_find!(*args)
           object = find_object(*args)
           authorize!(object)
+        end
+
+        # Yields the object before authorization has been applied
+        def authorized_find_with_pre_checks!(*args, &block)
+          object = find_object(*args)
+
+          yield(object)
+
+          authorize!(object)
+        end
+
+        # Yields the object after authorization has been applied
+        def authorized_find_with_post_checks!(*args, &block)
+          object = authorized_find!(*args)
+
+          yield(object)
 
           object
         end
@@ -45,6 +61,8 @@ module Gitlab
             raise Gitlab::Graphql::Errors::ResourceNotAvailable,
                   "The resource that you are attempting to access does not exist or you don't have permission to perform this action"
           end
+
+          object
         end
 
         def authorized?(object)

@@ -13,7 +13,7 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
         @user, @found_object = user, found_object
       end
 
-      def find_object
+      def find_object(*_args)
         found_object
       end
 
@@ -47,8 +47,32 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
     end
 
     describe '#authorize!' do
-      it 'does not raise an error' do
-        expect { loading_resource.authorize!(project) }.not_to raise_error
+      it 'returns the object' do
+        expect(loading_resource.authorize!(project)).to eq(project)
+      end
+    end
+
+    describe '#authorized_find_with_pre_checks!' do
+      it 'calls the block' do
+        expect { |b| loading_resource.authorized_find_with_pre_checks!(project, &b) }.to yield_control
+      end
+
+      it 'returns the object' do
+        expect(
+          loading_resource.authorized_find_with_pre_checks!(project) { }
+        ).to eq(project)
+      end
+    end
+
+    describe '#authorized_find_with_post_checks!' do
+      it 'calls the block' do
+        expect { |b| loading_resource.authorized_find_with_pre_checks!(project, &b) }.to yield_control
+      end
+
+      it 'returns the object' do
+        expect(
+          loading_resource.authorized_find_with_pre_checks!(project) { }
+        ).to eq(project)
       end
     end
 
@@ -79,8 +103,36 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
     end
 
     describe '#authorize!' do
-      it 'does not raise an error' do
+      it 'raises an error' do
         expect { loading_resource.authorize!(project) }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      end
+    end
+
+    describe '#authorized_find_with_pre_checks!' do
+      it 'calls the block' do
+        expect do
+          expect { |b| loading_resource.authorized_find_with_pre_checks!(project, &b) }.to yield_control
+        end.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      end
+
+      it 'raises an error' do
+        expect do
+          loading_resource.authorized_find_with_pre_checks!(project) { }
+        end.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      end
+    end
+
+    describe '#authorized_find_with_post_checks!' do
+      it 'does not call the block' do
+        expect do
+          expect { |b| loading_resource.authorized_find_with_pre_checks!(project, &b) }.not_to yield_control
+        end.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      end
+
+      it 'raises an error' do
+        expect do
+          loading_resource.authorized_find_with_pre_checks!(project) { }
+        end.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
     end
 
