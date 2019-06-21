@@ -6,10 +6,13 @@ describe Gitlab::Metrics::Dashboard::DynamicDashboardService, :use_clean_rails_m
   include MetricsDashboardHelpers
 
   set(:project) { build(:project) }
+  set(:user) { create(:user) }
   set(:environment) { create(:environment, project: project) }
 
+  before { project.add_maintainer(user) }
+
   describe '#get_dashboard' do
-    let(:service_params) { [project, nil, { environment: environment, dashboard_path: nil }] }
+    let(:service_params) { [project, user, { environment: environment, dashboard_path: nil }] }
     let(:service_call) { described_class.new(*service_params).get_dashboard }
 
     it_behaves_like 'valid embedded dashboard service response'
