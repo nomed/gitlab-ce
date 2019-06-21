@@ -205,6 +205,13 @@ An example project using this approach can be found here: <https://gitlab.com/gi
 
 ### Use Docker socket binding
 
+NOTE: **Note:**
+[Introduced in
+11.11](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1261)
+when you bind the Docker socket, you can no longer use `docker:dind` as
+a service since volume bindings are done to the services as well. These
+two together are not compatible.
+
 The third approach is to bind-mount `/var/run/docker.sock` into the container so that docker is available in the context of that image.
 
 In order to do that, follow the steps:
