@@ -40,8 +40,8 @@ module EmailHelpers
   def have_referable_subject(referable, include_project: true, include_group: false, reply: false)
     context = []
 
-    context << [referable.project.name] if include_project && referable.project
-    context << [referable.project.group.name] if include_group && referable.project.group
+    context << referable.project.name if include_project && referable.project
+    context << referable.project.group.name if include_group && referable.project.group
 
     prefix =
       if context.any?
