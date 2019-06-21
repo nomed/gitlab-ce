@@ -46,7 +46,7 @@ module Projects
             repository.save! if repository.has_tags?
           end
         end
-      rescue
+      rescue ContainerRegistry::Path::InvalidRegistryPathError
         @character_error = true
       end
     end
