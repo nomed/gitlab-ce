@@ -470,4 +470,56 @@ the command line of your server, run the following commands
       -----END CERTIFICATE-----
       ```
 
-      
+      Create a file with the name `cert.pem` with the contents of only the first certificate block, making sure it does not include
+      the second block (chain).
+
+      Once `cert.pem` is created, run the following command to see the contents of `privkey.pem`:
+
+      ```sh
+      sudo cat cat /etc/letsencrypt/live/namespace.example/privkey.pem
+      ```
+      Output should look like this:
+
+      ```sh
+      -----BEGIN PRIVATE KEY-----
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
+      -----BEGIN CERTIFICATE-----
+      fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
+      4f294d1eaca42b8692017b4262==
+      -----END PRIVATE KEY-----
+      ```
+
+      Create a new file with the name `cert.pk` with the contents of the entire output.
+
+  4. **Run the following command** to create a Kubernetes secret to hold your TLS certificate, `cert.pem`, and the private key, `cert.pk`:
+
+      ``sh
+      kubectl create --namespace istio-system secret tls istio-ingressgateway-certs \
+     --key cert.pk \
+     --cert cert.pem
+     ``
+
+     where cert.pk and cert.pem are your certificate and private key files. Note that the istio-ingressgateway-certs secret name is required.
