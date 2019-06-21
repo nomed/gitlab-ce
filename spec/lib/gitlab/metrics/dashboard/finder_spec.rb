@@ -10,7 +10,9 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
   set(:environment) { create(:environment, project: project) }
   let(:system_dashboard_path) { Gitlab::Metrics::Dashboard::SystemDashboardService::SYSTEM_DASHBOARD_PATH}
 
-  before { project.add_maintainer(user) }
+  before do
+    project.add_maintainer(user)
+  end
 
   describe '.find' do
     let(:dashboard_path) { '.gitlab/dashboards/test.yml' }

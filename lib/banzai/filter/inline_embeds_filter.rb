@@ -16,7 +16,7 @@ module Banzai
           element = element_to_embed(doc, params)
 
           next unless element
-          
+
           # We want this to follow any surrounding content. For example,
           # if a link is inline in a paragraph.
           node.parent.children.last.add_next_sibling(element)

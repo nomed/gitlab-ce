@@ -15,7 +15,6 @@ module Banzai
       # only necessary nodes.
       def call
         doc.css(CSS_SIGNAL).each do |node|
-
           project = project_for_node(node)
           user = context[:current_user]
 

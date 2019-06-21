@@ -9,7 +9,9 @@ describe Gitlab::Metrics::Dashboard::DynamicDashboardService, :use_clean_rails_m
   set(:user) { create(:user) }
   set(:environment) { create(:environment, project: project) }
 
-  before { project.add_maintainer(user) }
+  before do
+    project.add_maintainer(user)
+  end
 
   describe '#get_dashboard' do
     let(:service_params) { [project, user, { environment: environment, dashboard_path: nil }] }
