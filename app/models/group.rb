@@ -11,6 +11,7 @@ class Group < Namespace
   include SelectForProjectAuthorization
   include LoadedInGroupList
   include Descendant
+  include CaseSensitivity
   include GroupDescendant
   include TokenAuthenticatable
   include WithUploads
@@ -62,6 +63,9 @@ class Group < Namespace
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
   after_update :path_changed_hook, if: :saved_change_to_path?
+
+  scope :by_path, ->(paths) { iwhere(path: paths) }
+  scope :with_users, -> { preload(:users) }
 
   class << self
     def sort_by_attribute(method)

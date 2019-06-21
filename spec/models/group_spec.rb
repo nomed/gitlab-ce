@@ -233,6 +233,12 @@ describe Group do
 
       it { is_expected.to match_array([private_group, internal_group]) }
     end
+
+    describe 'by_path' do
+      subject { described_class.by_path([group.path, private_group.path]).to_a }
+
+      it { is_expected.to match_array([group, private_group]) }
+    end
   end
 
   describe '#to_reference' do
