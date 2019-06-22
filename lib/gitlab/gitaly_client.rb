@@ -391,10 +391,50 @@ module Gitlab
       0
     end
 
+    def self.can_use_disk?(storage)
+      MUTEX.synchronize do
+        @can_use_disk ||= {}
+
+        case @can_use_disk[storage]
+        when :true
+          return true
+        when :false
+          return false
+        end
+      end
+
+      gitaly_filesystem_id = filesystem_id
+      direct_filesystem_id = filesystem_id_from_disk
+
+      if !gitaly_filesystem_id.empty? && rpc_filesystem_id == direct_filesystem_id
+        MUTEX.synchronize { @can_use_disk[storage] = :true }
+        return true
+      end
+      MUTEX.synchronize { @can_use_disk[storage] = :false }
+      return false
+    end
+
     def self.filesystem_id(storage)
       response = Gitlab::GitalyClient::ServerService.new(storage).info
       storage_status = response.storage_statuses.find { |status| status.storage_name == storage }
       storage_status.filesystem_id
+    end
+
+    def self.filesystem_id_from_disk(repo)
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        metadata_file = File.read(repo.path_to_gitaly_metadata_file)
+        metadata_hash = JSON.parse(metadata_file)
+        metadata_hash['gitaly_filesystem_id']
+      end
+    rescue Errno::ENOENT
+      nil
+    end
+
+    def self.can_access_disk?(repo)
+      from_disk, from_gitaly = filesystem_id_from_disk(repo), filesystem_id(repo.storage)
+      return false unless from_disk.present? && from_gitaly.present?
+
+      from_disk == from_gitaly
     end
 
     def self.timeout(timeout_name)

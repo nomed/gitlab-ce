@@ -14,35 +14,36 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
     create_gitaly_metadata_file
   end
 
-  before do
-    allow(Gitlab::Git::RuggedImpl::UseRugged).to receive(:use_rugged?).and_call_original
-    allow(Feature).to receive(:enabled?).with(feature_flag).and_return(true)
-    described_class.instance_variable_set(:@filesystem_ids_from_disk, nil)
-    described_class.instance_variable_set(:@filesystem_ids_from_gitaly, nil)
+  subject(:wrapper) do
+    klazz = Class.new { include Gitlab::Git::RuggedImpl::UseRugged }
+    klazz.new
   end
 
-  subject { Gitlab::Git::RuggedImpl::UseRugged.use_rugged?(repository, feature_flag) }
+  before do
+#    allow(Gitlab::Git::RuggedImpl::UseRugged).to receive(:use_rugged?).and_call_original
+    allow(Feature).to receive(:enabled?).with(feature_flag).and_return(true)
+  end
 
   it 'returns true when gitaly matches disk' do
-    expect(subject).to be true
+    expect(subject.use_rugged?(repository, feature_flag)).to be true
   end
 
   it 'returns false when disk access fails' do
     allow(repository).to receive(:path_to_gitaly_metadata_file).and_return("/fake/path/doesnt/exist")
 
-    expect(subject).to be false
+    expect(subject.use_rugged?(repository, feature_flag)).to be false
   end
 
   it 'returns false when the feature flag is off' do
     allow(Feature).to receive(:enabled?).with(feature_flag).and_return(false)
 
-    expect(subject).to be_falsey
+    expect(subject.use_rugged?(repository, feature_flag)).to be_falsey
   end
 
   it "returns false when gitaly doesn't match disk" do
     allow(repository).to receive(:path_to_gitaly_metadata_file).and_return(temp_gitaly_metadata_file)
 
-    expect(subject).to be_falsey
+    expect(subject.use_rugged?(repository, feature_flag)).to be_falsey
 
     File.delete(temp_gitaly_metadata_file)
   end
