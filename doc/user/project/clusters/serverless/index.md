@@ -524,3 +524,52 @@ the command line of your server, run the following commands
         ```
 
      Where `cert.pk` and c`ert.pem` are your certificate and private key files. Note that the `istio-ingressgateway-certs` secret name is required.
+
+  5. **Configure Knative** to use the new secret that you created for HTTPS connections. Run the 
+  following command to open the Knative shared `gateway` in edit mode:
+
+        ```sh
+        kubectl edit gateway knative-ingress-gateway --namespace knative-serving
+        ```
+      
+      Update the gateway to include the following tls: section and configuration:
+
+        ```sh
+        tls:
+          mode: SIMPLE
+          privateKey: /etc/istio/ingressgateway-certs/tls.key
+          serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
+        ```
+
+      Example:
+
+        ```sh
+        # Please edit the object below. Lines beginning with a '#' will be ignored.
+        # and an empty file will abort the edit. If an error occurs while saving this
+        # file will be reopened with the relevant failures.
+        apiVersion: networking.istio.io/v1alpha3
+        kind: Gateway
+        metadata:
+          # ... skipped ...
+        spec:
+          selector:
+            istio: ingressgateway
+          servers:
+            - hosts:
+                - "*"
+              port:
+                name: http
+                number: 80
+                protocol: HTTP
+            - hosts:
+                - "*"
+              port:
+                name: https
+                number: 443
+                protocol: HTTPS
+              tls:
+                mode: SIMPLE
+                privateKey: /etc/istio/ingressgateway-certs/tls.key
+                serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
+      
+      After your changes are running on your Knative cluster, you can begin using the HTTPS protocol for secure access your deployed Knative services.
