@@ -544,9 +544,6 @@ the command line of your server, run the following commands
       Example:
 
         ```sh
-        # Please edit the object below. Lines beginning with a '#' will be ignored.
-        # and an empty file will abort the edit. If an error occurs while saving this
-        # file will be reopened with the relevant failures.
         apiVersion: networking.istio.io/v1alpha3
         kind: Gateway
         metadata:
@@ -571,5 +568,6 @@ the command line of your server, run the following commands
                 mode: SIMPLE
                 privateKey: /etc/istio/ingressgateway-certs/tls.key
                 serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
-      
+        ```
+
       After your changes are running on your Knative cluster, you can begin using the HTTPS protocol for secure access your deployed Knative services.
